@@ -1,0 +1,145 @@
+{
+  "worked_example": [
+    {
+      "swap": "arbitrage",
+      "deposit": 1500.0,
+      "retained": 320.0,
+      "refund": 1180.0,
+      "effective_fee_bps": 11.4
+    },
+    {
+      "swap": "benign_lucky",
+      "deposit": 600.0,
+      "retained": 0.0,
+      "refund": 600.0,
+      "effective_fee_bps": 5.0
+    },
+    {
+      "swap": "retail_first_touch",
+      "deposit": 60.0,
+      "retained": 0.0,
+      "refund": 60.0,
+      "effective_fee_bps": 5.0
+    },
+    {
+      "swap": "outsider_in_band",
+      "deposit": 1500.0,
+      "retained": 380.0,
+      "refund": 1120.0,
+      "effective_fee_bps": 12.6
+    }
+  ],
+  "markout_from_receipts_usd": 499.999999,
+  "break_even_recall_F6.3": 0.451,
+  "break_even_recall_f5": 0.425,
+  "recapture_coefficient_bps": 4.87,
+  "noise_tax": {
+    "weekend_closed_settings": 18.2,
+    "weekend_continuous_settings": 45.1,
+    "continuous_3s_vol3pct": {
+      "sigma_bps": 1.77,
+      "z": 3.96,
+      "tax_bps": 1.2067027039548087e-05
+    },
+    "continuous_3s_vol5.2pct": {
+      "z": 2.28,
+      "tax_bps": 0.009
+    }
+  },
+  "wash_leg_loss_bps_kappa0.4": 3.0,
+  "lp_self_wash_breakeven_share": 0.6,
+  "split_arbitrage": {
+    "benign": false,
+    "refund": 1180.0,
+    "tip": 5.0,
+    "to_protocol": 0.0,
+    "to_rebate_pool": 31.5,
+    "to_lps": 283.5,
+    "rebate": 0.0
+  },
+  "rebate_benign": {
+    "benign": true,
+    "refund": 600.0,
+    "tip": 0.8,
+    "to_protocol": 0.0,
+    "to_rebate_pool": 0.0,
+    "to_lps": 0.0,
+    "rebate": 39.2
+  },
+  "min_next_rent": 1102,
+  "rent_due": [
+    36000,
+    3600
+  ],
+  "vectors": {
+    "fairPrice": [
+      {
+        "pBase": 300000000000,
+        "eBase": -8,
+        "pQuote": 100000000,
+        "eQuote": -8,
+        "decRisky": 18,
+        "decQuote": 6,
+        "out": "3000000000000000000000000000"
+      },
+      {
+        "pBase": 6123456789,
+        "eBase": -8,
+        "pQuote": 99990000,
+        "eQuote": -8,
+        "decRisky": 8,
+        "decQuote": 6,
+        "out": "612406919591959195919591959195919591"
+      },
+      {
+        "pBase": 2512345,
+        "eBase": -5,
+        "pQuote": 100001234,
+        "eQuote": -8,
+        "decRisky": 18,
+        "decQuote": 18,
+        "out": "25123139980452641214407414212508617643"
+      }
+    ],
+    "conf": [
+      {
+        "pBase": 300000000000,
+        "confBase": 150000000,
+        "pQuote": 100000000,
+        "confQuote": 5000,
+        "out": 6
+      }
+    ],
+    "clawback": [
+      {
+        "deposit": 1500000000,
+        "mPlus": 500000000,
+        "nPlus": 500000000000,
+        "eps": 2,
+        "conf": 0,
+        "alpha": 8000,
+        "out": 320000000
+      },
+      {
+        "deposit": 1500000000,
+        "mPlus": 5000000000,
+        "nPlus": 500000000000,
+        "eps": 2,
+        "conf": 1,
+        "alpha": 8000,
+        "out": 1500000000
+      }
+    ],
+    "bucket": [
+      {
+        "level": 90000000000,
+        "last": 100,
+        "now": 106,
+        "nMin": 100000000000,
+        "horizon": 12,
+        "add": 30000000000,
+        "out": 70000000000
+      }
+    ]
+  }
+}
