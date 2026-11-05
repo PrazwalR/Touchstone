@@ -1,0 +1,17 @@
+# Vendored dependencies (contracts/lib, pinned in contracts/lib/PINS.md) contain hex test vectors that the
+# generic-api-key rule matches; 168 hits, all upstream test data, triaged 27 October 2026. Our own files stay scanned.
+# The two regexes are anvil's first two default development keys, published in Foundry's documentation and funded
+# only on a local anvil; the end-to-end tests sign with them. .env is gitignored and listed so a local scan of the
+# working tree reports only files that could be committed.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "vendored upstream dependencies, installed packages, gitignored env, anvil development keys"
+paths = ['''contracts/lib/''', '''contracts/out/''', '''contracts/cache/''', '''node_modules/''', '''\.venv/''', '''^\.env$''']
+regexes = [
+  '''ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80''',
+  '''59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d''',
+  # Graphify hashes the tracked keeper fixture bytes, a NUL and its relative path.
+  '''^1786acdcaa2bc42aca8259da8b6c8fd55ee70f0093ce1345706d73170cb665bc$''',
+]

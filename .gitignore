@@ -1,0 +1,35 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lcov.info
+
+# node
+node_modules/
+dist/
+*.tsbuildinfo
+backend/**/data/*.sqlite*
+
+# python
+.venv/
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# rust
+sim/target/
+
+# os
+.DS_Store
+research/data/
+contracts/test/integration/out/
+
+mds/
+
+var/
