@@ -1,0 +1,23 @@
+{
+  "heldout_start": 1790467200,
+  "seed": 20261028,
+  "bootstrap_reps": 2000,
+  "development_start": 1788048000,
+  "end": 1792886400,
+  "n0": 5000000000,
+  "n_min": 50000000000,
+  "horizon": 6,
+  "tau_bps": 2,
+  "r_star": -0.3118807034660406,
+  "delay_seconds": [
+    0,
+    12,
+    24
+  ],
+  "block_seconds": 12,
+  "padding_multipliers": [
+    1,
+    1.25,
+    2
+  ]
+}

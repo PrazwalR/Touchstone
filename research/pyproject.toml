@@ -1,0 +1,33 @@
+[project]
+name = "touchstone-research"
+version = "0.1.0"
+description = "Touchstone v2 research pipeline: exact reference math, replay and pre-registered experiments E1-E12."
+requires-python = ">=3.13"
+dependencies = ["numpy==2.5.4"]
+
+[dependency-groups]
+dev = [
+    "ruff==0.17.0",
+    "mypy==2.4.0",
+    "pytest==9.1.1",
+    "exchange-calendars==4.13.2",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+extend-exclude = ["results", "data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "ANN", "RUF"]
+
+[tool.mypy]
+strict = true
+python_version = "3.13"
+mypy_path = "reference"
+explicit_package_bases = true
+files = ["tsr", "experiments", "reference", "tests", "tools", "simulations"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "reference"]
