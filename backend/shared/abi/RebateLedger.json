@@ -1,0 +1,1455 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "manager",
+        "type": "address",
+        "internalType": "contract IPoolManager"
+      },
+      {
+        "name": "hook",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "HOOK",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "POOL_MANAGER",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IPoolManager"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "claim",
+    "inputs": [
+      {
+        "name": "currency",
+        "type": "address",
+        "internalType": "Currency"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimAsClaims",
+    "inputs": [
+      {
+        "name": "currency",
+        "type": "address",
+        "internalType": "Currency"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "credit",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "internalType": "Currency"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "kind",
+        "type": "uint8",
+        "internalType": "enum IRebateLedger.Kind"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "owed",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "internalType": "Currency"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "push",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "internalType": "Currency"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "totalOwed",
+    "inputs": [
+      {
+        "name": "currency",
+        "type": "address",
+        "internalType": "Currency"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "unlockCallback",
+    "inputs": [
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "BidPlaced",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "swapper",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "rent",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      },
+      {
+        "name": "deposit",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      },
+      {
+        "name": "activatesAt",
+        "type": "uint40",
+        "indexed": false,
+        "internalType": "uint40"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Claimed",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "indexed": false,
+        "internalType": "Currency"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Credited",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "indexed": false,
+        "internalType": "Currency"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "kind",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum IRebateLedger.Kind"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DepositChanged",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "isTop",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "deposit",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DepositTaken",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "recordId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "record",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct Record",
+        "components": [
+          {
+            "name": "poolId",
+            "type": "bytes32",
+            "internalType": "PoolId"
+          },
+          {
+            "name": "id",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "timestamp",
+            "type": "uint40",
+            "internalType": "uint40"
+          },
+          {
+            "name": "mode",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "licenceActive",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "byHolder",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "zeroForOne",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "depositIn0",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "sender",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "beneficiary",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "rebateTo",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "deposit",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "amount0",
+            "type": "int128",
+            "internalType": "int128"
+          },
+          {
+            "name": "amount1",
+            "type": "int128",
+            "internalType": "int128"
+          },
+          {
+            "name": "sqrtPriceBeforeX96",
+            "type": "uint160",
+            "internalType": "uint160"
+          },
+          {
+            "name": "sqrtPriceAfterX96",
+            "type": "uint160",
+            "internalType": "uint160"
+          },
+          {
+            "name": "liquidityBefore",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "swapFeePips",
+            "type": "uint24",
+            "internalType": "uint24"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Dripped",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "amount0",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "amount1",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Expired",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "recordId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "refund",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "HookBonus",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "amount0",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      },
+      {
+        "name": "amount1",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "HookSwap",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount0",
+        "type": "int128",
+        "indexed": false,
+        "internalType": "int128"
+      },
+      {
+        "name": "amount1",
+        "type": "int128",
+        "indexed": false,
+        "internalType": "int128"
+      },
+      {
+        "name": "swapFee",
+        "type": "uint24",
+        "indexed": false,
+        "internalType": "uint24"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "LeaseActivated",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "swapper",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "rent",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "LeaseLapsed",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "at",
+        "type": "uint40",
+        "indexed": false,
+        "internalType": "uint40"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "LicensedSwap",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "swapper",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount0",
+        "type": "int128",
+        "indexed": false,
+        "internalType": "int128"
+      },
+      {
+        "name": "amount1",
+        "type": "int128",
+        "indexed": false,
+        "internalType": "int128"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PoolRegistered",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "cfg",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct PoolConfig",
+        "components": [
+          {
+            "name": "n0",
+            "type": "uint96",
+            "internalType": "uint96"
+          },
+          {
+            "name": "nMin",
+            "type": "uint96",
+            "internalType": "uint96"
+          },
+          {
+            "name": "flowHorizon",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "flags",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "tauBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "referenceFeed",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "referenceMaxAge",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "deltaBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "deltaMaxBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "betaX100",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "calendar",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "calendarValidUntil",
+            "type": "uint40",
+            "internalType": "uint40"
+          },
+          {
+            "name": "deltaClosedBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "maxConfBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "bandBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "basePriceId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "quotePriceId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "settleDelay",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxLag",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "window",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "openDelay",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "maxLagClosed",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "windowClosed",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "decimals0",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "decimals1",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "alphaBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "epsBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "alphaLicensedBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "alphaClosedBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "epsClosedBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "jumpRefundBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "tipBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "rhoBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "kappaBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "vestPeriod",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "tipCap",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "maxOutstanding",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "protocolRecipient",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "protocolShareBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RebateCredited",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "recordId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "indexed": false,
+        "internalType": "Currency"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundClaimed",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "indexed": false,
+        "internalType": "Currency"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundCredited",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "currency",
+        "type": "address",
+        "indexed": false,
+        "internalType": "Currency"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RefundDeferred",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "recordId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "beneficiary",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RentCharged",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RentCredited",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "toRebatePool",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "toVesting",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Settled",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "recordId",
+        "type": "uint64",
+        "indexed": true,
+        "internalType": "uint64"
+      },
+      {
+        "name": "markout",
+        "type": "int256",
+        "indexed": false,
+        "internalType": "int256"
+      },
+      {
+        "name": "fairPriceX36",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "alphaBps",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
+      },
+      {
+        "name": "payout",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct Payout",
+        "components": [
+          {
+            "name": "benign",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "refund",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "tip",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "toProtocol",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "toRebatePool",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "toLPs",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "rebate",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "tipTo",
+            "type": "address",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SwapperSet",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "PoolId"
+      },
+      {
+        "name": "isTop",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "swapper",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__AlreadyRegistered",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "internalType": "PoolId"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__BidTooLow",
+    "inputs": [
+      {
+        "name": "minimum",
+        "type": "uint128",
+        "internalType": "uint128"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__CalendarDataInvalid",
+    "inputs": [
+      {
+        "name": "index",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__CalendarExhausted",
+    "inputs": [
+      {
+        "name": "t",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__ConfigOutOfBounds",
+    "inputs": [
+      {
+        "name": "field",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__DeadlinePassed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__DepositBelowNotice",
+    "inputs": [
+      {
+        "name": "minimum",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__DynamicFeeNotSupported",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__ExponentOutOfRange",
+    "inputs": [
+      {
+        "name": "exponent",
+        "type": "int256",
+        "internalType": "int256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__FeeRefundFailed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__GuardFailed",
+    "inputs": [
+      {
+        "name": "which",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__InvalidBlockSource",
+    "inputs": [
+      {
+        "name": "source",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__LedgerShortfall",
+    "inputs": [
+      {
+        "name": "balance",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "owed",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__LicenceDisabled",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "internalType": "PoolId"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NativeRefundFailed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NoCode",
+    "inputs": [
+      {
+        "name": "target",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NonPositivePrice",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NotExpired",
+    "inputs": [
+      {
+        "name": "expiresAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NotFactory",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NotHook",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NotLeaseOwner",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NotLicence",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NotPoolManager",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NotSettler",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__NothingToClaim",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__PayoutMismatch",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__PoolNotRegistered",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "internalType": "PoolId"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__QuoteNotErc20",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__RecordClosed",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "internalType": "PoolId"
+      },
+      {
+        "name": "recordId",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__Reentrant",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__RetainedAboveDeposit",
+    "inputs": [
+      {
+        "name": "retained",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "deposit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__TooEarly",
+    "inputs": [
+      {
+        "name": "t0",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__TransferShortfall",
+    "inputs": [
+      {
+        "name": "expected",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "received",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__ZeroHorizon",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Touchstone__ZeroQuoteBudget",
+    "inputs": []
+  }
+]
