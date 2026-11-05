@@ -1,0 +1,54 @@
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+libs = ["lib"]
+solc_version = "0.8.26"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 1_000_000
+bytecode_hash = "none"
+# TouchstoneHook alone compiles through the IR pipeline at 200 runs to stay under EIP-170 with room for
+# the M7, M9 and M10 additions (decision 0028). Everything else keeps 1,000,000 runs.
+# The Settler's settlement path needs the IR pipeline for its stack depth, at full runs.
+additional_compiler_profiles = [
+    { name = "hook", via_ir = true, optimizer_runs = 200 },
+    { name = "settler", via_ir = true, optimizer_runs = 1_000_000 },
+]
+compilation_restrictions = [
+    { paths = "src/TouchstoneHook.sol", via_ir = true, optimizer_runs = 200 },
+    { paths = "src/Settler.sol", via_ir = true, optimizer_runs = 1_000_000 },
+]
+ffi = false
+# Each top-level call in a test is its own transaction, so transient storage clears between swaps
+# exactly as it does on chain; the first-touch rule depends on it (decision 0030).
+isolate = true
+fs_permissions = [
+    { access = "read", path = "./test/fixtures" },
+    { access = "read", path = "./script/config" },
+    { access = "read-write", path = "./deployments" },
+    { access = "read", path = "../research/reference/vectors" },
+    { access = "read-write", path = "./test/integration/out" },
+]
+
+[fuzz]
+runs = 2_000
+
+[invariant]
+runs = 256
+depth = 500
+fail_on_revert = false
+
+[profile.nightly.invariant]
+runs = 10_000
+depth = 1_000
+
+[profile.differential]
+ffi = true
+
+[fmt]
+line_length = 120
+
+[lint]
+# Triaged in docs/decisions/0023-forge-lint-exclusions.md.
+exclude_lints = ["unsafe-typecast", "asm-keccak256", "incorrect-shift"]
