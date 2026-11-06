@@ -1,0 +1,8 @@
+{
+  "name": "@touchstone/keeper",
+  "private": true,
+  "type": "module",
+  "scripts": { "start": "node src/main.ts", "test": "vitest run" },
+  "dependencies": { "@touchstone/shared": "workspace:*", "viem": "2.57.4", "zod": "4.6.6" },
+  "devDependencies": { "typescript": "5.9.3", "vitest": "5.0.3", "@types/node": "24.19.2" }
+}
