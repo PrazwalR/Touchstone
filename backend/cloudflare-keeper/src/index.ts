@@ -5,7 +5,8 @@ import { createRuntime } from "./runtime.ts";
 import type { KeeperState } from "../../keeper/src/state.ts";
 import type { PendingTransaction } from "./journal.ts";
 
-const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { "cache-control": "no-store" } });
+const json = (value: unknown, status = 200) => new Response(JSON.stringify(value, (_, v: unknown) => typeof v === "bigint" ? v.toString() : v),
+  { status, headers: { "cache-control": "no-store", "content-type": "application/json" } });
 
 function deploymentIdentity(env: Env): string {
   const { keeper: e } = configuration(env);
@@ -66,10 +67,11 @@ export class KeeperObject extends DurableObject<Env> {
       const r = this.runtime;
       delay = r.cf.CF_ERROR_POLL_MS;
       if (await r.journal.recover()) {
+        r.events.length = 0;
         const report = await r.keeper.tick({ maxBlocks: r.blockRange, maxRecords: 1, housekeeping: r.cf.CF_HOUSEKEEPING });
         const state = r.keeper.state();
         await storage.put({ "keeper-state": state, "last-tick": {
-          at: Date.now(), ok: true, account: r.account, ...report,
+          at: Date.now(), ok: true, account: r.account, ...report, events: r.events,
         } });
         // Use the captured scan cursor for catch-up; this extra head read is intentionally read-only.
         const behind = state.nextBlock <= await r.client.getBlockNumber({ cacheTime: 0 });

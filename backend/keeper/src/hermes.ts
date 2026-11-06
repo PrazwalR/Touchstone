@@ -72,7 +72,8 @@ export class Hermes {
 
   constructor(o: HermesOptions) {
     this.#o = o;
-    this.#fetch = o.fetchImpl ?? fetch;
+    // Workers' native fetch requires its global receiver when stored on another object.
+    this.#fetch = o.fetchImpl ?? globalThis.fetch.bind(globalThis);
     this.#now = o.now ?? (() => Math.floor(Date.now() / 1000));
   }
 

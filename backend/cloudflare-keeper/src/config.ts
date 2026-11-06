@@ -31,3 +31,11 @@ export function failureCode(error: unknown): string {
   if (error instanceof Error && ["signer_mismatch", "deployment_wiring_invalid", "deployment_changed_use_new_worker_namespace"].includes(error.message)) return error.message;
   return "keeper_tick_failed";
 }
+
+export function safeErrorDetail(detail: string, env: Record<string, unknown>): string {
+  let result = detail;
+  const secrets = Object.values(env).filter((v): v is string => typeof v === "string" && v.length >= 6)
+    .flatMap(v => /^Bearer\s+/i.test(v) ? [v, v.replace(/^Bearer\s+/i, "")] : [v]).sort((a, b) => b.length - a.length);
+  for (const secret of secrets) result = result.split(secret).join("[redacted]");
+  return result.replace(/https?:\/\/[^\s"'<>]+/g, "[url]").replace(/0x[0-9a-fA-F]{64}/g, "[hex]").slice(0, 300);
+}

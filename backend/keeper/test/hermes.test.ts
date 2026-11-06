@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Hermes, HermesError, toFloat } from "../src/hermes.ts";
 
 const ID = `0x${"ab".repeat(32)}` as const;
@@ -19,6 +19,16 @@ const ok = (publishTime: number) => ({
 const hermes = (f: typeof fetch) => new Hermes({ url: "https://hermes.example", apiKey: "k", apiKeyHeader: "x-api-key", timeoutMs: 1_000, fetchImpl: f });
 
 describe("Hermes", () => {
+  it("binds the native fetch receiver for the Workers runtime", async () => {
+    vi.stubGlobal("fetch", function(this: unknown) {
+      expect(this).toBe(globalThis);
+      return Promise.resolve(new Response(JSON.stringify(ok(1000))));
+    });
+    try {
+      const h = new Hermes({ url: "https://hermes.example", apiKey: "k", apiKeyHeader: "x-api-key", timeoutMs: 1000 });
+      expect((await h.latest(ID)).publishTime).toBe(1000);
+    } finally { vi.unstubAllGlobals(); }
+  });
   it("parses the first update at or after t and sends the key header", async () => {
     const seen: { url?: string; headers?: HeadersInit | undefined } = {};
     const u = await hermes(stub(200, ok(1_000), seen)).firstAtOrAfter(ID, 1_000);

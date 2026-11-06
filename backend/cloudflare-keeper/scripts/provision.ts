@@ -13,7 +13,11 @@ const source = parseEnv(readFileSync(path, "utf8"));
 const env = loadKeeperEnv(source);
 const configurationOnly = process.argv.includes("--config-only");
 const signerArg = process.argv[process.argv.indexOf("--signer") + 1];
-const key = configurationOnly ? undefined : loadKeystore(env.KEEPER_KEYSTORE_PATH, env.KEEPER_KEYSTORE_PASSWORD_FILE);
+const supplied = source.KEEPER_PVT_KEY?.trim() || source.KEEPER_PRIVATE_KEY?.trim();
+const normalized = supplied ? (supplied.startsWith("0x") ? supplied : `0x${supplied}`) : undefined;
+if (normalized && !/^0x[0-9a-fA-F]{64}$/.test(normalized)) throw new Error("Invalid keeper private key format");
+const key = configurationOnly ? undefined : normalized as `0x${string}` | undefined
+  ?? loadKeystore(env.KEEPER_KEYSTORE_PATH, env.KEEPER_KEYSTORE_PASSWORD_FILE);
 const signer = key ? privateKeyToAccount(key).address : signerArg;
 if (!signer || !/^0x[0-9a-fA-F]{40}$/.test(signer)) throw new Error("Configuration-only mode requires --signer <public-address>");
 const tokenPath = new URL("../.admin-token", import.meta.url);

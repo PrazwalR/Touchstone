@@ -69,9 +69,10 @@ same Cloudflare account and run from this folder:
 pnpm provision ../../.env
 ```
 
-Use `../../.keeper-env` instead if that is the deployment configuration file. Its keystore and password
-paths must exist on that machine. The script validates the keeper settings, decrypts the existing
-keystore in memory, and streams only keeper configuration and secrets to `wrangler secret bulk` on
+Use `../../.keeper-env` instead if that is the deployment configuration file. If it provides
+`KEEPER_PVT_KEY` (or `KEEPER_PRIVATE_KEY`), the script uses that key directly; otherwise its keystore and
+password paths must exist on that machine. The script validates the keeper settings, decrypts the existing
+keystore in memory when needed, and streams only keeper configuration and secrets to `wrangler secret bulk` on
 stdin. It never prints or writes the private key. It stores a randomly generated admin token in local
 `.admin-token` with mode 600, excluded from Git. Protect this file and retain it for status/stop commands.
 The signing secret is `KEEPER_PRIVATE_KEY`; `KEEPER_EXPECTED_ADDRESS` pins the expected public signer.
@@ -96,7 +97,7 @@ pnpm control https://<worker>.<account-subdomain>.workers.dev stop
 
 `GET /health` is public process health only; it does not prove settlement. Other routes require the
 admin token as a Bearer authorization header. `/status` reports enabled state, cursor, open-record count,
-last tick and any pending transaction hash. It exposes no signed bytes or credentials. Stop prevents new
+last tick with redacted processing diagnostics, and any pending transaction hash. It exposes no signed bytes or credentials. Stop prevents new
 runs; an in-flight transaction may still finish. No public endpoint takes an arbitrary transaction or
 record supplied by a caller.
 
