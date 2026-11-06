@@ -2,7 +2,39 @@
 
 Every address here was read back on chain before use. Testnet only; nothing is deployed to a mainnet.
 
-## Arbitrum Sepolia (421614)
+## Arbitrum Sepolia (421614), current deployment: 7 November 2026
+
+Status: **deployed 7 November 2026** from `0xaE0CCAC79AfFE82c8d736b1Eaa8351fe9E0f1A23`, with the licence auction. All
+seven contracts are verified on Arbiscan. The wiring was read back on chain: the hook's Settler, Lens and licence, the
+Lens's and the auction's `HOOK`, the hook address flag bits (`0x20C4`), the pool's lease terms (K = 60 s, 10% increment,
+minimum rent 1) and a hook size of 23,993 bytes. Total gas paid: about 0.00044 ETH. This replaces the 31 October
+deployment below for the dashboard, the keeper and the indexer; the older contracts remain on chain and unused.
+
+| Contract | Address | Block (L2) | Transaction |
+| --- | --- | ---: | --- |
+| TouchstoneHook | [`0xeD486b0a1d875bBac3DE259AFc583984389420c4`](https://sepolia.arbiscan.io/address/0xeD486b0a1d875bBac3DE259AFc583984389420c4#code) | 326729262 | [`0xac3645…b2a5`](https://sepolia.arbiscan.io/tx/0xac364570c4e361b9014c9c592b389b753d21376f578619323545133da0a0b2a5) |
+| TouchstoneLens | [`0x4085E5BD0D5a60128487705D017F2B312AFAefd2`](https://sepolia.arbiscan.io/address/0x4085E5BD0D5a60128487705D017F2B312AFAefd2#code) | 326729255 | [`0x7b10b1…81a0`](https://sepolia.arbiscan.io/tx/0x7b10b177454cc14e023c75ba747bee16132d498e4c765eeff5cc867c7ea681a0) |
+| Settler | [`0xBC3ff14B7e4cC5549f52436a45F74EF5d4caf287`](https://sepolia.arbiscan.io/address/0xBC3ff14B7e4cC5549f52436a45F74EF5d4caf287#code) | 326729239 | [`0xd3cada…7e10`](https://sepolia.arbiscan.io/tx/0xd3cadaed4d061f33524d740ee89e1baff56a201f90847ebd407552395f0f7e10) |
+| RebateLedger | [`0x693a7eF9cF0eA06b634f3673C2805627Eb7e78f8`](https://sepolia.arbiscan.io/address/0x693a7eF9cF0eA06b634f3673C2805627Eb7e78f8#code) | 326729230 | [`0xb11d9e…06a2`](https://sepolia.arbiscan.io/tx/0xb11d9e2520ac1387b3ed0268be7e77244d909ae8c3f1b0d7ea95cba7917c06a2) |
+| TouchstoneFactory | [`0xfbbBC7b89682BeCC22ddFCe4B8941cd2867466Fb`](https://sepolia.arbiscan.io/address/0xfbbBC7b89682BeCC22ddFCe4B8941cd2867466Fb#code) | 326729235 | [`0xb60ca8…a339`](https://sepolia.arbiscan.io/tx/0xb60ca88461392c8b0c16df1a3046618d721f6b3cfd2589f70ee629065c8aa339) |
+| GuardedRouter | [`0xdb8C7995200759C6FD5c5f5c803d94184A577Ddb`](https://sepolia.arbiscan.io/address/0xdb8C7995200759C6FD5c5f5c803d94184A577Ddb#code) | 326729245 | [`0x89b2db…11fc`](https://sepolia.arbiscan.io/tx/0x89b2dbe627f0ab3928e3b25bada2e1be0df6ceeb41c49d6faf6fcc1677a311fc) |
+| LicenceAuction | [`0xA050C01CeeCA0F8c5158223C5C2bDF8B69Ac0b89`](https://sepolia.arbiscan.io/address/0xA050C01CeeCA0F8c5158223C5C2bDF8B69Ac0b89#code) | 326729250 | [`0xf9bb4a…0225`](https://sepolia.arbiscan.io/tx/0xf9bb4aade6991cedf8e049163a40d6094c75bc5e3f796682115d6e1ff9ff0225) |
+
+**Demo pool**: native ETH / Circle USDC, 0.05%, tick spacing 60, pool id
+`0x09741a6de859ce342be323e80855894ab0a44691d286784447041d056b448051`, created in
+[`0x6a13fa…ccfb`](https://sepolia.arbiscan.io/tx/0x6a13faa121a1d91efb1bb58aed91b4623134cef8a5524fca136c6002d951ccfb) at the Chainlink price.
+- Seeded in two positions (decision 0067): a 15 USDC full-range backstop (L = 317,630,726,738) in
+  [`0xcfaa2e…1e1874`](https://sepolia.arbiscan.io/tx/0xcfaa2e946b041bfb241d5eeb1c511e62c5cdd726f233b1a5ed1256ebb53e1874) and a 60 USDC band from tick
+  -199,560 to -198,900, about 3% either side of the reference (L = 75,786,644,369,063) in
+  [`0xed764e…d1c`](https://sepolia.arbiscan.io/tx/0xed764ece7f87af9d6e6faa10b3b1420ac62a7f5332aceaccf41d8aca7e471d1c).
+- Read back after creation (*measured*, 7 November 2026): pool price 2,230.3 USDC per ETH against a Chainlink answer of
+  2,229.48, a gap of about 4 bps; active liquidity 7.61e13.
+- Thresholds are scaled down 1,000x for testnet amounts (`script/config/arbitrum-sepolia.json`).
+
+**Services**: the keeper and the indexer start from block 326,729,230 with new state files. The keeper account is
+unchanged, `0x5E48Fda9d06f646aa6Bc4714462Ecb21327bC30a`, holding 0.05 ETH.
+
+### Previous deployment, 31 October 2026 (superseded)
 
 Status: **deployed 31 October 2026** (19:12 to 19:15 UTC) from `0xaE0CCAC79AfFE82c8d736b1Eaa8351fe9E0f1A23`. Every
 contract is verified on Arbiscan, and the wiring was read back on chain: the hook's Settler, ledger, factory, trusted
@@ -70,5 +102,6 @@ scripts/deploy-testnet.sh base-sepolia      # checks funds, rehearses, deploys w
 
 `deploy-testnet.sh` needs `<CHAIN>_RPC_URL`, `ETHERSCAN_API_KEY`, `DEPLOYER_ADDRESS` and the `touchstone-deployer`
 cast keystore; cast asks for the password. The deployer must send no other transaction while DeployCore runs
-(spec 19.2), and must hold at least 0.01 ETH and the pool's `liquidityQuote` in USDC. Contracts are immutable, so a
+(spec 19.2), and must hold the pool's `liquidityQuote` plus `concentratedQuote` in USDC and the matching ETH
+(decision 0067; the script prints both amounts). Contracts are immutable, so a
 redeploy is a new set: record it here beside the 31 October deployment above, which stays live.

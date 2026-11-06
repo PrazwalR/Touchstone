@@ -8,8 +8,10 @@ only settles, expires, drips and accrues, and earns tips for it.
 
 1. Put in `.env`: `<CHAIN>_RPC_URL`, `ETHERSCAN_API_KEY`, `DEPLOYER_ADDRESS`, and import the deployer once with
    `cast wallet import touchstone-deployer --interactive`.
-2. Fund the deployer on the target chain: at least 0.01 ETH and the pool seed in USDC (`pool.liquidityQuote`,
-   10 USDC on both testnets; faucet.circle.com).
+2. Fund the deployer on the target chain with the pool seed in USDC (`pool.liquidityQuote` plus
+   `pool.concentratedQuote`: 15 + 60 = 75 USDC on both testnets; faucet.circle.com) and the matching ETH, about
+   0.035 ETH at 2,200 USDC per ETH plus 0.005 for gas. `deploy-testnet.sh` prints the exact amounts from the live
+   Chainlink price and stops before broadcasting if either is short. Decision 0067 explains the band.
 3. Rehearse on a fork, then deploy:
 
    ```sh

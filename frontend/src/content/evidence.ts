@@ -43,6 +43,9 @@ export const E2 = {
   recallCi: [0.9863488006791796, 0.9915007449104039] as const,
   phiCount: 0.23394607510385837,
   phiVolume: 0.8962691356455802,
+  /** Toxic markout (above fee and margin at 3 s) summed over the held-out swaps, in dollars. */
+  toxicMarkoutUsd: 251_114.10642744397,
+  defaultTrigger: { recall: 0.9716261145885418, phiCount: 0.22234108990197943, phiVolume: 0.8769635554606577 },
   rStar: -0.3118807034660406,
   reportAverageRStar: 0.451,
   lpNetUsd: 62_654,

@@ -30,6 +30,12 @@ describe("research figures shown in Docs", () => {
     expect([...E2.recallCi]).toEqual(e2.held_out.recall_ci95);
     expect(E2.phiCount).toBe(e2.held_out.phi_count);
     expect(E2.phiVolume).toBe(e2.held_out.phi_volume);
+    expect(E2.toxicMarkoutUsd).toBe(e2.held_out.toxic_markout_usd);
+    expect(E2.defaultTrigger).toEqual({
+      recall: e2.default_trigger_held_out.recall,
+      phiCount: e2.default_trigger_held_out.phi_count,
+      phiVolume: e2.default_trigger_held_out.phi_volume,
+    });
     expect(E2.rStar).toBe(e2.held_out.r_star);
     expect(E2.reportAverageRStar).toBe(e2.held_out.report_average_r_star);
     // The JSON signs markout from the trader's side: negative means LPs gained.

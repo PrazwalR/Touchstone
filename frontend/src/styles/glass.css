@@ -1,0 +1,733 @@
+/* The instrument system, restored over the interface layers loaded before it (design canvas "Touchstone",
+   DesignSystem board): obsidian ground with one warm key light from the upper left, smoked-glass panels with a
+   hairline edge, Bodoni Moda for display, Geist for prose, JetBrains Mono caps for every measurement label. Gold is
+   value and the one primary action; cyan is reserved for a signed or reference price. Loaded last and unlayered,
+   so it wins over the Tailwind utilities without touching component markup. */
+
+/* 1. Tokens: the shadcn theme reads these, so controls inherit the palette instead of the default rose. */
+:root,
+.dark {
+  --background: #0a0a0b;
+  --foreground: #f3efe7;
+  --card: rgba(15, 15, 18, 0.6);
+  --card-foreground: #f3efe7;
+  --popover: #131316;
+  --popover-foreground: #f3efe7;
+  --primary: #e8b44a;
+  --primary-foreground: #0a0a0b;
+  --secondary: rgba(243, 239, 231, 0.06);
+  --secondary-foreground: #f3efe7;
+  --muted: rgba(243, 239, 231, 0.06);
+  --muted-foreground: #b2ada4;
+  --accent: rgba(232, 180, 74, 0.1);
+  --accent-foreground: #f3efe7;
+  --border: rgba(243, 239, 231, 0.1);
+  --input: rgba(243, 239, 231, 0.2);
+  --ring: #ffd27a;
+  --radius: 3px;
+  --text: #f3efe7;
+  --text-2: #b2ada4;
+  --text-3: #8c877f;
+  --line: rgba(243, 239, 231, 0.1);
+  --line-2: rgba(243, 239, 231, 0.2);
+  --serif: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
+  --sans: "Geist Variable", "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --glass: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01) 42%), rgba(13, 13, 16, 0.62);
+  --glass-edge: inset 0 1px 0 rgba(255, 246, 228, 0.07), inset 0 0 0 1px rgba(255, 255, 255, 0.012);
+  --glass-drop: 0 30px 70px -34px rgba(0, 0, 0, 0.9);
+}
+
+/* 2. Ground: one key light, upper left, raking across obsidian. Fixed so panels always have light to blur. */
+html,
+body,
+.ts {
+  background: #0a0a0b;
+}
+.ts::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 640px at 8% -12%, rgba(232, 180, 74, 0.085), transparent 62%),
+    radial-gradient(900px 520px at 96% 4%, rgba(243, 239, 231, 0.03), transparent 60%),
+    linear-gradient(155deg, transparent 0%, transparent 34%, rgba(59, 56, 51, 0.22) 46%, transparent 58%);
+}
+.ts > * {
+  position: relative;
+  z-index: 1;
+}
+::selection {
+  background: rgba(232, 180, 74, 0.35);
+  color: #fff;
+}
+
+/* 3. Type. */
+body {
+  font-family: var(--sans);
+  font-feature-settings: "ss01", "tnum";
+}
+.h-display,
+.h2,
+.h3,
+.demo-header h1,
+.receipt-head h2,
+.swap-head h2,
+.math-head h2,
+[data-slot="card"] h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 96;
+  letter-spacing: -0.012em;
+}
+.h-display {
+  text-transform: uppercase;
+  line-height: 0.92;
+}
+.h2 {
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+.h2 em,
+.h3 em {
+  font-style: italic;
+  color: var(--gold);
+}
+.demo-header h1 {
+  font-size: clamp(34px, 3.6vw, 52px);
+  line-height: 1;
+}
+.receipt-head h2,
+.swap-head h2,
+.math-head h2 {
+  font-size: 24px;
+  line-height: 1.1;
+}
+.tl,
+.eyebrow,
+.demo-network,
+.receipt-state,
+.receipt-record,
+.amount-label,
+.swap-box label {
+  font: 500 10.5px/1.5 var(--mono);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.eyebrow {
+  color: var(--text-2);
+}
+.eyebrow::before {
+  background: var(--gold);
+}
+.mono,
+.math-f,
+.kv .v,
+.receipt-kv dd {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.gold {
+  color: var(--gold);
+}
+.cyan {
+  color: var(--cyan);
+}
+
+/* 4. Navigation: smoked glass, mono caps links, a gold underline for the current view. */
+.nav {
+  background: rgba(10, 10, 11, 0.62);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+  border-bottom: 1px solid var(--line);
+}
+.nav-in {
+  height: 68px;
+}
+.brand {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.nav-links a {
+  position: relative;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 0;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: transparent;
+}
+.nav-links a:hover {
+  background: transparent;
+  color: var(--gold-hot);
+}
+.nav-links a.on {
+  background: transparent;
+  color: var(--text);
+}
+.nav-links a.on::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 6px;
+  height: 1px;
+  background: var(--gold);
+}
+
+/* 5. Glass panels. */
+[data-slot="card"],
+.swap-card,
+.settlement-card,
+.math-card,
+.sim-market,
+.demo-market,
+.score,
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-edge), var(--glass-drop);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  --tw-ring-shadow: 0 0 #0000;
+}
+.settlement-card.is-settled {
+  border-top-color: rgba(232, 180, 74, 0.55);
+}
+.swap-box,
+.swap-box.out {
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+.swap-box:focus-within {
+  outline: 1px solid var(--gold);
+  outline-offset: 0;
+}
+.swap-row input,
+.swap-out {
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.token {
+  border-radius: 0;
+  font: 500 10.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  border: 1px solid var(--line-2);
+  background: transparent;
+}
+
+/* 6. Controls: square, hairline, gold only for the primary action. */
+[data-slot="button"] {
+  border-radius: 0;
+  letter-spacing: 0.02em;
+}
+[data-slot="button"][data-variant="default"],
+.swap-go,
+.btn-gold {
+  background: var(--gold);
+  color: #0a0a0b;
+  border: 1px solid var(--gold);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 190, 0.55), 0 10px 30px -14px rgba(232, 180, 74, 0.55);
+}
+[data-slot="button"][data-variant="default"]:hover,
+.swap-go:hover:not(:disabled),
+.btn-gold:hover {
+  background: var(--gold-hot);
+  border-color: var(--gold-hot);
+  color: #0a0a0b;
+}
+.swap-go:disabled {
+  background: rgba(232, 180, 74, 0.16);
+  border-color: rgba(232, 180, 74, 0.3);
+  color: rgba(243, 239, 231, 0.55);
+  box-shadow: none;
+}
+[data-slot="button"][data-variant="outline"],
+.btn {
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 0;
+  color: var(--text);
+}
+[data-slot="button"][data-variant="outline"]:hover,
+.btn:hover {
+  border-color: var(--gold);
+  color: var(--gold-hot);
+  background: transparent;
+}
+.seg,
+.swap-direction {
+  gap: 0;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.3);
+}
+.opt,
+[data-slot="toggle-group-item"] {
+  border-radius: 2px;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.opt.on,
+.opt[data-pressed],
+[data-slot="toggle-group-item"][data-pressed] {
+  background: rgba(243, 239, 231, 0.08);
+  color: var(--text);
+  border-color: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.chip,
+.net-badge {
+  border-radius: 0;
+}
+[data-slot="accordion-trigger"] {
+  font: 500 11px/1.4 var(--mono);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+[data-slot="accordion-trigger"]:hover {
+  color: var(--gold-hot);
+  text-decoration: none;
+}
+
+/* 7. Settlement rail and receipts: gold for value, cyan for the signed price. */
+.settlement-rail .complete .settlement-node,
+.settlement-rail .current .settlement-node {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.receipt-held strong,
+.receipt-totals strong.gold {
+  color: var(--gold);
+  font-family: var(--sans);
+}
+.seg-b.sw-lps,
+.allocation-row .sw-lps {
+  background: var(--gold);
+}
+.seg-b.sw-refund,
+.allocation-row .sw-refund {
+  background: rgba(243, 239, 231, 0.55);
+}
+.receipt-math {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 6px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.28);
+}
+.receipt-math .math-f {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+/* 8. Simulation: market strip, presets, the hook's arithmetic, the score. */
+.sim-view {
+  display: grid;
+  gap: 22px;
+}
+.sim-view .demo-header {
+  margin-bottom: 4px;
+}
+.sim-market {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0;
+}
+.sim-market > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 24px;
+  border-left: 1px solid var(--line);
+}
+.sim-market > div:first-child {
+  border-left: 0;
+}
+.sim-market strong {
+  font: 400 clamp(26px, 2.6vw, 36px)/1 var(--sans);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.sim-market strong.gold {
+  color: var(--gold);
+}
+.sim-market strong.cyan {
+  color: var(--cyan);
+}
+.sim-market strong small {
+  font: 500 10.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+}
+.sim-sub {
+  font: 400 12px/1.4 var(--sans);
+  color: var(--text-3);
+}
+.sim-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+.chip-btn {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-2);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-2);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--t1), color var(--t1);
+}
+.chip-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold-hot);
+}
+.chip-btn.on {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(232, 180, 74, 0.08);
+}
+.sim-preset-note {
+  flex: 1 1 280px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.sim-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+.math-card {
+  padding: 24px 26px;
+  gap: 0;
+}
+.math-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.math-empty {
+  margin: 18px 0 0;
+  color: var(--text-2);
+  font-size: 15px;
+}
+.math-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.math-steps > li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+.math-steps > li > .n {
+  font: 500 11px/1.9 var(--mono);
+  letter-spacing: 0.12em;
+  color: var(--gold);
+}
+.math-steps > li.is-held {
+  background: linear-gradient(90deg, rgba(232, 180, 74, 0.06), transparent 70%);
+}
+.math-k {
+  margin: 0 0 4px;
+  font: 500 10.5px/1.5 var(--mono);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.math-v {
+  margin: 0;
+  font: 400 22px/1.25 var(--sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.math-v small {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.math-v.gold {
+  color: var(--gold);
+}
+.math-f {
+  margin: 0 0 6px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-2);
+  overflow-wrap: anywhere;
+}
+.math-note {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-3);
+}
+.math-triggers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 2px;
+  padding: 0;
+  list-style: none;
+}
+.math-triggers li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px dashed var(--line-2);
+  font: 500 10.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.math-triggers li i {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--text-3);
+}
+.math-triggers li.on {
+  border-style: solid;
+  border-color: rgba(232, 180, 74, 0.6);
+  color: var(--gold);
+}
+.math-triggers li.on i {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.math-foot {
+  margin: 16px 0 0;
+  font: 500 10.5px/1.7 var(--mono);
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+}
+.sim-settle .settlement-card {
+  max-width: none;
+}
+.score {
+  display: grid;
+  gap: 22px;
+  padding: clamp(24px, 3vw, 36px);
+}
+.score-head {
+  display: grid;
+  gap: 14px;
+  max-width: 72ch;
+}
+.score-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--line);
+}
+.score-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 22px;
+  border-left: 1px solid var(--line);
+}
+.score-grid > div:first-child {
+  border-left: 0;
+}
+.score-grid strong {
+  font: 400 clamp(28px, 3vw, 40px)/1 var(--serif);
+  font-variation-settings: "opsz" 96;
+  color: var(--text);
+}
+.score-main strong {
+  font-size: clamp(54px, 6vw, 84px);
+  color: var(--gold);
+}
+.score-grid strong.score-weeks {
+  font: 400 15px/1.5 var(--mono);
+  color: var(--text);
+}
+.score-grid p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.score-ci {
+  font: 500 11px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+.score-limits {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.score-limits li {
+  padding-left: 14px;
+  border-left: 1px solid var(--line-2);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.score-limits b {
+  color: var(--text);
+  font-weight: 500;
+}
+.score > .btn {
+  justify-self: start;
+}
+
+@media (max-width: 1100px) {
+  .sim-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .score-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .score-grid > div:nth-child(3) {
+    border-left: 0;
+  }
+  .score-grid > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+}
+@media (max-width: 760px) {
+  .sim-market {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sim-market > div:nth-child(3) {
+    border-left: 0;
+  }
+  .sim-market > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  .score-grid,
+  .score-limits {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .score-grid > div {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .score-grid > div:first-child {
+    border-top: 0;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  [data-slot="card"],
+  .swap-card,
+  .settlement-card,
+  .math-card,
+  .sim-market,
+  .score,
+  .glass,
+  .nav {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #111114;
+  }
+}
+
+/* 9. Corners: the instrument is machined, not pillowed. These selectors match the specificity of the layers that
+   rounded them. */
+.demo-view .demo-trade,
+.demo-view .settlement-card,
+.demo-view .swap-direction,
+.demo-view .swap-go,
+.swap-go,
+.wallet-primary [data-slot="button"],
+.demo-view .swap-head .wallet [data-slot="button"],
+.settlement-lab .lab-stage,
+.lab-result,
+.frame-box,
+.facet-stage,
+.closed-stage,
+.lab-stage,
+.formula,
+.diag,
+.code,
+.mstate,
+.inst,
+.outcome,
+.col3,
+.swap-done,
+.explain,
+.tracker,
+.empty,
+.tablewrap,
+.md-code,
+.figs {
+  border-radius: var(--radius);
+}
+.demo-view .swap-direction [data-slot="toggle-group-item"],
+.swap-direction [data-slot="toggle-group-item"] {
+  border-radius: 2px;
+}
+.demo-view .swap-box {
+  border-radius: var(--radius);
+}
+.sim-settle .settlement-card {
+  min-height: 0;
+}
+.sim-settle .settlement-empty {
+  min-height: 0;
+  padding-block: 28px 8px;
+}
+.sim-settle .settlement-empty h3 {
+  font-size: clamp(24px, 2.4vw, 32px);
+}
+
+/* 10. Docs tables are prose, not data grids: cells wrap and the first column stays readable. */
+.docs-body [data-slot="table-head"],
+.docs-body [data-slot="table-cell"] {
+  white-space: normal;
+  vertical-align: top;
+  padding-block: 12px;
+  line-height: 1.55;
+}
+.docs-body [data-slot="table-head"] {
+  height: auto;
+  font: 500 10.5px/1.4 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.docs-body [data-slot="table-cell"]:first-child {
+  min-width: 14ch;
+}
+.docs-body [data-slot="table-cell"] code {
+  font-size: 0.86em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.docs-body [data-slot="table"] {
+  table-layout: auto;
+}

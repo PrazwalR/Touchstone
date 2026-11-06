@@ -34,14 +34,20 @@ want_chain="$(json "$config" chainId)"
 
 echo "== Funds of $DEPLOYER_ADDRESS on $chain"
 usdc="$(json "$config" pool.quote)"
-need_usdc="$(json "$config" pool.liquidityQuote)"
+need_usdc="$(( $(json "$config" pool.liquidityQuote) + $(json "$config" pool.concentratedQuote) ))"
 eth="$(cast balance "$DEPLOYER_ADDRESS" --rpc-url "$rpc")"
 usdc_bal="$(cast call "$usdc" 'balanceOf(address)(uint256)' "$DEPLOYER_ADDRESS" --rpc-url "$rpc" | awk '{print $1}')"
-echo "ETH  $(cast from-wei "$eth")"
+# The risky side of both positions is worth about the quote side at the Chainlink price CreatePool starts from;
+# the margin covers rounding and price movement, and 0.005 ETH covers gas (about 0.0005 ETH measured in rehearsal).
+feed="$(json "$config" referenceFeed)"
+answer="$(cast call "$feed" 'latestRoundData()(uint80,int256,uint256,uint256,uint80)' --rpc-url "$rpc" | sed -n 2p | awk '{print $1}')"
+feed_dec="$(cast call "$feed" 'decimals()(uint8)' --rpc-url "$rpc")"
+margin="$(json "$config" pool.liquidityRiskyMarginBps)"
+need_eth="$(python3 -I -c "print(int($need_usdc * 10**12 * 10**$feed_dec * (10000 + $margin) // ($answer * 10000)) + 5 * 10**15)")"
+echo "ETH  $(cast from-wei "$eth") (pool seed and gas need $(cast from-wei "$need_eth"))"
 echo "USDC $(python3 -I -c "print($usdc_bal/1e6)") (pool seed needs $(python3 -I -c "print($need_usdc/1e6)"))"
-# About 0.0003 ETH of gas measured in simulation, plus the risky side of the seed (about 10 USDC of ETH) and margin.
-[ "$eth" -ge 10000000000000000 ] || fail "deployer needs at least 0.01 ETH on $chain"
-[ "$usdc_bal" -ge "$need_usdc" ] || fail "deployer needs at least $need_usdc USDC base units (faucet.circle.com)"
+[ "$eth" -ge "$need_eth" ] || fail "deployer needs at least $(cast from-wei "$need_eth") ETH on $chain"
+[ "$usdc_bal" -ge "$need_usdc" ] || fail "deployer needs at least $need_usdc USDC base units (faucet.circle.com), or lower pool.concentratedQuote in $config"
 
 echo "== Fork rehearsal"
 "$root/scripts/rehearse-deploy.sh" "$chain" >/dev/null || fail "fork rehearsal failed; run scripts/rehearse-deploy.sh $chain to see why"

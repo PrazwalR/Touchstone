@@ -6,6 +6,8 @@ import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {IERC20Minimal} from "v4-core/interfaces/external/IERC20Minimal.sol";
 import {IHooks} from "v4-core/interfaces/IHooks.sol";
 import {TickMath} from "v4-core/libraries/TickMath.sol";
+import {SqrtPriceMath} from "v4-core/libraries/SqrtPriceMath.sol";
+import {LiquidityAmounts} from "v4-periphery/libraries/LiquidityAmounts.sol";
 import {PoolKey} from "v4-core/types/PoolKey.sol";
 import {PoolId} from "v4-core/types/PoolId.sol";
 import {Currency} from "v4-core/types/Currency.sol";
@@ -18,12 +20,16 @@ import {PriceLib} from "../src/libraries/PriceLib.sol";
 import {PoolConfig, PoolFlags} from "../src/types/PoolConfig.sol";
 
 /// @notice Creates the chain's demo pool from script/config/<CHAIN>.json on the core in deployments/<CHAIN>.json,
-/// initialised at the Chainlink reference price, and seeds full-range liquidity through Uniswap's deployed
-/// PoolModifyLiquidityTest router. Spec §19.2 and §19.3 step 3. The deployer must hold the configured quote amount.
+/// initialised at the Chainlink reference price, and seeds it through Uniswap's deployed PoolModifyLiquidityTest
+/// router with two positions: a full-range backstop and a band centred on the reference price. Spec §19.2 and §19.3
+/// step 3. The deployer must hold both configured quote amounts and the matching risky amounts.
+/// @dev The band is what makes testnet-sized swaps move the price by a realistic amount (decision 0067): a full-range
+/// position of a faucet-sized budget lets one demonstration swap move the price by tens of percent.
 contract CreatePool is Script {
     error CreatePool__WrongChain(uint256 expected, uint256 actual);
     error CreatePool__BadReference(int256 answer);
     error CreatePool__NoDecimals(address token);
+    error CreatePool__BadBand(uint256 halfWidthBps);
 
     uint256 internal constant BPS = 10_000;
 
@@ -31,6 +37,15 @@ contract CreatePool is Script {
     struct Seed {
         uint256 priceX36;
         uint160 sqrtPriceX96;
+        uint256 quoteAmount;
+        uint256 riskyBudget;
+        uint128 liquidity;
+    }
+
+    /// @dev The concentrated position around the initial price.
+    struct Band {
+        int24 tickLower;
+        int24 tickUpper;
         uint256 quoteAmount;
         uint256 riskyBudget;
         uint128 liquidity;
@@ -47,11 +62,12 @@ contract CreatePool is Script {
     function run() external returns (PoolId id) {
         _load();
         Seed memory seed = _seed();
+        Band memory band = _band(seed.sqrtPriceX96);
         vm.startBroadcast();
         id = factory.createPool(key, _config(quoteIs0), _lease(), seed.sqrtPriceX96);
-        _addLiquidity(seed);
+        _addLiquidity(seed, band);
         vm.stopBroadcast();
-        _write(id, seed);
+        _write(id, seed, band);
     }
 
     function _load() internal {
@@ -86,24 +102,66 @@ contract CreatePool is Script {
         seed.riskyBudget = riskyAmount * (BPS + _u("liquidityRiskyMarginBps")) / BPS;
     }
 
-    function _addLiquidity(Seed memory seed) internal {
+    /// @dev A position from about `concentratedHalfWidthBps` below the initial price to as far above, widened
+    /// outward to the tick spacing. One tick is 1.0001x, so a tick is about one basis point at these widths. The
+    /// liquidity is set by the quote amount on the quote side of the current price; the risky side follows from it.
+    function _band(uint160 sqrtP) internal view returns (Band memory band) {
+        uint256 halfWidth = _u("concentratedHalfWidthBps");
+        int24 spacing = key.tickSpacing;
+        if (halfWidth < uint24(spacing) || halfWidth > 5000) revert CreatePool__BadBand(halfWidth);
+        int24 centre = TickMath.getTickAtSqrtPrice(sqrtP);
+        band.tickLower = _floorTo(centre - int24(int256(halfWidth)), spacing);
+        band.tickUpper = -_floorTo(-(centre + int24(int256(halfWidth))), spacing);
+        uint160 sqrtA = TickMath.getSqrtPriceAtTick(band.tickLower);
+        uint160 sqrtB = TickMath.getSqrtPriceAtTick(band.tickUpper);
+        band.quoteAmount = _u("concentratedQuote");
+        uint256 riskyAmount;
+        if (quoteIs0) {
+            band.liquidity = LiquidityAmounts.getLiquidityForAmount0(sqrtP, sqrtB, band.quoteAmount);
+            riskyAmount = SqrtPriceMath.getAmount1Delta(sqrtA, sqrtP, band.liquidity, true);
+        } else {
+            band.liquidity = LiquidityAmounts.getLiquidityForAmount1(sqrtA, sqrtP, band.quoteAmount);
+            riskyAmount = SqrtPriceMath.getAmount0Delta(sqrtP, sqrtB, band.liquidity, true);
+        }
+        band.riskyBudget = riskyAmount * (BPS + _u("liquidityRiskyMarginBps")) / BPS;
+    }
+
+    function _addLiquidity(Seed memory seed, Band memory band) internal {
         PoolModifyLiquidityTest lp =
             PoolModifyLiquidityTest(vm.parseJsonAddress(cfg, ".routers.poolModifyLiquidityTest"));
-        IERC20Minimal(quote).approve(address(lp), seed.quoteAmount * 2);
-        if (risky != address(0)) IERC20Minimal(risky).approve(address(lp), seed.riskyBudget);
-        lp.modifyLiquidity{value: risky == address(0) ? seed.riskyBudget : 0}(
+        // Twice the quote amounts: the router pulls exact deltas, and rounding must never make a seed fail.
+        IERC20Minimal(quote).approve(address(lp), (seed.quoteAmount + band.quoteAmount) * 2);
+        if (risky != address(0)) IERC20Minimal(risky).approve(address(lp), seed.riskyBudget + band.riskyBudget);
+        _modify(
+            lp,
+            seed.riskyBudget,
+            TickMath.minUsableTick(key.tickSpacing),
+            TickMath.maxUsableTick(key.tickSpacing),
+            seed.liquidity
+        );
+        _modify(lp, band.riskyBudget, band.tickLower, band.tickUpper, band.liquidity);
+    }
+
+    function _modify(PoolModifyLiquidityTest lp, uint256 riskyBudget, int24 lower, int24 upper, uint128 liquidity)
+        internal
+    {
+        lp.modifyLiquidity{value: risky == address(0) ? riskyBudget : 0}(
             key,
             ModifyLiquidityParams({
-                tickLower: TickMath.minUsableTick(key.tickSpacing),
-                tickUpper: TickMath.maxUsableTick(key.tickSpacing),
-                liquidityDelta: int256(uint256(seed.liquidity)),
-                salt: 0
+                tickLower: lower, tickUpper: upper, liquidityDelta: int256(uint256(liquidity)), salt: 0
             }),
             ""
         );
     }
 
-    function _write(PoolId id, Seed memory seed) internal {
+    /// @dev The largest multiple of `spacing` at or below `tick`; Solidity's division truncates toward zero.
+    function _floorTo(int24 tick, int24 spacing) internal pure returns (int24) {
+        int24 q = tick / spacing;
+        if (tick < 0 && tick % spacing != 0) q -= 1;
+        return q * spacing;
+    }
+
+    function _write(PoolId id, Seed memory seed, Band memory band) internal {
         string memory o = "pool";
         vm.serializeBytes32(o, "poolId", PoolId.unwrap(id));
         vm.serializeAddress(o, "currency0", Currency.unwrap(key.currency0));
@@ -111,6 +169,9 @@ contract CreatePool is Script {
         vm.serializeUint(o, "fee", key.fee);
         vm.serializeInt(o, "tickSpacing", key.tickSpacing);
         vm.serializeUint(o, "sqrtPriceX96", seed.sqrtPriceX96);
+        vm.serializeInt(o, "bandTickLower", band.tickLower);
+        vm.serializeInt(o, "bandTickUpper", band.tickUpper);
+        vm.serializeUint(o, "bandLiquidity", band.liquidity);
         string memory pool = vm.serializeUint(o, "liquidity", seed.liquidity);
         // forge-lint: disable-next-line(unsafe-cheatcode)
         vm.writeJson(pool, deploymentPath, ".pool");

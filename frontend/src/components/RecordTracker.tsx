@@ -10,7 +10,7 @@ import {
 import { deployment, explorerTx } from "../chain/deployment.ts";
 import { units, utc } from "../format.ts";
 import { useRecordOutcome, type TrackedRecord } from "../swap/useSwapFlow.ts";
-import type { SwapContext } from "../swap/swap.ts";
+import type { RecordOutcome, SwapContext } from "../swap/swap.ts";
 import { SettlementRail } from "./SettlementRail.tsx";
 
 const SETTLE_DELAY_FALLBACK = 3;
@@ -119,6 +119,14 @@ export function RecordTracker({
                 Plus {amt(o.payout.rebate)} rebate to the trader
               </p>
             )}
+            {o.kind === "settled" && (
+              <SettlementMath
+                ctx={ctx}
+                deposit={tracked.deposit}
+                outcome={o}
+                amt={amt}
+              />
+            )}
             {o.kind === "settled" && <PayoutBar payout={o.payout} amt={amt} />}
             <a
               className="receipt-link"
@@ -179,6 +187,56 @@ export function RecordTracker({
         )}
       </Accordion>
     </Card>
+  );
+}
+
+/** The settlement half, from the Settled event: the signed price, the trade's markout and what was kept. */
+function SettlementMath({
+  ctx,
+  deposit,
+  outcome,
+  amt,
+}: {
+  ctx: SwapContext;
+  deposit: bigint;
+  outcome: Extract<RecordOutcome, { kind: "settled" }>;
+  amt(v: bigint): string;
+}) {
+  const Q = ctx.quote;
+  const R = ctx.risky;
+  // fairPriceX36 is quote base units per risky base unit times 1e36; shown as whole quote per whole risky.
+  const fairE6 =
+    (outcome.fairPriceX36 * 10n ** BigInt(R.decimals) * 1_000_000n) /
+    (10n ** BigInt(Q.decimals) * 10n ** 36n);
+  const retained = deposit - outcome.payout.refund;
+  return (
+    <div className="receipt-math">
+      <p className="math-f mono">
+        R = min(D, α · max(0, m − (ε + c) · N))
+      </p>
+      <dl className="receipt-kv">
+        <dt>Signed Pyth price P*</dt>
+        <dd>
+          {units(fairE6, 6, 2)} {Q.symbol} per {R.symbol}
+        </dd>
+        <dt>Trader markout m at P*</dt>
+        <dd>
+          {outcome.markout > 0n ? "+" : ""}
+          {units(outcome.markout, Q.decimals, 4)} {Q.symbol}
+        </dd>
+        <dt>Retention share α</dt>
+        <dd>{outcome.alphaBps / 100}%</dd>
+        <dt>Retained R = D − refund</dt>
+        <dd className="gold">{amt(retained)}</dd>
+      </dl>
+      <p className="swap-meta">
+        {retained === 0n
+          ? outcome.markout <= 0n
+            ? "The trade was worth no more than it paid at P*, so nothing is retained."
+            : "Nothing is retained: the markout stayed inside the allowance of ε plus the price's confidence, or a confidence guard refunded in full."
+          : "The markout above the allowance, times α, capped at D, is retained for LPs and the rebate pool."}
+      </p>
+    </div>
   );
 }
 

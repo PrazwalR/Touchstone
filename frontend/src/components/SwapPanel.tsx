@@ -18,6 +18,7 @@ import {
   priceImpactBps,
   tokenIn,
   tokenOut,
+  type Preview,
   type Side,
   type SwapContext,
   type SwapResult,
@@ -51,12 +52,15 @@ export function SwapPanel({
   initialSide = "buy",
   initialAmount = "",
   onSwapped,
+  onPreview,
   title = "Swap",
 }: {
   ctx: SwapContext;
   initialSide?: Side;
   initialAmount?: string;
   onSwapped?: (r: SwapResult) => void;
+  /** Every fresh quote, or null when there is none, for a page that explains it alongside. */
+  onPreview?: (p: Preview | null) => void;
   title?: string;
 }) {
   const [side, setSide] = useState<Side>(initialSide);
@@ -75,6 +79,9 @@ export function SwapPanel({
   useEffect(() => {
     if (f.phase === "done" && f.result) onSwapped?.(f.result);
   }, [f.phase, f.result, onSwapped]);
+  useEffect(() => {
+    onPreview?.(f.preview ?? null);
+  }, [f.preview, onPreview]);
 
   const netOut = p?.exact?.netOut ?? p?.netOut ?? null;
   const insufficient =

@@ -68,7 +68,10 @@
     "maxOutstanding": 1000000000,
     "protocolShareBps": 0,
     "protocolRecipient": "0x0000000000000000000000000000000000000000",
-    "liquidityQuote": 10000000,
+    "liquidityQuote": 15000000,
+    "concentratedQuote": 60000000,
+    "concentratedHalfWidthBps": 300,
+    "liquidityNote": "Seed: a full-range backstop of liquidityQuote and a band of concentratedQuote from about concentratedHalfWidthBps below the Chainlink price to as far above (decision 0067). Both in USDC base units; the deployer also needs the matching ETH. A 6 USDC swap then moves the price by under 2 bps beyond the fee, not tens of percent.",
     "liquidityRiskyMarginBps": 200,
     "lease": {
       "k": 60,

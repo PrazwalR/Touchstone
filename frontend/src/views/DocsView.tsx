@@ -43,6 +43,10 @@ const singles: Record<string, [string, () => Promise<string>]> = {
     () =>
       import("../../../research/results/README.md?raw").then((m) => m.default),
   ],
+  formulas: [
+    "Where the formulas come from",
+    () => import("../../../docs/formulas.md?raw").then((m) => m.default),
+  ],
   runbook: [
     "Runbook",
     () => import("../../../docs/runbook.md?raw").then((m) => m.default),
@@ -397,6 +401,7 @@ export function DocsView({ rest }: { rest: string }) {
           <p className="tl">Start</p>
           {link("overview", "Overview")}
           {link("research", "Research and evidence")}
+          {link("formulas", "Where the formulas come from")}
           {link("engineering", "Engineering measurements")}
           {link("spec", "The specification")}
           <p className="tl">How it works</p>
