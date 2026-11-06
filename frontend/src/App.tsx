@@ -63,18 +63,6 @@ export function App() {
             {route.view === "docs" && <DocsView rest={route.rest} />}
           </Suspense>
         </main>
-        <footer className="foot">
-          <div className="wrap foot-in">
-            <p className="notice">
-              Independent project, not affiliated with Uniswap Labs or the
-              Uniswap Foundation.
-            </p>
-            <p>
-              Testnet only. Swap and Simulation send transactions from your
-              wallet.
-            </p>
-          </div>
-        </footer>
       </div>
     </WalletProvider>
   );

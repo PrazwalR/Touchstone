@@ -358,17 +358,13 @@ export function Lab({ motion, live }: { motion: Motion; live: Live }) {
   const held = step >= 0 && step < 5;
   const bs = bars(out, held);
   const deployed = deployedParams(live, s.params);
-  const pathLabel =
-    out.path === "adverse"
-      ? "Adverse path · value retained"
-      : out.path === "benign"
-        ? "Benign path · full refund and rebate"
-        : out.alpha === 0n
-          ? "Licence exemption · full refund"
-          : "Inside the margin · full refund";
 
   return (
-    <section id="lab" className="act" aria-labelledby="lab-title">
+    <section
+      id="lab"
+      className="act settlement-lab"
+      aria-labelledby="lab-title"
+    >
       <div className="wrap act-head">
         <div className="stack">
           <h2 id="lab-title" className="h2">
@@ -406,7 +402,7 @@ export function Lab({ motion, live }: { motion: Motion; live: Live }) {
             <legend>Trade</legend>
             <div className="field">
               <label id="lab-n-label" htmlFor="lab-n">
-                Notional N
+                Trade amount
               </label>
               <span className="val">${s.N.toLocaleString("en-US")}</span>
               <Slider
@@ -423,7 +419,7 @@ export function Lab({ motion, live }: { motion: Motion; live: Live }) {
             </div>
             <div className="field">
               <label id="lab-m-label" htmlFor="lab-m">
-                Markout of the in-the-money leg, m⁺
+                Trade advantage
               </label>
               <span className="val">
                 {s.mBps > 0 ? "+" : ""}
@@ -441,76 +437,81 @@ export function Lab({ motion, live }: { motion: Motion; live: Live }) {
                 }
               />
               <span className="hint">
-                In bps of N against P*, net of the LP fee. Assumes no overshoot
-                past P*, so N⁺ = N and m = m⁺.
+                Against the reference price, after the LP fee. 1 bp = 0.01%.
               </span>
             </div>
-            <div className="field">
-              <label id="lab-g-label" htmlFor="lab-g">
-                Pre-swap gap toward the reference, g
-              </label>
-              <span className="val">{s.gap} bps</span>
-              <Slider
-                id="lab-g"
-                aria-labelledby="lab-g-label"
-                min={-50}
-                max={300}
-                step={5}
-                value={[s.gap]}
-                onValueChange={(v) =>
-                  edit({ gap: Number(Array.isArray(v) ? v[0] : v) })
-                }
-              />
-            </div>
           </fieldset>
-          <fieldset>
-            <legend>Regime</legend>
-            <ToggleGroup
-              className="seg"
-              aria-label="Market regime"
-              value={[s.closed ? "closed" : "continuous"]}
-              onValueChange={(v) => {
-                if (v[0]) edit({ closed: v[0] === "closed" });
-              }}
-            >
-              <ToggleGroupItem value="continuous" className="opt">
-                Continuous
-              </ToggleGroupItem>
-              <ToggleGroupItem value="closed" className="opt">
-                Closure record
-              </ToggleGroupItem>
-            </ToggleGroup>
-            <ToggleGroup
-              className="seg lease-options"
-              aria-label="Licence regime"
-              value={[s.lic]}
-              onValueChange={(v) => {
-                if (v[0]) edit({ lic: v[0] as Licence });
-              }}
-            >
-              <ToggleGroupItem value="none" className="opt">
-                No lease
-              </ToggleGroupItem>
-              <ToggleGroupItem value="holder" className="opt">
-                Licence holder
-              </ToggleGroupItem>
-              <ToggleGroupItem value="other" className="opt">
-                Other trader
-              </ToggleGroupItem>
-            </ToggleGroup>
-            <label className="check">
-              <Checkbox
-                checked={s.inBand}
-                onCheckedChange={(checked) =>
-                  edit({ inBand: checked === true })
-                }
-              />
-              Pool price inside band G of P*
-            </label>
-          </fieldset>
+          <Accordion className="lab-options">
+            <AccordionItem value="conditions">
+              <AccordionTrigger>Market &amp; licence settings</AccordionTrigger>
+              <AccordionContent>
+                <div className="field">
+                  <label id="lab-g-label" htmlFor="lab-g">
+                    Pre-swap price gap
+                  </label>
+                  <span className="val">{s.gap} bps</span>
+                  <Slider
+                    id="lab-g"
+                    aria-labelledby="lab-g-label"
+                    min={-50}
+                    max={300}
+                    step={5}
+                    value={[s.gap]}
+                    onValueChange={(v) =>
+                      edit({ gap: Number(Array.isArray(v) ? v[0] : v) })
+                    }
+                  />
+                </div>
+                <div className="lab-regimes">
+                  <ToggleGroup
+                    className="seg"
+                    aria-label="Market regime"
+                    value={[s.closed ? "closed" : "continuous"]}
+                    onValueChange={(v) => {
+                      if (v[0]) edit({ closed: v[0] === "closed" });
+                    }}
+                  >
+                    <ToggleGroupItem value="continuous" className="opt">
+                      Continuous
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="closed" className="opt">
+                      Closure record
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                  <ToggleGroup
+                    className="seg lease-options"
+                    aria-label="Licence regime"
+                    value={[s.lic]}
+                    onValueChange={(v) => {
+                      if (v[0]) edit({ lic: v[0] as Licence });
+                    }}
+                  >
+                    <ToggleGroupItem value="none" className="opt">
+                      No lease
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="holder" className="opt">
+                      Licence holder
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="other" className="opt">
+                      Other trader
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                  <label className="check">
+                    <Checkbox
+                      checked={s.inBand}
+                      onCheckedChange={(checked) =>
+                        edit({ inBand: checked === true })
+                      }
+                    />
+                    Pool price inside band G of P*
+                  </label>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
           <Accordion className="params">
             <AccordionItem value="parameters">
-              <AccordionTrigger>Parameters</AccordionTrigger>
+              <AccordionTrigger>Settlement parameters</AccordionTrigger>
               <AccordionContent>
                 <div className="pgrid">
                   {PARAMS.map((f) => (
@@ -574,73 +575,120 @@ export function Lab({ motion, live }: { motion: Motion; live: Live }) {
           </div>
         </form>
         <div className="labv">
-          <div className="lab-stage">
-            <canvas ref={canvas} aria-hidden="true" />
-            <Badge variant="outline" className="chip chip-illu">
+          <div className="lab-visual">
+            <Badge variant="outline" className="lab-status">
               Simulation · no funds moved
             </Badge>
+            <div className="lab-stage">
+              <canvas ref={canvas} aria-hidden="true" />
+            </div>
           </div>
-          <ol className="steps" aria-label="Simulation steps">
-            {LAB_STEPS.map((l, i) => (
-              <li
-                key={l}
-                className={
-                  step < 0 ? "" : i < step ? "done" : i === step ? "now" : ""
-                }
-              >
-                {l}
-              </li>
-            ))}
-          </ol>
-          <div className="assay">
-            <p className="tl">Deposit D = {usd(out.D)} · how it settles</p>
-            <div
-              className="bar"
-              role="img"
-              aria-label={bs.map((b) => b.label).join(", ")}
-            >
-              {bs.map((b) => (
-                <span
-                  key={b.cls}
-                  className={`seg-b ${b.cls}`}
-                  style={{ width: b.w }}
-                />
+          <div className="lab-progress" aria-live="polite">
+            <span>{step < 0 ? "Ready to simulate" : LAB_STEPS[step]}</span>
+            <span>
+              {step < 0
+                ? "7 settlement steps"
+                : `${step + 1} / ${LAB_STEPS.length}`}
+            </span>
+            <div className="lab-progress-track" aria-hidden="true">
+              {LAB_STEPS.map((label, i) => (
+                <i key={label} className={i <= step ? "complete" : ""} />
               ))}
             </div>
-            <ul className="legend">
-              {bs.map((b) => (
-                <li key={b.cls}>
-                  <i className={b.cls} />
-                  {b.label}
-                </li>
-              ))}
-            </ul>
           </div>
-          <div className="ledger">
-            {rows(out).map((row) => (
-              <Fragment key={row.k}>
-                <div>{row.k}</div>
-                <div className={`v ${row.em ? "em" : ""}`}>{row.v}</div>
-              </Fragment>
-            ))}
-          </div>
-          <div className="outcome" aria-live="polite">
-            <h3>{pathLabel}</h3>
-            <p className="body" style={{ marginTop: 10 }}>
-              {sentence(out)}
+          <div className="lab-result" aria-live="polite">
+            <div className="lab-result-heading">
+              <h3>
+                {held
+                  ? "Deposit held"
+                  : step < 0
+                    ? "Settlement preview"
+                    : "Settlement complete"}
+              </h3>
+              <span>{usd(out.D)} deposit</span>
+            </div>
+            <dl className="lab-payouts">
+              <div>
+                <dt>Trader refund</dt>
+                <dd>{held ? "—" : usd(out.pay.refund)}</dd>
+              </div>
+              <div>
+                <dt>Vested to LPs</dt>
+                <dd>{held ? "—" : usd(out.pay.toLPs)}</dd>
+              </div>
+              <div>
+                <dt>Trader rebate</dt>
+                <dd>{held ? "—" : usd(out.pay.rebate)}</dd>
+              </div>
+            </dl>
+            <p>
+              {held
+                ? "The deposit stays held while the reference is checked."
+                : out.path === "adverse"
+                  ? `${usd(out.R)} retained from the deposit because the trade beat the reference beyond the margin.`
+                  : out.path === "benign"
+                    ? out.pay.rebate > 0n
+                      ? "Full deposit refunded. This trade also earns a rebate from the pool."
+                      : "Full deposit refunded. No trader rebate is available."
+                    : out.alpha === 0n
+                      ? "Full deposit refunded under the licence exemption."
+                      : "Full deposit refunded: the trade advantage is within the allowed margin."}
             </p>
           </div>
-          <Accordion>
+          <Accordion className="lab-breakdown">
+            <AccordionItem value="calculation">
+              <AccordionTrigger>
+                Allocation &amp; full calculation
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="assay">
+                  <p className="tl">
+                    Deposit D = {usd(out.D)} · how it settles
+                  </p>
+                  <div
+                    className="bar"
+                    role="img"
+                    aria-label={bs.map((b) => b.label).join(", ")}
+                  >
+                    {bs.map((b) => (
+                      <span
+                        key={b.cls}
+                        className={`seg-b ${b.cls}`}
+                        style={{ width: b.w }}
+                      />
+                    ))}
+                  </div>
+                  <ul className="legend">
+                    {bs.map((b) => (
+                      <li key={b.cls}>
+                        <i className={b.cls} />
+                        {b.label}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="ledger">
+                  {rows(out).map((row) => (
+                    <Fragment key={row.k}>
+                      <div>{row.k}</div>
+                      <div className={`v ${row.em ? "em" : ""}`}>{row.v}</div>
+                    </Fragment>
+                  ))}
+                </div>
+                <p className="lab-explanation">{sentence(out)}</p>
+              </AccordionContent>
+            </AccordionItem>
             <AccordionItem value="assumptions">
               <AccordionTrigger>Example assumptions</AccordionTrigger>
               <AccordionContent>
                 <p className="src">
-                  Defaults: f 5 bps · δ 30 · δmax 300 · β 1.25 · ε 2 · α 80% ·
-                  α_lic 95% · tip 2% capped at $5 · ρ 10% · κ 40%, the research
-                  report’s worked example. Closure ε 50 bps and α_c 50% come
-                  from its weekend noise-tax example. A record is benign, and
-                  earns a rebate, only when R = 0 and m ≤ 0 (spec §8,
-                  Settler._payout).
+                  Assumes the trade does not overshoot the reference price, so
+                  N⁺ = N and m = m⁺. Defaults: f 5 bps · δ 30 · δmax 300 · β
+                  1.25 · ε 2 · α 80% · α_lic 95% · tip 2% capped at $5 · ρ 10% ·
+                  κ 40%, the research report’s worked example. Closure ε 50 bps
+                  and α_c 50% come from its weekend noise-tax example. A record
+                  is benign, and earns a rebate, only when R = 0 and m ≤ 0 (spec
+                  §8, Settler._payout).
                 </p>
               </AccordionContent>
             </AccordionItem>
