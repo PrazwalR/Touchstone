@@ -189,6 +189,9 @@ export class Keeper {
   // Step 1: ingest DepositTaken. The event carries the whole record, so no storage reads are needed.
   async #ingest(head: bigint): Promise<number> {
     let n = 0;
+    const catchingUp = head - this.#nextBlock >= this.policy.logBlockRange;
+    let progressAt = Date.now();
+    if (catchingUp) this.log("info", "scanning deposit history", { fromBlock: this.#nextBlock.toString(), head: head.toString() });
     while (this.#nextBlock <= head) {
       const to = this.#nextBlock + this.policy.logBlockRange - 1n < head ? this.#nextBlock + this.policy.logBlockRange - 1n : head;
       const logs = await this.client.getContractEvents({
@@ -211,7 +214,12 @@ export class Keeper {
         this.log("info", "record ingested", { poolId: r.poolId, recordId: r.id.toString(), deposit: r.deposit.toString() });
       }
       this.#nextBlock = to + 1n;
+      if (catchingUp && Date.now() - progressAt >= 10_000) {
+        this.log("info", "deposit history progress", { nextBlock: this.#nextBlock.toString(), head: head.toString(), ingested: n });
+        progressAt = Date.now();
+      }
     }
+    if (catchingUp) this.log("info", "deposit history scan complete", { nextBlock: this.#nextBlock.toString(), ingested: n });
     return n;
   }
 

@@ -110,8 +110,11 @@ export class Hermes {
   async #request(path: string, id: Hex): Promise<PythUpdate> {
     let res: Response;
     try {
+      const rawKey = this.#o.apiKey.trim();
+      const authorization = this.#o.apiKeyHeader.toLowerCase() === "authorization";
+      const value = authorization && !/^[a-z]+\s/i.test(rawKey) ? `Bearer ${rawKey}` : rawKey;
       res = await this.#fetch(`${this.#o.url}${path}`, {
-        headers: { [this.#o.apiKeyHeader]: this.#o.apiKey, accept: "application/json" },
+        headers: { [this.#o.apiKeyHeader]: value, accept: "application/json" },
         signal: AbortSignal.timeout(this.#o.timeoutMs),
       });
     } catch (err) {

@@ -29,6 +29,13 @@ describe("Hermes", () => {
     expect(seen.headers).toEqual(expect.objectContaining({ "x-api-key": "k" }));
   });
 
+  it.each(["k", "Bearer k"])("accepts a raw or prefixed Bearer credential", async (apiKey) => {
+    const seen: { headers?: HeadersInit } = {};
+    const h = new Hermes({ url: "https://hermes.example", apiKey, apiKeyHeader: "Authorization", timeoutMs: 1000, fetchImpl: stub(200, ok(1000), seen) });
+    await h.firstAtOrAfter(ID, 1000);
+    expect(seen.headers).toEqual(expect.objectContaining({ Authorization: "Bearer k" }));
+  });
+
   it("rejects an update published before t", async () => {
     await expect(hermes(stub(200, ok(999))).firstAtOrAfter(ID, 1_000)).rejects.toThrow(HermesError);
   });
