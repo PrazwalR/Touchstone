@@ -17,7 +17,15 @@ services=("$@")
 [ ${#services[@]} -gt 0 ] || services=(indexer api keeper monitor)
 
 echo "== preflight"
-(cd "$root/backend" && node --env-file="$env_file" scripts/preflight.mjs) || {
+checks=()
+for s in "${services[@]}"; do
+  case "$s" in
+    keeper) checks+=(keeper) ;;
+    indexer|api|monitor) checks+=(indexer) ;;
+    *) echo "unknown service $s (indexer, api, keeper, monitor)" >&2; exit 2 ;;
+  esac
+done
+(cd "$root/backend" && node --env-file="$env_file" scripts/preflight.mjs "${checks[@]}") || {
   echo "preflight failed; fix the lines above before starting the keeper" >&2
   [[ " ${services[*]} " == *" keeper "* ]] && exit 1
 }

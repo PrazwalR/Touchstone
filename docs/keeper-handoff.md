@@ -1,6 +1,57 @@
 # Keeper and indexer handoff
 
-Prepared 1 November 2026 for the developer holding the existing cast wallet. The contracts are deployed; this handoff does not redeploy them or require a private key in chat.
+## Current redeployment: 7 November 2026
+
+Run these commands **on Prazwal's deployment machine**, where the existing encrypted `touchstone-keeper`
+wallet lives. Creating the file on another laptop does not unblock that keeper. The file must contain the
+wallet's existing password; an empty file or a newly invented password cannot decrypt it.
+
+From the repository root, with Node 24 and backend dependencies installed:
+
+```sh
+git pull --ff-only
+node backend/keeper/src/setup-password.ts
+node --env-file=.env backend/scripts/preflight.mjs keeper
+scripts/run-services.sh keeper
+```
+
+The setup command reads `KEEPER_KEYSTORE_PATH` and `KEEPER_KEYSTORE_PASSWORD_FILE` from the root `.env`.
+If unset, it uses `~/.foundry/keystores/touchstone-keeper` and `~/.touchstone-keeper-pass` on that machine.
+It prompts without echo, verifies the password in memory, then creates the password file outside the repo
+with mode 600. An existing file is validated, never overwritten. It prints only the public signer address;
+compare it with the expected keeper address in `DEPLOYMENTS.md`. It sends no transaction. No password or
+private key belongs in chat, Git, shell arguments or environment variables.
+
+Before preflight, verify that `.env` names the **new** hook, Settler, factory, ledger and licence from
+`frontend/deployments/arbitrum-sepolia.json`, not the October deployment. Both services start at block
+`326729230`. Use fresh state/metrics/database filenames for this deployment; preserve the old files. Include
+`TOUCHSTONE_LICENCE` and a positive `KEEPER_ACCRUE_INTERVAL_S`. Configure a short positive
+`KEEPER_POLL_INTERVAL_MS` (for example 2000 for the demo). `KEEPER_SETTLE_AT_LOSS=true` allows the existing
+policy to subsidize retaining settlements and benign zero-rebate settlements when tips do not cover gas;
+this spends the keeper's test ETH. With it false, an uneconomic record may wait until expiry even while the
+keeper is healthy. This does not change the keeper's expiry-first policy or guarantee every subsidized case.
+
+Keeper-only preflight no longer depends on unrelated indexer/API configuration. A successful preflight checks
+configuration, private-file metadata and deployment wiring; it does not prove the signer has gas or that a
+settlement succeeded. Check `var/log/keeper.log` for `keeper started`, then a `settled` entry with a confirmed
+transaction. The API's health endpoint alone does not establish keeper liveness.
+
+### Drift demonstration with the deeper pool
+
+The live drift threshold is 5 bps and N₀ is 5 USDC. A 1–4 bps gap cannot satisfy drift. At exactly 5 bps the
+signed direction, notional, reference freshness and rounding still matter. Do not lower τ or fabricate a
+Chainlink price to make a demo light turn on.
+
+When the current gap is below τ or closing it would trade less than N₀, the simulation offers **Create demo gap**. This prepares a separate real
+testnet swap targeting about 40 bps above Chainlink (or twice τ if larger). Review its quote and sign it;
+then wait for live prices to refresh and select **Close the gap**. The return trade must clear N₀. The
+active-liquidity estimate is approximate across ticks, so check the refreshed gap and exact quote. Both
+swaps pay fees, can collect deposits under the full hook rules and can lose test tokens. No swap sends
+automatically, and a deposit event alone does not establish which trigger fired.
+
+## Original handoff (1 November 2026)
+
+Prepared for the developer holding the existing cast wallet. The contracts are deployed; this handoff does not redeploy them or require a private key in chat.
 
 ## Preflight on the signer machine
 

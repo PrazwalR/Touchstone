@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  demoGapTarget,
   continuousRateBps,
   firedTriggers,
   inputToReach,
@@ -14,6 +15,26 @@ const BAND_L = 103879127119190n;
 const TERMS = { deltaBps: 30, deltaMaxBps: 300, betaX100: 125 };
 
 const priceE6 = (s: bigint) => (s * s * 10n ** 18n) >> 192n;
+
+describe("demoGapTarget", () => {
+  it("opens a 40 bps gap without changing tau, then prepares a sell toward the reference", () => {
+    const ref = 2_230_510_000n;
+    const depth = 76_104_275_095_801n; // Current deployment's active liquidity, read 7 November 2026.
+    const target = demoGapTarget(ref, 5);
+    const sqrt = sqrtPriceX96At(target, false, 18, 6);
+    expect(signedGapBps(ref, priceE6(sqrt), "sell")).toBeGreaterThanOrEqual(39n);
+    const seed = inputToReach(sqrtPriceX96At(ref, false, 18, 6), sqrt, depth, 500, false);
+    const back = inputToReach(sqrt, sqrtPriceX96At(ref, false, 18, 6), depth, 500, false);
+    expect(seed?.side).toBe("buy");
+    expect(back?.side).toBe("sell");
+    expect(back!.amountIn * ref / 10n ** 18n).toBeGreaterThan(5_000_000n);
+  });
+  it("scales with a larger threshold and rejects unsafe demo inputs", () => {
+    expect(demoGapTarget(100_000_000n, 40)).toBe(100_800_000n);
+    expect(() => demoGapTarget(0n, 5)).toThrow();
+    expect(() => demoGapTarget(1n, 1_001)).toThrow();
+  });
+});
 
 describe("signedGapBps", () => {
   it("is positive toward the reference and truncates toward zero", () => {

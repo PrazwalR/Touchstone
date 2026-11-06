@@ -5,13 +5,20 @@ import { keeperEnvSchema } from "../keeper/src/config.ts";
 import { checkWiringAt } from "../keeper/src/wiring.ts";
 
 let blocked = false;
+const services = process.argv.slice(2);
+if (services.some((s) => !["keeper", "indexer"].includes(s))) {
+  console.error("Usage: preflight.mjs [keeper] [indexer]");
+  process.exit(2);
+}
+const checkKeeper = services.length === 0 || services.includes("keeper");
 for (const [service, schema] of [["indexer", indexerEnvSchema], ["keeper", keeperEnvSchema]]) {
+  if (services.length && !services.includes(service)) continue;
   const result = schema.safeParse(process.env);
   const invalid = result.success ? [] : result.error.issues.map((i) => i.path.join("."));
   console.log(JSON.stringify({ service, validConfig: result.success, missingOrInvalidFields: invalid }));
   if (!result.success) blocked = true;
 }
-for (const name of ["KEEPER_KEYSTORE_PATH", "KEEPER_KEYSTORE_PASSWORD_FILE"]) {
+for (const name of checkKeeper ? ["KEEPER_KEYSTORE_PATH", "KEEPER_KEYSTORE_PASSWORD_FILE"] : []) {
   const path = process.env[name];
   const exists = Boolean(path && existsSync(path));
   const privateFile = exists && (statSync(path).mode & 0o777) === 0o600;
@@ -19,7 +26,7 @@ for (const name of ["KEEPER_KEYSTORE_PATH", "KEEPER_KEYSTORE_PASSWORD_FILE"]) {
   if (!exists || !privateFile) blocked = true;
 }
 const keeper = keeperEnvSchema.safeParse(process.env);
-if (keeper.success) {
+if (checkKeeper && keeper.success) {
   const env = keeper.data;
   try {
     const problems = await checkWiringAt(env.KEEPER_RPC_URL, env.KEEPER_CHAIN_ID, {

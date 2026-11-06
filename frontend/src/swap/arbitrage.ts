@@ -7,6 +7,16 @@ const BPS = 10_000n;
 const PIPS = 1_000_000n;
 const Q96 = 1n << 96n;
 
+/** A separate, explicitly signed testnet setup trade can open a gap before the arbitrage demonstration.
+ * Keep it above tau with room for rounding/feed movement; never lower the deployed threshold.
+ */
+export function demoGapTarget(referenceE6: bigint, tauBps: number): bigint {
+  if (referenceE6 <= 0n || !Number.isInteger(tauBps) || tauBps < 0 || tauBps > 1_000)
+    throw new Error("demo gap requires a positive reference and a threshold of at most 1,000 bps");
+  const gap = BigInt(Math.max(40, tauBps * 2));
+  return (referenceE6 * (BPS + gap) + BPS - 1n) / BPS;
+}
+
 /** TriggerLib's bits (contracts/src/libraries/TriggerLib.sol). */
 export const TRIGGERS = [
   { bit: 1, name: "First touch", detail: "first swap of at least N₀ in its block" },

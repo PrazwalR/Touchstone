@@ -12,6 +12,7 @@ import { HookMath } from "../components/HookMath.tsx";
 import { SwapPanel } from "../components/SwapPanel.tsx";
 import { ago, units } from "../format.ts";
 import {
+  demoGapTarget,
   inputToReach,
   signedGapBps,
   sqrtPriceX96At,
@@ -179,6 +180,22 @@ export function SimulationView({ live }: { live: Live }) {
           };
         })()
       : null;
+  // This only prepares a normal wallet swap. It neither edits the oracle nor sends in the background.
+  const setupGap: Preset | null =
+    s && ref && absGap !== null && s.config.tauBps <= 1_000
+      && (absGap < BigInt(s.config.tauBps) || !closeGap || closeGap.notionalQuote < s.config.n0)
+      ? (() => {
+          const target = sqrtPriceX96At(demoGapTarget(ref.priceE6, s.config.tauBps), quoteIs0(swapContext), R.decimals, Q.decimals);
+          const r = inputToReach(s.sqrtPriceX96, target, s.liquidity, s.lpFee, quoteIs0(swapContext));
+          if (!r) return null;
+          return {
+            key: `setup-${r.side}-${r.amountIn}`,
+            side: r.side,
+            amount: fmtAmount(r.side, r.amountIn),
+            notionalQuote: r.side === "buy" ? r.amountIn : quoteValueOfRisky(r.amountIn, s.sqrtPriceX96, quoteIs0(swapContext)),
+          };
+        })()
+      : null;
   // The first prepared trade is chosen once; the live amounts keep moving, so a later one only replaces it when
   // the presenter clicks, and an edited amount is never reset underneath them.
   // It waits for the reference: the direction comes from the gap, and defaulting to a buy before the price
@@ -296,6 +313,15 @@ export function SimulationView({ live }: { live: Live }) {
       )}
       <div className="sim-presets" role="group" aria-label="Prepared trades">
         <span className="tl">Prepare</span>
+        {setupGap && (
+          <button
+            type="button"
+            className={`chip-btn ${active?.key.startsWith("setup-") ? "on" : ""}`}
+            onClick={() => setPreset(setupGap)}
+          >
+            1. Create demo gap · {setupGap.amount} {setupGap.side === "buy" ? Q.symbol : R.symbol}
+          </button>
+        )}
         {closeGap && (
           <button
             type="button"
@@ -317,10 +343,18 @@ export function SimulationView({ live }: { live: Live }) {
           </button>
         )}
         <span className="sim-preset-note">
-          Close the gap sizes the trade from the pool's active liquidity to land
-          on the Chainlink price; the quote then prices it exactly.
+          {setupGap
+            ? `The gap is below τ or closing it would trade less than N₀. First prepare and sign the setup swap to move the testnet pool about ${Math.max(40, s!.config.tauBps * 2)} bps above Chainlink, then wait for fresh prices and choose Close the gap. Both are real swaps with fees and possible deposits.`
+            : "Close the gap estimates the input from active liquidity. The exact quote and execution can differ across ticks or as prices change."}
         </span>
       </div>
+      {active?.key.startsWith("setup-") && (
+        <p className="sim-preset-note" role="status">
+          Setup swap selected: this moves the pool away from the reference.
+          After confirmation, choose Close the gap for the return trade.
+          Drift also requires notional N ≥ N₀ and a usable reference; execution decides the result.
+        </p>
+      )}
       <div className="sim-grid">
         {active === null ? (
           <div className="swap-card demo-trade demo-loading">
