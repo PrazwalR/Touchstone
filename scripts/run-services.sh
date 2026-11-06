@@ -10,6 +10,9 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 env_file="$root/.env"
 [ -f "$env_file" ] || { echo "no .env at $env_file" >&2; exit 2; }
+# node --env-file never overrides a variable already exported in the shell. A terminal that sourced an older .env
+# (for example before a redeploy) would otherwise run the services against the old contracts.
+for v in $(compgen -e | grep -E '^(TOUCHSTONE|KEEPER|INDEXER|MONITOR|BOT)_' || true); do unset "$v"; done
 logs="$root/var/log"
 mkdir -p "$logs"
 
