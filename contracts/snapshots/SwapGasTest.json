@@ -1,8 +1,8 @@
 {
-  "drip": "41241",
-  "expire": "217883",
-  "hook_added_flagged": "144810",
-  "hook_added_unflagged_at_or_above_n0": "47523",
-  "hook_added_unflagged_below_n0": "21522",
-  "settle_retaining": "298898"
+  "drip": "41247",
+  "expire": "217891",
+  "hook_added_flagged": "145911",
+  "hook_added_unflagged_at_or_above_n0": "47488",
+  "hook_added_unflagged_below_n0": "21482",
+  "settle_retaining": "298907"
 }

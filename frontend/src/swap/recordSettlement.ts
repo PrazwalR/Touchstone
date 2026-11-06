@@ -1,4 +1,4 @@
-import { decodeEventLog, type Hex } from "viem";
+import { decodeEventLog, type Hex, type TransactionReceipt } from "viem";
 import { settlerAbi, touchstoneHookAbi } from "../../abi/index.ts";
 import type { SwapContext } from "./swap.ts";
 
@@ -36,4 +36,20 @@ export async function readRefundDelivery(ctx: SwapContext, poolId: Hex, recordId
     } catch { /* Other hook events do not describe refund delivery. */ }
   }
   return "delivered";
+}
+
+/** Only a matching execution log can establish the reasons for this deposit. */
+export function confirmedReasons(hook: Hex, receipt: TransactionReceipt, poolId: Hex, id: bigint): number | null {
+  for (let i = 1; i < receipt.logs.length; i++) {
+    const deposit = receipt.logs[i - 1];
+    const reasons = receipt.logs[i];
+    if ([deposit, reasons].some((log) => log.address.toLowerCase() !== hook.toLowerCase())) continue;
+    try {
+      const e = decodeEventLog({ abi: touchstoneHookAbi, data: deposit.data, topics: deposit.topics });
+      if (e.eventName !== "DepositTaken" || e.args.id.toLowerCase() !== poolId.toLowerCase() || e.args.recordId !== id) continue;
+      const detail = decodeEventLog({ abi: touchstoneHookAbi, data: reasons.data, topics: reasons.topics });
+      if (detail.eventName === "DepositReasons") return detail.args.triggers;
+    } catch { /* Other logs cannot establish the reason for this deposit. */ }
+  }
+  return null;
 }

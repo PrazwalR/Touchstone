@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
+import {TouchstoneHook} from "../../src/TouchstoneHook.sol";
 import {IHooks} from "v4-core/interfaces/IHooks.sol";
 import {Hooks} from "v4-core/libraries/Hooks.sol";
 import {CustomRevert} from "v4-core/libraries/CustomRevert.sol";
@@ -113,6 +114,13 @@ contract TouchstoneHookTest is TouchstoneFixture {
 
     // --- first touch ---------------------------------------------------------------------------
 
+    function test_DepositReasons_ReportsCombinedExecutionRules() public {
+        feed.set(int256(3_100 * 1e8), block.timestamp);
+        vm.expectEmit(false, false, false, true, address(hook));
+        emit TouchstoneHook.DepositReasons(5); // first touch + drift
+        _buy(trader, 20_000);
+    }
+
     function test_FirstTouch_FlagsAndTakesDepositFromSwapper() public {
         uint256 notional = 20_000 * 10 ** decQuote;
         BalanceDelta d = _swap(trader, true, true, notional, "");
@@ -134,10 +142,11 @@ contract TouchstoneHookTest is TouchstoneFixture {
     }
 
     function test_Deposit_UnspecifiedCurrency_AllFourCases() public {
+        uint256 firstBlock = block.number + 1;
         bool[2] memory flags = [true, false];
         for (uint256 i; i < 2; ++i) {
             for (uint256 j; j < 2; ++j) {
-                vm.roll(block.number + 1);
+                vm.roll(firstBlock + 2 * i + j);
                 bool buyRisky = flags[i];
                 bool exactIn = flags[j];
                 uint256 amount = buyRisky == exactIn ? 20_000 * 10 ** decQuote : 7 * 10 ** decRisky;

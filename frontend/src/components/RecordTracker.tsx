@@ -137,8 +137,12 @@ export function RecordTracker({
           <>
             <div className="receipt-totals">
               <div>
-                <span>Refund allocation</span>
+                <span>{refundDelivery === "delivered" && refund !== 0n ? "Refund delivered" : refundDelivery === "deferred" ? "Refund credited for claim" : "Refund allocation"}</span>
                 <strong>{amt(refund!)}</strong>
+              </div>
+              <div>
+                <span>Clawback · retained</span>
+                <strong>{amt(tracked.deposit - refund!)}</strong>
               </div>
               <div>
                 <span>LP share · vesting</span>

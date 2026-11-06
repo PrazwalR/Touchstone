@@ -2037,6 +2037,19 @@ export const touchstoneHookAbi = [
   },
   {
     "type": "event",
+    "name": "DepositReasons",
+    "inputs": [
+      {
+        "name": "triggers",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "DepositTaken",
     "inputs": [
       {

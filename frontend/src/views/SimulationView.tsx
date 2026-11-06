@@ -6,10 +6,9 @@ import type { Live } from "../chain/useLive.ts";
 import {
   DemoHeader,
   DemoDisclosure,
-  SettlementPanel,
 } from "../components/DemoLayout.tsx";
 import { BacktestScore } from "../components/BacktestScore.tsx";
-import { HookMath } from "../components/HookMath.tsx";
+import { SimulationActivity, readActivity, rememberActivity, type ActivityEntry } from "../components/SimulationActivity.tsx";
 import { SwapPanel } from "../components/SwapPanel.tsx";
 import { ago, units } from "../format.ts";
 import {
@@ -23,11 +22,10 @@ import { readReference } from "../swap/reference.ts";
 import {
   quoteIs0,
   shortError,
-  type Preview,
+  recordFromReceipt,
   type Side,
   type SwapResult,
 } from "../swap/swap.ts";
-import type { TrackedRecord } from "../swap/useSwapFlow.ts";
 import { History } from "../sections/History.tsx";
 import { Licence } from "../sections/Licence.tsx";
 import { Records } from "../sections/Testnet.tsx";
@@ -66,13 +64,22 @@ interface Preset {
 
 export function SimulationView({ live }: { live: Live }) {
   const { ref, error: refError } = useReference(live.error ? null : live.snapshot);
-  const [tracked, setTracked] = useState<TrackedRecord | null>(null);
+  const [activity, setActivity] = useState(readActivity);
+  const [selected, setSelected] = useState<ActivityEntry | null>(() => activity[0] ?? null);
+  useEffect(() => { rememberActivity(activity); }, [activity]);
   const [latestError, setLatestError] = useState<string | null>(null);
   const [following, setFollowing] = useState(false);
   const followEpoch = useRef(0);
   useEffect(() => () => { followEpoch.current += 1; }, []);
   const [result, setResult] = useState<SwapResult | null>(null);
-  const [preview, setPreview] = useState<Preview | null>(null);
+  const [notice, setNotice] = useState(false);
+  const activityRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    setNotice(false);
+    if (!result?.record) return;
+    const timer = setTimeout(() => setNotice(true), Math.max(0, (result.record.timestamp + 3) * 1000 - Date.now()));
+    return () => clearTimeout(timer);
+  }, [result]);
   const [preset, setPreset] = useState<Preset | null>(null);
   const [selection, setSelection] = useState(0);
   const [edited, setEdited] = useState(false);
@@ -80,7 +87,6 @@ export function SimulationView({ live }: { live: Live }) {
   const [targets, setTargets] = useState<{ key: string; close: Preset | null; setup: Preset | null; error: string | null } | null>(null);
   const choosePreset = (p: Preset) => {
     if (busy) return;
-    setPreview(null);
     setPreset(p);
     setSelection((n) => n + 1);
     setEdited(false);
@@ -151,29 +157,16 @@ export function SimulationView({ live }: { live: Live }) {
     ? targets.setup : null;
   // A live refresh never rewrites a typed amount. A preset click explicitly resets the complete form,
   // even if the same preset was previously selected and then edited.
-  useEffect(() => {
-    if (preset === null && overN0 !== null && buyGap !== null) setPreset(overN0);
-  }, [preset, overN0, buyGap]);
   const active = preset;
 
-  const onSwapped = useCallback((r: SwapResult) => {
+  const onSwapped = useCallback((r: SwapResult, side: Side) => {
     followEpoch.current += 1;
     setFollowing(false);
     setLatestError(null);
     setResult(r);
-    setTracked(
-      r.record
-        ? {
-            poolId: r.record.poolId,
-            recordId: r.record.id,
-            fromBlock: r.receipt.blockNumber,
-            timestamp: r.record.timestamp,
-            deposit: r.record.deposit,
-            depositIn0: r.record.depositIn0,
-            outcome: { kind: "open" },
-          }
-        : null,
-    );
+    const row = { hash: r.hash, side };
+    setActivity((rows) => [row, ...rows.filter((v) => v.hash !== row.hash)].slice(0, 20));
+    setSelected(row);
   }, []);
 
   const followLatest = async () => {
@@ -190,16 +183,13 @@ export function SimulationView({ live }: { live: Live }) {
         );
         return;
       }
+      const receipt = await swapContext.client.getTransactionReceipt({ hash: d.tx });
+      const record = recordFromReceipt(swapContext, receipt);
+      if (!record || record.id !== d.recordId) throw new Error("Unable to match the deposit to its receipt.");
+      if (epoch !== followEpoch.current) return;
+      const side = record.zeroForOne === quoteIs0(swapContext) ? "buy" : "sell";
       setResult(null);
-      setTracked({
-        poolId: deployment.pools[0].poolId,
-        recordId: d.recordId,
-        fromBlock: d.block,
-        timestamp: d.timestamp,
-        deposit: d.deposit,
-        depositIn0: d.depositIn0,
-        outcome: { kind: "open" },
-      });
+      setSelected({ hash: d.tx, side });
     } catch (err) {
       if (epoch === followEpoch.current) setLatestError(shortError(err));
     } finally {
@@ -217,6 +207,7 @@ export function SimulationView({ live }: { live: Live }) {
         live={live}
         next="swap"
       />
+      <DemoDisclosure title="Market prices and demo presets">
       <div className="sim-market glass" aria-label="Live price comparison">
         <div>
           <span className="tl">Pool price · v4 slot0</span>
@@ -306,7 +297,7 @@ export function SimulationView({ live }: { live: Live }) {
         <p role="status">{busy ? "A wallet action or submitted transaction is in progress. Preset changes are paused until its status is resolved." : edited
           ? "Custom trade: you changed the form. Click a preset again to restore its direction, input token and amount."
           : active ? `Prepared: ${active.side === "buy" ? `buy ${R.symbol}` : `sell ${R.symbol}`}, ${active.exactOutput ? "requesting" : "paying"} ${active.amount} ${active.side === "buy" || active.exactOutput ? Q.symbol : R.symbol}. This amount stays fixed while live presets refresh; click a preset again to update it. Execution determines the result.`
-          : "Reading the pool to prepare a trade."}</p>
+          : "Choose a preset to fill the swap form."}</p>
         {targetKey && targets?.key !== targetKey && <p>Refreshing price-target presets…</p>}
         {targets?.key === targetKey && targets.error && <p className="demo-error" role="alert">Some price-target presets are unavailable: {targets.error}</p>}
       </div>
@@ -316,50 +307,50 @@ export function SimulationView({ live }: { live: Live }) {
           These are real pool prices; changing the interface does not restore the pool. Review every quote before signing.
         </p>
       )}
-      <div className="sim-grid">
-        {active === null ? (
-          <div className="swap-card demo-trade demo-loading">
-            <h2>Arbitrage swap</h2>
-            <p>
-              {live.error
-                ? "Pool data is unavailable. Check the live data panel below."
-                : "Reading the pool and reference to prepare a trade…"}
-            </p>
-          </div>
-        ) : (
+      </DemoDisclosure>
+      <div className="simulation-swap-form">
           <SwapPanel
             key={selection}
             ctx={swapContext}
-            initialSide={active.side}
-            initialAmount={active.amount}
-            initialExactOutput={active.exactOutput}
+            initialSide={active?.side ?? "buy"}
+            initialAmount={active?.amount ?? ""}
+            initialExactOutput={active?.exactOutput ?? false}
             onSwapped={onSwapped}
-            onPreview={setPreview}
+            progressiveReceipt
             onEdited={onEdited}
             onBusyChange={setBusy}
-            title="Arbitrage swap"
+            title="Swap"
           />
-        )}
-        <HookMath
-          ctx={swapContext}
-          preview={preview}
-          snapshot={s}
-          referenceE6={ref?.priceE6 ?? null}
-        />
       </div>
-      <div className="sim-settle">
-        <SettlementPanel
-          ctx={swapContext}
-          tracked={tracked}
-          onChange={setTracked}
-          result={result}
-          live={live}
-          onFollow={() => void followLatest()}
-          following={following}
-          followError={latestError}
-        />
-      </div>
-      <BacktestScore />
+      {notice && result?.record && <aside className="simulation-notice" aria-label="Swap notification">
+        <span role="status">Swap flagged for review · record #{result.record.id.toString()}</span>
+        <button type="button" onClick={() => {
+          followEpoch.current++;
+          setFollowing(false);
+          setLatestError(null);
+          const row = activity.find((item) => item.hash === result.hash);
+          if (row) setSelected(row);
+          setNotice(false);
+          activityRef.current?.scrollIntoView({ block: "start" });
+        }}>View review</button>
+        <button type="button" aria-label="Dismiss notification" onClick={() => setNotice(false)}>Dismiss</button>
+      </aside>}
+      <section ref={activityRef} aria-label="Trade activity">
+        <h2>Trade activity</h2>
+        {activity.length > 0 && <div className="sim-presets" aria-label="Recent swaps">
+          {activity.map((row) => <button type="button" className={selected?.hash === row.hash ? "chip-btn on" : "chip-btn"}
+            key={row.hash} onClick={() => { followEpoch.current++; setFollowing(false); setLatestError(null); setSelected(row); }}>
+            {row.side === "buy" ? "Buy" : "Sell"} {R.symbol} · {row.hash.slice(0, 10)}
+          </button>)}
+        </div>}
+        {selected ? <SimulationActivity key={selected.hash} entry={selected} confirmed={result?.hash === selected.hash ? result : null} />
+          : <p className="swap-meta">Your confirmed swap and any subsequent settlement will appear here.</p>}
+        <button type="button" className="chip-btn" disabled={following || busy} onClick={() => void followLatest()}>
+          {following ? "Finding a record…" : "Follow latest pool record"}
+        </button>
+        {latestError && <p role="alert" className="demo-error">{latestError}</p>}
+      </section>
+      <DemoDisclosure title="Historical backtest results"><BacktestScore /></DemoDisclosure>
       <div className="demo-extras">
         <DemoDisclosure title="Why compare with Chainlink here and settle with Pyth">
           <p>

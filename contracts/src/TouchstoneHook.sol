@@ -74,9 +74,13 @@ contract TouchstoneHook is BaseHook, IUnlockCallback, ITouchstoneHook, ITouchsto
         uint256 notional;
         uint256 riskyAbs;
         int256 gapBps;
+        uint8 triggers;
         uint8 mode;
         uint8 licence; // LICENCE_LIVE | BY_HOLDER, written only on licence pools
     }
+
+    /// @dev Immediately follows its DepositTaken in the same receipt. The preceding event identifies the record.
+    event DepositReasons(uint8 triggers);
 
     uint8 internal constant ACTION_FINALIZE = 0;
     uint8 internal constant ACTION_DRIP = 1;
@@ -376,6 +380,7 @@ contract TouchstoneHook is BaseHook, IUnlockCallback, ITouchstoneHook, ITouchsto
         bool isFirst = !closed && large && _firstTouch(st, v.id);
         uint8 mask = TriggerLib.triggers(flowHit, large, isFirst, closed, TriggerLib.drift(v.gapBps, cfg.tauBps));
         if (mask == 0) return 0;
+        v.triggers = mask;
 
         uint256 depositQuote;
         (deposit, depositQuote) = _depositFor(cfg, v);
@@ -581,6 +586,7 @@ contract TouchstoneHook is BaseHook, IUnlockCallback, ITouchstoneHook, ITouchsto
         poolManager.mint(address(this), unspecified.toId(), deposit);
 
         emit DepositTaken(v.id, r.id, r);
+        emit DepositReasons(v.triggers);
         int128 signed = -SafeCast.toInt128(deposit);
         emit HookSwap(v.id, sender, v.depositIn0 ? signed : int128(0), v.depositIn0 ? int128(0) : signed, 0);
     }

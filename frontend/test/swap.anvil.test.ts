@@ -17,6 +17,7 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { foundry } from "viem/chains";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { confirmedReasons } from "../src/swap/recordSettlement.ts";
 import { settlerAbi } from "../abi/index.ts";
 import { approveExact, executeSwap, guardFor, previewSwap, priceImpactBps, recordOutcome, type SwapContext } from "../src/swap/swap.ts";
 
@@ -142,6 +143,9 @@ describe.skipIf(!hasTool("anvil") || !hasTool("forge"))("swap module against a l
     expect(await client.readContract({ address: stack.usdc, abi: erc20Abi, functionName: "allowance", args: [me, stack.guardedRouter] })).toBe(0n);
 
     const r = result.record!;
+    expect(confirmedReasons(ctx.hook, result.receipt, r.poolId, r.id)).toBe(1);
+    expect(confirmedReasons(ctx.hook, { ...result.receipt, logs: [] }, r.poolId, r.id)).toBeNull();
+    expect(confirmedReasons(ctx.hook, result.receipt, r.poolId, r.id + 1n)).toBeNull();
     expect((await recordOutcome(ctx, r.poolId, r.id, result.receipt.blockNumber)).kind).toBe("open");
 
     // Settle as a keeper would, with MockPythUnique-encoded updates at t0.

@@ -18,7 +18,6 @@ import {
   priceImpactBps,
   tokenIn,
   tokenOut,
-  type Preview,
   type Side,
   type SwapContext,
   type SwapResult,
@@ -53,7 +52,7 @@ export function SwapPanel({
   initialAmount = "",
   initialExactOutput = false,
   onSwapped,
-  onPreview,
+  progressiveReceipt = false,
   onEdited,
   onBusyChange,
   title = "Swap",
@@ -62,9 +61,8 @@ export function SwapPanel({
   initialSide?: Side;
   initialAmount?: string;
   initialExactOutput?: boolean;
-  onSwapped?: (r: SwapResult) => void;
-  /** Every fresh quote, or null when there is none, for a page that explains it alongside. */
-  onPreview?: (p: Preview | null) => void;
+  onSwapped?: (r: SwapResult, side: Side) => void;
+  progressiveReceipt?: boolean;
   onEdited?: () => void;
   onBusyChange?: (busy: boolean) => void;
   title?: string;
@@ -91,12 +89,8 @@ export function SwapPanel({
     `${units(v, t.decimals, t.decimals > 6 ? 6 : 2)} ${t.symbol}`;
 
   useEffect(() => {
-    if (f.phase === "done" && f.result) onSwapped?.(f.result);
-  }, [f.phase, f.result, onSwapped]);
-  useEffect(() => {
-    onPreview?.(f.preview ?? null);
-  }, [f.preview, onPreview]);
-
+    if (f.phase === "done" && f.result) onSwapped?.(f.result, side);
+  }, [f.phase, f.result, onSwapped, side]);
   const netOut = p?.exact?.netOut ?? p?.netOut ?? null;
   const insufficient =
     p?.balanceIn !== null &&
@@ -324,6 +318,7 @@ export function SwapPanel({
           </label>
         </div>
       )}
+      {progressiveReceipt && <p className="swap-meta">A refundable hold may apply during execution. Your limit is in Quote details.</p>}
       {!f.wallet.account && !f.confirmationPending ? (
         <WalletButton prominent />
       ) : (
@@ -352,7 +347,7 @@ export function SwapPanel({
           <a href={explorerTx(f.submittedHash)} target="_blank" rel="noreferrer">View submitted transaction ↗</a>
         </p>
       )}
-      {f.result && (
+      {f.result && !progressiveReceipt && (
         <div className="trade-confirmed" role="status">
           <span>{f.result.record ? "Swap complete · deposit recorded" : "Swap complete · no deposit"}</span>
           <a href={explorerTx(f.result.hash)} target="_blank" rel="noreferrer">
