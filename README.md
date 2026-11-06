@@ -1,60 +1,95 @@
 # Touchstone
 
-Touchstone is a Uniswap v4 hook prototype that takes refundable deposits on flagged swaps and settles them
-against a signed outside price. Closed-market records use the reopening price. The repository includes the optional auctioned licence, rebate ledger, guarded router, wallet dashboard, keeper, indexer, bots and two replay engines. The current testnet deployment predates some of these components. Deployment manifests and receipts are tracked in [DEPLOYMENTS.md](DEPLOYMENTS.md).
+Touchstone is a Uniswap v4 hook prototype that collects refundable deposits on flagged swaps and settles them against a signed external price. It includes a guarded swap interface, keeper, indexer, rebate ledger and optional arbitrage licence.
 
-Start with the owner-supplied [specification](spec.md) and the [decision records](docs/decisions/). The [repair audit](docs/audits/m0-m5-repair-2026-10-30/README.md)
-distinguishes repaired defects from remaining design and validation work.
+**Testnet only.** The implementation and research are experimental. Deployment manifests describe the contracts actually deployed; the working tree can contain newer functionality.
 
-## Run the existing checks
+## Start here
 
-Use Foundry 1.5.1, Solidity 0.8.26/Cancun, Node 24, pnpm 10.14.0 and Python 3.13. Dependency locks are committed.
+| Task | Guide |
+| --- | --- |
+| Understand the mechanism and its mathematics | [Formula definitions and research basis](docs/formulas-research-and-current-code.md) |
+| Run, deploy or operate the project | [Operations runbook](docs/runbook.md) |
+| Find contract addresses | [Deployments](DEPLOYMENTS.md) |
+| Review measured results and limitations | [Research results](research/results/README.md) |
+| Browse the documentation | [Documentation index](docs/README.md) |
+
+## Requirements
+
+- Node.js 24 and pnpm 10.14.0
+- Foundry 1.5.1, with Solidity 0.8.26 and the Cancun EVM target
+- Python 3.13 and uv for research
+- Rust and Cargo for the replay engine
+
+Dependency lockfiles and vendored Solidity dependencies are included. Copy `.env.example` to `.env` for service or deployment configuration. Keep credentials outside Git.
+
+## Build and run the interface
+
+From the repository root:
 
 ```sh
-cd contracts
-forge fmt --check
-forge build
-forge test -vvv
-cd ../backend
-pnpm install --frozen-lockfile
-pnpm abi
-pnpm typecheck
-pnpm -r test
-cd ../frontend
-pnpm install --frozen-lockfile
-pnpm sync && pnpm typecheck && pnpm test && pnpm build
-cd ../sim
-cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings && cargo test --locked
-REPLAY_PORT=18568 ./check-anvil.sh
-cd ../research
-uv sync --locked
-uv run ruff check .
-uv run mypy
-uv run pytest
+pnpm -C frontend install --frozen-lockfile
+pnpm -C frontend build
+pnpm -C frontend dev
 ```
 
-Backend integration tests use a local Anvil PoolManager and mock oracles. They require Forge build artifacts;
-when Foundry tools are absent, those suites skip. They are local mechanics tests, not real Pyth fork evidence.
-The locally compiled test PoolManager exceeds EIP-170 under these compiler settings; production uses a verified
-canonical deployment. Run `python scripts/check_release_gates.py sizes` from the root after building to check
-the first-party core without relaxing its size limit.
+The interface uses the committed testnet deployment metadata. Wallet transactions require funds on the selected testnet. A local history service is optional; configure it as described in the [frontend guide](frontend/README.md).
 
-## Evidence and limitations
+## Build contracts and services
 
-- E1/E2 are **historical backtests** on one Ethereum v3 pool. Saved results report a G1 pass with caveats;
-  raw datasets are not included, and the original results are preserved rather than recomputed or retuned.
-- E3/E4 have renewed committed pre-registrations (decision 0052), with approximate-replay limits disclosed.
-  The owner confirmed swap/Chainlink/Binance inputs on the Mac checkout and started a fresh Pyth download on 6 November. E3/E4 still have no published verdict. Fresh downloads do not need the legacy cache manifest; see [current data status](docs/HANDOFF.md#2-research-exactly-where-each-experiment-stands). The separate freeze commit records pre-data chronology.
-- E6 **simulation** hit its freshness kill line in all 21 cases in both windows. Held-out mean absolute price error rose 39.2% to 73.3% against static. [E6 result](research/results/E6.json)
-- E5 **simulation** has no formal kill, but negative break-even recall makes that line vacuous on this window; held-out fine-split recall falls to 9.7%–11.1%. Padding profit and exact-output consequences remain unevaluated. E7, E10 and E11 remain drafts. E9 is skipped by owner decision. Experiment results and caveats are in the [research write-up](research/results/README.md).
-- [Gas figures](docs/gas.md) distinguish measured values from targets. Coverage and gas gates are not waived.
-- A successful settlement may leave a ledger entitlement when best-effort token delivery fails.
-- Record/event ABI now includes an authenticated executed-fee snapshot; old deployed ABIs need their matching
-  client. Follow the backend recovery notes; do not invent historical fee values.
-- Fee-on-transfer tokens are unsupported. No production deployment, router integration, mainnet readiness,
-  or endorsement is claimed. The spec requires external audit before mainnet use.
+```sh
+(cd contracts && forge build)
+pnpm -C backend install --frozen-lockfile
+pnpm -C backend abi
+pnpm -C backend typecheck
+```
 
-Configuration is validated from the environment; see [.env.example](.env.example). Keep keys and passwords
-outside version control. Deployments are recorded in DEPLOYMENTS.md.
+To regenerate frontend ABIs and deployment metadata after a contract build:
 
-The [current handoff](docs/HANDOFF.md) records remaining work and owner inputs, with the [3 November M11 log](docs/m11-handoff-2026-11-03.md) preserving earlier measurements. The [keeper handoff](docs/keeper-handoff.md) covers the existing signer machine; the [read-only API](backend/indexer/README.md) and [demo bots](backend/bots/README.md) have explicit startup/configuration instructions. No live service or demonstration transaction is implied by local tests.
+```sh
+pnpm -C frontend sync
+```
+
+To start configured services:
+
+```sh
+pnpm -C backend preflight
+scripts/run-services.sh indexer api keeper
+```
+
+Preflight requires a complete `.env`, keeper credentials with private file permissions, and a consistent deployment. See the [runbook](docs/runbook.md) before sending transactions.
+
+## Validate changes
+
+| Component | Commands |
+| --- | --- |
+| Contracts | `cd contracts && forge fmt --check && forge build && forge test` |
+| Backend | `pnpm -C backend typecheck` and `pnpm -C backend test` |
+| Frontend | `pnpm -C frontend test` and `pnpm -C frontend build` |
+| Research | `cd research && uv sync --locked && uv run ruff check . && uv run mypy && uv run pytest` |
+| Rust replay | `cd sim && cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings && cargo test --locked` |
+| Release sizes | `python3 scripts/check_release_gates.py sizes` after building contracts |
+
+Backend integration suites need Foundry artifacts and Anvil. They use local PoolManager and mock-oracle fixtures; they do not establish live oracle performance. Historical research datasets are not included.
+
+## Evidence and limits
+
+- **E1/E2:** historical backtests on one Ethereum v3 pool. Held-out trigger recall is about 98.9% of measured toxic markout, with about 23.4% of swaps flagged. This is detection evidence, not a measured improvement in LP returns.
+- **E3/E4:** registered settlement and oracle-basis experiments have no published verdict in this checkout.
+- **E5:** delayed fine splitting can reduce held-out recall to 9.7–11.1%. Its profitability after costs remains unevaluated.
+- **E6:** all 21 registered simulated configurations failed the freshness threshold. Held-out price error was 39.2–73.3% higher than the static-fee baseline in the stated model.
+- **Other experiments:** E7, E10 and E11 remain drafts; E9 is skipped. See the [full results](research/results/README.md) for scope and reproducibility details.
+
+Fee-on-transfer tokens are unsupported. Best-effort refunds can become claimable ledger balances. Oracle uncertainty, approximate tick reconstruction, routing friction and market response remain material limitations. No mainnet readiness or Uniswap endorsement is claimed.
+
+## Repository layout
+
+| Directory | Contents |
+| --- | --- |
+| `contracts/` | Solidity contracts, tests, deployment scripts and manifests |
+| `backend/` | Keeper, indexer, history API, bots and shared interfaces |
+| `frontend/` | Wallet interface, live records and documentation reader |
+| `research/` | Registered experiments, replay models and recorded results |
+| `sim/` | Rust replay engine and local integration tooling |
+| `docs/` | Mechanism, operations, lessons, decisions and verification evidence |
+| `scripts/` | Deployment, service and release-check helpers |

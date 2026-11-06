@@ -522,7 +522,7 @@ The source of truth is [PoolConfig](../contracts/src/types/PoolConfig.sol), [Lea
 
 The recorded E8 below-floor overhead is 21,522 gas against a 20,000 target, even though the separate regression gate passes. A gate pass must not erase that target miss. See [gas evidence](gas.md).
 
-For reproducibility, the experiment artifacts carry input, preregistration and analysis hashes, with chronology in [FROZEN.md](../research/prereg/FROZEN.md). The raw historical data are gitignored; their presence on the owner's Mac does not imply presence in this Linux checkout. Follow [HANDOFF.md](HANDOFF.md) for current access and execution status.
+For reproducibility, the experiment artifacts carry input, preregistration and analysis hashes, with chronology in [FROZEN.md](../research/prereg/FROZEN.md). The raw historical data are gitignored; their presence on the owner's Mac does not imply presence in this Linux checkout. See the [research setup](../research/README.md) for input requirements and reproduction commands.
 
 To inspect the formulas without manufacturing new historical results:
 

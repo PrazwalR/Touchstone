@@ -33,3 +33,9 @@ contracts/test/integration/out/
 mds/
 
 var/
+
+# Local design and analysis artifacts
+/graphify-out/
+/frontend/design/
+/frontend/demo/
+/amm-money-leaks*
