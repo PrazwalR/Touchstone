@@ -140,7 +140,9 @@ export class Keeper {
     return [...this.#open.values()];
   }
 
-  async tick(): Promise<TickReport> {
+  async tick(limits: { maxBlocks?: bigint; maxRecords?: number; housekeeping?: boolean } = {}): Promise<TickReport> {
+    if (limits.maxBlocks !== undefined && limits.maxBlocks <= 0n) throw new Error("maxBlocks must be positive");
+    if (limits.maxRecords !== undefined && (!Number.isSafeInteger(limits.maxRecords) || limits.maxRecords <= 0)) throw new Error("maxRecords must be a positive integer");
     const report: TickReport = { ingested: 0, settled: 0, expired: 0, closedElsewhere: 0, dripped: 0, pushed: 0, accrued: 0 };
     // viem caches the block number for a few seconds by default; a stale head means a stale clock.
     const head = await this.client.getBlockNumber({ cacheTime: 0 });
@@ -161,21 +163,27 @@ export class Keeper {
         this.#lastBlockHash = undefined;
       }
     }
-    report.ingested = await this.#ingest(head);
+    const scanHead = limits.maxBlocks !== undefined && this.#nextBlock + limits.maxBlocks - 1n < head
+      ? this.#nextBlock + limits.maxBlocks - 1n : head;
+    const scanBlock = scanHead === head ? headBlock : await this.client.getBlock({ blockNumber: scanHead });
+    report.ingested = await this.#ingest(scanHead);
     // Anchor only a complete, internally consistent scan. A mid-scan reorg is retried from the start.
-    const checked = await this.client.getBlock({ blockNumber: head });
-    if (checked.hash !== headBlock.hash) {
+    const checked = await this.client.getBlock({ blockNumber: scanHead });
+    if (checked.hash !== scanBlock.hash) {
       this.#lastBlockHash = undefined;
       throw new Error("chain reorganized during keeper ingestion");
     }
-    this.#lastBlockHash = headBlock.hash;
+    this.#lastBlockHash = scanBlock.hash;
     const now = Number(headBlock.timestamp);
-    for (const r of [...this.#open.values()]) {
+    for (const r of [...this.#open.values()].slice(0, limits.maxRecords)) {
       const outcome = await this.#process(r, now);
       if (outcome === "settled") report.settled++;
       if (outcome === "expired") report.expired++;
       if (outcome === "closed") report.closedElsewhere++;
+      // Rotate waiting records so a bounded serverless run cannot starve later trades.
+      if (this.#open.delete(recordKey(r))) this.#open.set(recordKey(r), r);
     }
+    if (limits.housekeeping === false) return report;
     for (const id of this.#poolIds) {
       try { await this.#pool(id); }
       catch (err) { this.log("warn", "pool discovery failed", { poolId: id, error: errorText(err) }); }

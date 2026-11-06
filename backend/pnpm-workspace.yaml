@@ -3,3 +3,4 @@ packages:
   - keeper
   - indexer
   - bots
+  - cloudflare-keeper

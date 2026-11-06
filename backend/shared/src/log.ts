@@ -43,11 +43,15 @@ export function logger(service: string) {
   ) => {
     const secrets = Object.entries(process.env)
       .filter(
-        ([name, value]) =>
-          SECRET_KEYS.test(name) &&
-          !name.endsWith("_HEADER") &&
-          value !== undefined &&
-          value.length >= MIN_SECRET_LENGTH,
+        (entry): entry is [string, string] => {
+          const [name, value] = entry;
+          return (
+            SECRET_KEYS.test(name) &&
+            !name.endsWith("_HEADER") &&
+            typeof value === "string" &&
+            value.length >= MIN_SECRET_LENGTH
+          );
+        },
       )
       .flatMap(([, value]) => {
         const v = value!;

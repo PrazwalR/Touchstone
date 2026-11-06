@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "touchstone-keeper",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [{ "name": "KEEPER", "class_name": "KeeperObject" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["KeeperObject"] }],
+  // Watchdog only: alarms do the work, never this minute-based Cron handler.
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "observability": { "enabled": true },
+  "vars": {
+    "CF_IDLE_POLL_MS": "30000",
+    "CF_ACTIVE_POLL_MS": "3000",
+    "CF_ERROR_POLL_MS": "30000",
+    "CF_HOUSEKEEPING": "false"
+  }
+}

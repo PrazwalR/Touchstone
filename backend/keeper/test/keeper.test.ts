@@ -41,6 +41,34 @@ function setup(fee = 0n, records = [record], licensed = false) {
   return { keeper, client, wallet, readContract };
 }
 describe("keeper recovery and settlement", () => {
+  it("checkpoints a bounded scan at its own block hash and uses the actual head time", async () => {
+    const { keeper, client } = setup();
+    client.getBlock.mockImplementation(async (...args: unknown[]) => {
+      const number = (args[0] as { blockNumber: bigint }).blockNumber;
+      return { timestamp: number === 10n ? 120n : 90n, hash: `0x${number.toString(16).padStart(64, "0")}` };
+    });
+    expect((await keeper.tick({ maxBlocks: 3n, maxRecords: 1, housekeeping: false })).settled).toBe(1);
+    expect(keeper.state().nextBlock).toBe(3n);
+    expect(keeper.state().lastBlockHash).toBe(`0x${"2".padStart(64, "0")}`);
+    await keeper.tick({ maxBlocks: 3n, maxRecords: 1, housekeeping: false });
+    expect(keeper.state().nextBlock).toBe(6n);
+    expect(client.getContractEvents).toHaveBeenLastCalledWith(expect.objectContaining({ fromBlock: 3n, toBlock: 5n }));
+  });
+  it("rotates waiting records across bounded ticks instead of starving later records", async () => {
+    const { keeper, readContract, wallet } = setup(0n, [record, { ...record, id: 2n }]);
+    const original = readContract.getMockImplementation()!;
+    readContract.mockImplementation(async args => args.functionName === "settleTime" ? [130n, 140n, 200n] : original(args));
+    await keeper.tick({ maxRecords: 1, housekeeping: false });
+    expect(keeper.openRecords().map(r => r.id)).toEqual([2n, 1n]);
+    await keeper.tick({ maxRecords: 1, housekeeping: false });
+    expect(keeper.openRecords().map(r => r.id)).toEqual([1n, 2n]);
+    expect(wallet.writeContract).not.toHaveBeenCalled();
+  });
+  it("can skip housekeeping on the serverless settlement path", async () => {
+    const { keeper, client } = setup(0n, [], true);
+    await keeper.tick({ housekeeping: false });
+    expect(client.simulateContract).not.toHaveBeenCalled();
+  });
   it("submits a timely published update after latest, before expiry", async () => {
     const { keeper, wallet } = setup();
     expect((await keeper.tick()).settled).toBe(1);
