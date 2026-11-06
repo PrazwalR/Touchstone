@@ -5,14 +5,14 @@ import { fileURLToPath } from "node:url";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import { selectDeployment } from "./src/chain/selectDeployment.ts";
 
-// The production page reads chain state from one RPC origin and fonts from Google. Nothing else is allowed to
-// load or connect. Development keeps Vite's inline styles and hot-reload socket, so the policy is build-only.
+// The production page reads chain state from the configured RPC and history origins. Fonts are bundled locally
+// (Geist) or served by Google. Development keeps Vite's hot-reload socket, so the policy is build-only.
 function contentSecurityPolicy(rpcUrl: string, historyUrl?: string): Plugin {
   const policy = [
     "default-src 'self'",
     "script-src 'self'",
     "style-src 'self' https://fonts.googleapis.com",
-    "font-src https://fonts.gstatic.com",
+    "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data:",
     `connect-src ${new URL(rpcUrl).origin}${historyUrl ? ` ${new URL(historyUrl).origin}` : ""}`,
     "object-src 'none'",
