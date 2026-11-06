@@ -1,5 +1,25 @@
 # Keeper and indexer handoff
 
+## Render worker
+
+`render-keeper.yaml` defines a separate keeper worker with Node 24, one instance and a 1 GB disk at
+`/var/data`. It does not manage the existing indexer/API service. Supply its manual environment values
+from the deployment machine's configuration; local `.keeper-env` is ignored by Git.
+
+Before the worker can start, add these files in the worker's **Environment → Secret Files**:
+
+| Filename | Contents |
+| --- | --- |
+| `keeper-keystore.json` | Existing encrypted `touchstone-keeper` keystore JSON |
+| `keeper-password.txt` | Password that decrypts that keystore |
+
+The worker reads them from `/etc/secrets/`. The Mac paths in local configuration do not work on Render.
+Keep the local keeper stopped while this worker uses the same wallet. If the initial deploy fails because
+the secret files are missing, add both files and deploy the latest commit again. Verify the public signer,
+history scan completion and a confirmed settlement in Render logs. A live deploy alone does not prove
+settlement works. Keep enough Arbitrum Sepolia ETH in the signer for gas. The worker and disk are paid
+resources; disk-backed deployments briefly stop the previous instance before starting its replacement.
+
 ## Current redeployment: 7 November 2026
 
 Run these commands **on Prazwal's deployment machine**, where the existing encrypted `touchstone-keeper`

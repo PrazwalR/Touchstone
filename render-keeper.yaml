@@ -1,0 +1,68 @@
+# Keeper only. The existing indexer/API service is managed separately.
+# Wallet files must be added in Render's Environment > Secret Files.
+services:
+  - type: worker
+    name: touchstone-keeper
+    runtime: node
+    repo: https://github.com/PrazwalR/Touchstone
+    branch: main
+    region: oregon
+    plan: 0.5c-512mb
+    rootDir: backend
+    numInstances: 1
+    buildCommand: pnpm install --frozen-lockfile
+    startCommand: node keeper/src/main.ts
+    autoDeployTrigger: commit
+    disk:
+      name: keeper-state
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: KEEPER_KEYSTORE_PATH
+        value: /etc/secrets/keeper-keystore.json
+      - key: KEEPER_KEYSTORE_PASSWORD_FILE
+        value: /etc/secrets/keeper-password.txt
+      - key: KEEPER_STATE_PATH
+        value: /var/data/keeper-arbitrum-sepolia.json
+      - key: KEEPER_RPC_URL
+        sync: false
+      - key: KEEPER_CHAIN_ID
+        sync: false
+      - key: KEEPER_MIN_MARGIN_BPS
+        sync: false
+      - key: KEEPER_SETTLE_AT_LOSS
+        sync: false
+      - key: KEEPER_POLL_INTERVAL_MS
+        sync: false
+      - key: KEEPER_LOG_BLOCK_RANGE
+        sync: false
+      - key: KEEPER_DRIPS_PER_PERIOD
+        sync: false
+      - key: KEEPER_NATIVE_PRICE_ID
+        sync: false
+      - key: KEEPER_PUSH_RECIPIENTS
+        sync: false
+      - key: KEEPER_START_BLOCK
+        sync: false
+      - key: KEEPER_ACCRUE_INTERVAL_S
+        sync: false
+      - key: HERMES_URL
+        sync: false
+      - key: HERMES_API_KEY
+        sync: false
+      - key: HERMES_API_KEY_HEADER
+        sync: false
+      - key: HERMES_TIMEOUT_MS
+        sync: false
+      - key: TOUCHSTONE_HOOK
+        sync: false
+      - key: TOUCHSTONE_SETTLER
+        sync: false
+      - key: TOUCHSTONE_FACTORY
+        sync: false
+      - key: TOUCHSTONE_LEDGER
+        sync: false
+      - key: TOUCHSTONE_LICENCE
+        sync: false
