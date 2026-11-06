@@ -117,13 +117,14 @@ const FS = [
   "  vec3 fl=mix(vec3(0.010,0.0088,0.0072),vec3(0.006,0.0075,0.0095),uCold)*pool*1.4*sh;",
   "  c+=fl*exp(-0.06*tg)*edgeFade;c-=base*(1.-sh)*0.6*edgeFade;}",
   " float hz=exp(-pow(dot(q-0.5,normalize(vec2(1.,-0.55)))*3.2+0.2,2.))*0.0035;c+=mix(vec3(1.,0.86,0.66),vec3(0.7,0.8,1.),uCold)*hz*edgeFade;return max(c,vec3(0.));}",
-  "vec3 shade(vec3 p,vec3 rd){vec3 n=calcN(p);vec3 V=-rd;float rough=0.16;vec3 alb=vec3(0.023,0.025,0.031);float spec=0.065;",
+  // Polished obsidian: smooth substrate, gold inlays, and a separate glossy clear coat.
+  "vec3 shade(vec3 p,vec3 rd){vec3 n=calcN(p);vec3 V=-rd;float rough=0.045;vec3 alb=vec3(0.014,0.016,0.022);float spec=0.085;",
   " vec3 emis=vec3(0.);float metal=0.;vec3 gF0=vec3(0.96,0.64,0.22);bool top=false;vec2 tuv=vec2(0.);float groove=0.,inlay=0.,refm=0.;",
   " vec2 px=vec2(1./1024.,1./512.);vec2 pe=vec2(1./2048.,1./1024.);vec2 wxz=p.xz;float heatD=0.;float dark=0.;",
-  " float bands=sin((p.x*0.9+p.z*2.2)*6.0+fbm(p.xz*1.2+uMode*7.)*5.0);alb*=0.94+0.06*bands;rough=mix(0.12,0.18,0.5+0.5*bands);",
+  " float bands=sin((p.x*0.9+p.z*2.2)*6.0+fbm(p.xz*1.2+uMode*7.)*5.0);alb*=0.97+0.03*bands;rough=mix(0.035,0.06,0.5+0.5*bands);",
   " if(uMode<0.5){top=n.y>0.97;tuv=vec2((p.x+H.x)/(2.*H.x),(p.z+H.z)/(2.*H.z));",
-  "  if(!top&&abs(n.y)<0.2&&max(abs(p.x)-H.x,abs(p.z)-H.z)>-0.004){rough=0.26;alb*=1.4;}",
-  "  if(top){vec2 wv=vec2(fbm(p.xz*1.1+3.),fbm(p.xz*1.1+9.))-0.5;n=normalize(n+vec3(wv.x,0.,wv.y)*0.007);",
+  "  if(!top&&abs(n.y)<0.2&&max(abs(p.x)-H.x,abs(p.z)-H.z)>-0.004){rough=0.075;alb*=1.2;}",
+  "  if(top){vec2 wv=vec2(fbm(p.xz*1.1+3.),fbm(p.xz*1.1+9.))-0.5;n=normalize(n+vec3(wv.x,0.,wv.y)*0.002);",
   "   vec4 e=texture2D(uEngr,tuv);groove=e.r;inlay=e.g;refm=e.b;",
   "   float gx=texture2D(uEngr,tuv+vec2(pe.x,0.)).r-texture2D(uEngr,tuv-vec2(pe.x,0.)).r;float gz=texture2D(uEngr,tuv+vec2(0.,pe.y)).r-texture2D(uEngr,tuv-vec2(0.,pe.y)).r;",
   "   n=normalize(n+vec3(gx,0.,gz)*0.35);alb*=1.-0.55*groove;spec*=1.-0.4*groove;emis+=groove*vec3(0.024,0.028,0.036);}",
@@ -136,11 +137,11 @@ const FS = [
   "    float gx=texture2D(uFacet,auv+vec2(0.0012,0.)).r-texture2D(uFacet,auv-vec2(0.0012,0.)).r;n=normalize(n+rotY(vec3(gx,0.,0.),-uRot)*0.6);",
   "    alb*=1.-0.55*groove;float selF=1.-step(0.5,abs(fi-uSel));float pulseF=0.5+0.5*sin(uTime*2.1);",
   "    emis+=inlay*GOLDL*(0.30+selF*(0.4+0.08*pulseF));emis+=groove*vec3(0.022,0.026,0.034)+groove*selF*GOLDL*0.08;}}",
-  "  if(q.y<-0.6)rough=0.45;if(nq.y<-0.25)dark=1.;wxz=q.xz;}",
+  "  if(q.y<-0.6)rough=0.12;if(nq.y<-0.25)dark=1.;wxz=q.xz;}",
   " if(top){vec4 s=texture2D(uStreak,tuv);float core=s.r,heat=s.g,halo=s.b;heatD=halo;",
   "  core*=0.72+0.28*noise(tuv*vec2(1500.,750.));float gm=smoothstep(0.06,0.5,core);float cx=texture2D(uStreak,tuv+vec2(px.x,0.)).r-texture2D(uStreak,tuv-vec2(px.x,0.)).r;",
   "  float cz=texture2D(uStreak,tuv+vec2(0.,px.y)).r-texture2D(uStreak,tuv-vec2(0.,px.y)).r;n=normalize(n-vec3(cx,0.,cz)*0.8*gm);",
-  "  metal=max(gm,inlay*0.9);rough=mix(rough,0.14+0.25*heat,metal);",
+  "  metal=max(gm,inlay*0.9);rough=mix(rough,0.055+0.14*heat,metal);",
   "  emis+=pow(heat,1.4)*mix(GOLDL,HOTL,heat)*2.4+pow(heat,5.)*vec3(1.,0.93,0.8)*2.2;",
   "  emis+=halo*vec3(0.9,0.42,0.08)*0.20;emis+=GOLDL*0.04*metal;",
   "  float d=length(p.xz-uPulse.xy);float ring=exp(-pow((d-uPulse.z)/0.0042,2.));float ring2=exp(-pow((d-uPulse.z+0.022)/0.0025,2.));float wake=exp(-pow((d-uPulse.z+0.05)/0.05,2.))*step(d,uPulse.z);",
@@ -156,7 +157,10 @@ const FS = [
   " float NoV=max(dot(n,V),0.);vec3 r=reflect(rd,n);",
   " if(heatD>0.01){r=normalize(r+(vec3(noise(tuv*90.+uTime*2.3),0.,noise(tuv*90.-uTime*2.1+5.))-0.5)*0.05*heatD);}",
   " vec3 F0=mix(vec3(spec),gF0,metal);vec3 F=F0+(1.-F0)*pow(1.-NoV,5.)*(1.-metal*0.6);",
-  " vec3 c=alb*(1.-metal)*(0.55+0.16*max(n.y,0.))+F*env(r,rough)+emis;",
+  " float coat=0.065+0.935*pow(1.-NoV,5.);",
+  " vec3 coatRef=env(r,0.025);float panel=pow(max(0.,dot(r,normalize(vec3(-0.28,0.72,-0.64)))),64.);",
+  " coatRef+=mix(vec3(1.,0.94,0.84),vec3(0.82,0.90,1.),uCold)*panel*2.2;",
+  " vec3 c=(alb*(1.-metal)*(0.40+0.12*max(n.y,0.))+F*env(r,rough))*(1.-coat*0.35)+coatRef*coat*(1.-0.65*groove)+emis;",
   " if(top&&uCold>0.001){vec2 fq=p.xz;float fr=fbm(fq*6.+fbm(fq*2.5)*2.);float feather=smoothstep(0.30,0.78,fr);vec3 vr=vor(fq*4.2);",
   "  float edge=1.-smoothstep(0.,0.016,vr.y-vr.x);float melt=smoothstep(uThaw*1.3-0.25,uThaw*1.3,0.25+0.5*vr.z+0.25*fr);float fa=uCold*(0.30+0.70*feather)*melt;",
   "  vec3 ri=reflect(rd,normalize(vec3((fr-0.5)*0.10,1.,(noise(fq*9.)-0.5)*0.10)));vec3 iceRef=env(ri,0.10)*0.07*vec3(0.85,0.93,1.0);",
@@ -836,8 +840,11 @@ export class Engine {
       g.save();
       g.translate(w / 2, h / 2);
       const gr0 = g.createLinearGradient(-R, -R, R, R);
-      gr0.addColorStop(0, "#17171a");
-      gr0.addColorStop(1, "#0c0c0e");
+      gr0.addColorStop(0, "#11141b");
+      gr0.addColorStop(0.36, "#252b35");
+      gr0.addColorStop(0.40, "#8b919b");
+      gr0.addColorStop(0.44, "#222731");
+      gr0.addColorStop(1, "#090b10");
       g.fillStyle = gr0;
       g.strokeStyle = "rgba(232,180,74,0.5)";
       g.lineWidth = 1.5;
@@ -866,11 +873,13 @@ export class Engine {
     const oy = fit ? fit[1] : (h - sh) / 2;
     s.flat = { ox, oy, sw, sh };
     const gr = g.createLinearGradient(ox, oy, ox + sw, oy + sh);
-    gr.addColorStop(0, "#282a32");
-    gr.addColorStop(0.45, "#1c1e25");
-    gr.addColorStop(0.52, "#33343a");
-    gr.addColorStop(0.6, "#1c1e25");
-    gr.addColorStop(1, "#0c0c0e");
+    gr.addColorStop(0, "#10131a");
+    gr.addColorStop(0.40, "#202630");
+    gr.addColorStop(0.47, "#454d59");
+    gr.addColorStop(0.49, "#969ca6");
+    gr.addColorStop(0.51, "#343c48");
+    gr.addColorStop(0.57, "#171c25");
+    gr.addColorStop(1, "#090b10");
     g.fillStyle = gr;
     g.fillRect(ox, oy, sw, sh);
     g.strokeStyle = "rgba(243,239,231,0.12)";
