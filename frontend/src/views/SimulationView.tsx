@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { formatUnits } from "viem";
 import { deployment } from "../chain/deployment.ts";
-import { priceQuotePerRiskyE6, readEvents } from "../chain/reads.ts";
+import { priceQuotePerRiskyE6, readEvents, type Snapshot } from "../chain/reads.ts";
 import type { Live } from "../chain/useLive.ts";
 import {
   DemoHeader,
@@ -19,6 +19,7 @@ import {
   sqrtPriceX96At,
 } from "../swap/arbitrage.ts";
 import { swapContext } from "../swap/context.ts";
+import { readReference } from "../swap/reference.ts";
 import {
   quoteIs0,
   shortError,
@@ -32,81 +33,25 @@ import { Licence } from "../sections/Licence.tsx";
 import { Records } from "../sections/Testnet.tsx";
 import { HISTORY_URL } from "../config.ts";
 
-const feedAbi = [
-  {
-    type: "function",
-    name: "latestRoundData",
-    stateMutability: "view",
-    inputs: [],
-    outputs: [
-      { name: "roundId", type: "uint80" },
-      { name: "answer", type: "int256" },
-      { name: "startedAt", type: "uint256" },
-      { name: "updatedAt", type: "uint256" },
-      { name: "answeredInRound", type: "uint80" },
-    ],
-  },
-  {
-    type: "function",
-    name: "decimals",
-    stateMutability: "view",
-    inputs: [],
-    outputs: [{ type: "uint8" }],
-  },
-] as const;
-
-/** Sized just over the large-swap threshold, so the trade is the kind the mechanism exists for. */
+/** Sized just over the quote-side threshold. */
 const OVER_N0_BPS = 12_000n;
-/** Below this the pool already sits on the reference and there is no gap worth closing. */
 const MIN_GAP_BPS = 1n;
+type Reference = Awaited<ReturnType<typeof readReference>>;
 
-interface Reference {
-  priceE6: bigint;
-  updatedAt: number;
-}
-
-function useReference(): { ref: Reference | null; error: string | null } {
-  const [ref, setRef] = useState<Reference | null>(null);
-  const [error, setError] = useState<string | null>(null);
+function useReference(snapshot: Snapshot | null): { ref: Reference | null; error: string | null } {
+  const [state, setState] = useState<{ block: bigint; ref: Reference | null; error: string | null } | null>(null);
   useEffect(() => {
+    if (!snapshot) return;
     let cancelled = false;
-    const read = async () => {
-      try {
-        const [round, decimals] = await Promise.all([
-          swapContext.client.readContract({
-            address: deployment.oracles.chainlinkEthUsd,
-            abi: feedAbi,
-            functionName: "latestRoundData",
-          }),
-          swapContext.client.readContract({
-            address: deployment.oracles.chainlinkEthUsd,
-            abi: feedAbi,
-            functionName: "decimals",
-          }),
-        ]);
-        const answer = round[1];
-        if (answer <= 0n)
-          throw new Error("the reference feed returned a non-positive price");
-        const priceE6 =
-          decimals >= 6
-            ? answer / 10n ** BigInt(decimals - 6)
-            : answer * 10n ** BigInt(6 - decimals);
-        if (!cancelled) {
-          setRef({ priceE6, updatedAt: Number(round[3]) });
-          setError(null);
-        }
-      } catch (err) {
-        if (!cancelled) setError(shortError(err));
-      }
-    };
-    void read();
-    const i = setInterval(() => void read(), 15_000);
-    return () => {
-      cancelled = true;
-      clearInterval(i);
-    };
-  }, []);
-  return { ref, error };
+    void readReference(swapContext, snapshot).then(
+      (ref) => { if (!cancelled) setState({ block: snapshot.blockNumber, ref, error: null }); },
+      (err) => { if (!cancelled) setState({ block: snapshot.blockNumber, ref: null, error: shortError(err) }); },
+    );
+    return () => { cancelled = true; };
+  }, [snapshot]);
+  return state?.block === snapshot?.blockNumber
+    ? { ref: state?.ref ?? null, error: state?.error ?? null }
+    : { ref: null, error: null };
 }
 
 interface Preset {
@@ -120,10 +65,12 @@ interface Preset {
 }
 
 export function SimulationView({ live }: { live: Live }) {
-  const { ref, error: refError } = useReference();
+  const { ref, error: refError } = useReference(live.error ? null : live.snapshot);
   const [tracked, setTracked] = useState<TrackedRecord | null>(null);
   const [latestError, setLatestError] = useState<string | null>(null);
   const [following, setFollowing] = useState(false);
+  const followEpoch = useRef(0);
+  useEffect(() => () => { followEpoch.current += 1; }, []);
   const [result, setResult] = useState<SwapResult | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [preset, setPreset] = useState<Preset | null>(null);
@@ -159,7 +106,7 @@ export function SimulationView({ live }: { live: Live }) {
     };
   };
   const overN0: Preset | null =
-    s && poolE6 !== null && poolE6 > 0n
+    s && ref && !live.error && poolE6 !== null && poolE6 > 0n
       ? (() => {
           const quote = (s.config.n0 * OVER_N0_BPS) / 10_000n;
           // Specify the quote leg in either direction: pay Q to buy, request Q to sell.
@@ -180,12 +127,18 @@ export function SimulationView({ live }: { live: Live }) {
     };
     void (async () => {
       try {
-        const [close, setup] = await Promise.all([
+        const [close, setup] = await Promise.allSettled([
           absGap !== null && absGap >= MIN_GAP_BPS ? make("gap", ref.priceE6) : null,
           absGap !== null && absGap < BigInt(Math.max(40, s.config.tauBps * 2)) && s.config.tauBps <= 1_000
             ? make("setup", demoGapTarget(ref.priceE6, s.config.tauBps)) : null,
         ]);
-        if (!cancelled) setTargets({ key: targetKey, close, setup, error: null });
+        if (!cancelled) setTargets({
+          key: targetKey,
+          close: close.status === "fulfilled" ? close.value : null,
+          setup: setup.status === "fulfilled" ? setup.value : null,
+          error: [close, setup].filter((r) => r.status === "rejected")
+            .map((r) => shortError((r as PromiseRejectedResult).reason)).join(" ") || null,
+        });
       } catch (err) {
         if (!cancelled) setTargets({ key: targetKey, close: null, setup: null, error: shortError(err) });
       }
@@ -204,6 +157,9 @@ export function SimulationView({ live }: { live: Live }) {
   const active = preset;
 
   const onSwapped = useCallback((r: SwapResult) => {
+    followEpoch.current += 1;
+    setFollowing(false);
+    setLatestError(null);
     setResult(r);
     setTracked(
       r.record
@@ -221,10 +177,12 @@ export function SimulationView({ live }: { live: Live }) {
   }, []);
 
   const followLatest = async () => {
+    const epoch = ++followEpoch.current;
     setLatestError(null);
     setFollowing(true);
     try {
       const events = await readEvents();
+      if (epoch !== followEpoch.current) return;
       const d = events.find((e) => e.kind === "deposit");
       if (!d || d.kind !== "deposit") {
         setLatestError(
@@ -243,9 +201,9 @@ export function SimulationView({ live }: { live: Live }) {
         outcome: { kind: "open" },
       });
     } catch (err) {
-      setLatestError(shortError(err));
+      if (epoch === followEpoch.current) setLatestError(shortError(err));
     } finally {
-      setFollowing(false);
+      if (epoch === followEpoch.current) setFollowing(false);
     }
   };
 
@@ -301,6 +259,7 @@ export function SimulationView({ live }: { live: Live }) {
           Reference unavailable: {refError}
         </p>
       )}
+      {live.error && <p className="demo-error" role="alert">Live pool read unavailable: {live.error}. Price-target presets are paused.</p>}
       <div className="sim-presets" role="group" aria-label="Prepared trades">
         <span className="tl">Prepare</span>
         {setupGap && (
@@ -344,12 +303,12 @@ export function SimulationView({ live }: { live: Live }) {
           It does not aim to close the gap. Buying specifies the USDC payment; selling requests that USDC output and quotes the ETH payment. Both target the quote-side threshold without converting it at the spot price.</p>
         {setupGap && <p><strong>Create demo gap — optional setup.</strong> Prepare a separate swap to move the pool about {s ? Math.max(40, s.config.tauBps * 2) : 40} bps above Chainlink,
           then refresh and choose Close the gap. Both swaps incur costs and may collect deposits.</p>}
-        <p role="status">{edited
+        <p role="status">{busy ? "A wallet action or submitted transaction is in progress. Preset changes are paused until its status is resolved." : edited
           ? "Custom trade: you changed the form. Click a preset again to restore its direction, input token and amount."
           : active ? `Prepared: ${active.side === "buy" ? `buy ${R.symbol}` : `sell ${R.symbol}`}, ${active.exactOutput ? "requesting" : "paying"} ${active.amount} ${active.side === "buy" || active.exactOutput ? Q.symbol : R.symbol}. This amount stays fixed while live presets refresh; click a preset again to update it. Execution determines the result.`
           : "Reading the pool to prepare a trade."}</p>
         {targetKey && targets?.key !== targetKey && <p>Refreshing price-target presets…</p>}
-        {targets?.key === targetKey && targets.error && <p className="demo-error" role="alert">Price-target preset unavailable: {targets.error}</p>}
+        {targets?.key === targetKey && targets.error && <p className="demo-error" role="alert">Some price-target presets are unavailable: {targets.error}</p>}
       </div>
       {absGap !== null && absGap > 500n && (
         <p className="demo-error" role="alert">
@@ -386,7 +345,6 @@ export function SimulationView({ live }: { live: Live }) {
           preview={preview}
           snapshot={s}
           referenceE6={ref?.priceE6 ?? null}
-          poolE6={poolE6}
         />
       </div>
       <div className="sim-settle">

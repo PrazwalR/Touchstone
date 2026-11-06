@@ -175,7 +175,7 @@ export function History() {
                         <summary>Record and payout fields</summary>
                         {typeof e.args.recordId === "string" &&
                           /^\d+$/.test(e.args.recordId) && (
-                            <a href={`?record=${e.args.recordId}#history`}>
+                            <a href={`?record=${e.args.recordId}${window.location.hash.startsWith("#/") ? window.location.hash : "#/simulation"}`}>
                               All evidence for record #{e.args.recordId}
                             </a>
                           )}

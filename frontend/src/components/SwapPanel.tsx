@@ -75,6 +75,13 @@ export function SwapPanel({
   const [exactOutput, setExactOutput] = useState(initialExactOutput);
   const [acceptedImpact, setAcceptedImpact] = useState<string | null>(null);
   const f = useSwapFlow(ctx, side, amount, slippage, exactOutput);
+  useEffect(() => {
+    if (f.restoredSubmission && f.submittedSide) {
+      setSide(f.submittedSide);
+      setAmount("");
+      onEdited?.();
+    }
+  }, [f.restoredSubmission, f.submittedSide, onEdited]);
   const tIn = tokenIn(ctx, side);
   const tOut = tokenOut(ctx, side);
   const specifiedToken = exactOutput ? tOut : tIn;
@@ -100,7 +107,8 @@ export function SwapPanel({
     f.phase === "approving" ||
     f.phase === "signing" ||
     f.phase === "confirming";
-  useEffect(() => { onBusyChange?.(busy); }, [busy, onBusyChange]);
+  const locked = busy || f.confirmationPending;
+  useEffect(() => { onBusyChange?.(locked); }, [locked, onBusyChange]);
 
   let action: { label: string; onClick?: () => void; disabled: boolean } = {
     label: "Enter an amount",
@@ -140,10 +148,12 @@ export function SwapPanel({
 
   const impact = p ? priceImpactBps(ctx, p) : null;
   const impactText = impact === null ? "—" : `${(impact / 100).toFixed(2)}%`;
-  const impactKey = p ? `${side}/${exactOutput}/${p.specified}/${p.sqrtPriceX96}/${p.netOut}/${p.exact?.netOut ?? ""}` : "";
+  const impactKey = p ? `${side}/${exactOutput}/${p.account}/${p.specified}/${p.sqrtPriceX96}/${p.amountIn}/${p.netOut}/${p.depositBound}/${p.exact?.netIn ?? ""}/${p.exact?.netOut ?? ""}/${p.exact?.deposit ?? ""}` : "";
   const highImpact = impact !== null && impact > 500;
-  if (highImpact && acceptedImpact !== impactKey && f.phase !== "done")
+  if (highImpact && acceptedImpact !== impactKey && action.onClick && f.phase !== "done" && f.wallet.account && f.wallet.onRightChain)
     action = { label: "Review large price impact", disabled: true };
+  if (f.confirmationPending && f.phase === "failed")
+    action = { label: "Check submitted transaction", onClick: () => void f.resumeConfirmation(), disabled: false };
   if (busy)
     action = {
       label:
@@ -167,7 +177,7 @@ export function SwapPanel({
         className="seg swap-direction"
         aria-label="Direction"
         value={[side]}
-        disabled={busy}
+        disabled={locked}
         onValueChange={(v) => {
           if (v[0] && v[0] !== side) {
             setSide(v[0] as Side);
@@ -202,7 +212,7 @@ export function SwapPanel({
                 onEdited?.();
               }}
               aria-invalid={amount !== "" && f.specified === null}
-              disabled={busy}
+              disabled={locked}
             />
             <span className="token">{specifiedToken.symbol}</span>
           </div>
@@ -214,7 +224,7 @@ export function SwapPanel({
                   type="button"
                   variant="link"
                   className="inline-action"
-                  disabled={busy}
+                  disabled={locked}
                   onClick={() => {
                     const max = isNative(tIn)
                       ? p.balanceIn! > GAS_RESERVE_WEI
@@ -308,13 +318,13 @@ export function SwapPanel({
               type="checkbox"
               checked={acceptedImpact === impactKey}
               onChange={(e) => setAcceptedImpact(e.target.checked ? impactKey : null)}
-              disabled={busy}
+              disabled={locked}
             />{" "}
             I have reviewed what I pay and receive at this price.
           </label>
         </div>
       )}
-      {!f.wallet.account ? (
+      {!f.wallet.account && !f.confirmationPending ? (
         <WalletButton prominent />
       ) : (
         <Button
@@ -336,6 +346,12 @@ export function SwapPanel({
           {f.actionError}
         </p>
       )}
+      {f.submittedHash && f.phase !== "done" && (
+        <p className="swap-meta" role="status">
+          Transaction submitted. {f.confirmationPending && f.phase === "failed" ? "Its status could not be confirmed; check it without submitting another swap. " : "Waiting for confirmation. "}
+          <a href={explorerTx(f.submittedHash)} target="_blank" rel="noreferrer">View submitted transaction ↗</a>
+        </p>
+      )}
       {f.result && (
         <div className="trade-confirmed" role="status">
           <span>{f.result.record ? "Swap complete · deposit recorded" : "Swap complete · no deposit"}</span>
@@ -349,7 +365,7 @@ export function SwapPanel({
           </p>
           <p>
             {f.result.record
-              ? `${fmt(f.result.record.deposit, depositToken)} was held by the hook during execution. Follow its refund in the settlement panel.`
+              ? `${fmt(f.result.record.deposit, f.result.record.depositIn0 === (ctx.key.currency0.toLowerCase() === ctx.quote.address.toLowerCase()) ? ctx.quote : ctx.risky)} was held by the hook during execution. Follow its refund in the settlement panel.`
               : "The hook collected no deposit during execution. There is nothing to settle."}
           </p>
           {f.result.record && (
@@ -376,7 +392,7 @@ export function SwapPanel({
               <ToggleGroup
                 aria-label="Amount to specify"
                 value={[exactOutput ? "output" : "input"]}
-                disabled={busy}
+                disabled={locked}
                 onValueChange={(v) => {
                   if (v[0] && (v[0] === "output") !== exactOutput) {
                     setExactOutput(v[0] === "output");
@@ -399,7 +415,7 @@ export function SwapPanel({
               <ToggleGroup
                 aria-label="Slippage"
                 value={[String(slippage)]}
-                disabled={busy}
+                disabled={locked}
                 onValueChange={(v) => {
                   if (v[0]) setSlippage(BigInt(String(v[0])));
                 }}

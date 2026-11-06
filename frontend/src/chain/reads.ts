@@ -62,6 +62,8 @@ export interface Snapshot {
     n0: bigint;
     nMin: bigint;
     flags: number;
+    referenceFeed: Address;
+    referenceMaxAge: number;
     tauBps: number;
     deltaBps: number;
     deltaMaxBps: number;

@@ -12,8 +12,8 @@ import { units, utc } from "../format.ts";
 import { useRecordOutcome, type TrackedRecord } from "../swap/useSwapFlow.ts";
 import type { RecordOutcome, SwapContext } from "../swap/swap.ts";
 import { SettlementRail } from "./SettlementRail.tsx";
+import { readRecordWindow, readRefundDelivery, type SettlementWindow } from "../swap/recordSettlement.ts";
 
-const SETTLE_DELAY_FALLBACK = 3;
 function useClock(): number {
   const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
   useEffect(() => {
@@ -27,20 +27,47 @@ export function RecordTracker({
   ctx,
   tracked,
   onChange,
-  settleDelay,
-  windowSeconds,
 }: {
   ctx: SwapContext;
   tracked: TrackedRecord;
   onChange(t: TrackedRecord): void;
-  settleDelay?: number;
-  windowSeconds?: number;
 }) {
   const stable = useCallback((t: TrackedRecord) => onChange(t), [onChange]);
   const error = useRecordOutcome(ctx, tracked, stable);
   const now = useClock();
-  const t0 = tracked.timestamp + (settleDelay ?? SETTLE_DELAY_FALLBACK);
-  const expiry = windowSeconds === undefined ? null : t0 + windowSeconds;
+  const recordKey = `${tracked.poolId}/${tracked.recordId}/${tracked.fromBlock}`;
+  const [windowRead, setWindowRead] = useState<{ key: string; window: SettlementWindow | null; error: string | null } | null>(null);
+  const [delivery, setDelivery] = useState<{ key: string; state: "delivered" | "deferred" } | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const read = async () => {
+      try {
+        const window = await readRecordWindow(ctx, tracked.poolId, tracked.recordId, tracked.fromBlock);
+        if (!cancelled) setWindowRead({ key: recordKey, window, error: null });
+      } catch {
+        if (!cancelled) {
+          setWindowRead({ key: recordKey, window: null, error: "Settlement timing unavailable; retrying." });
+          timer = setTimeout(() => void read(), 5_000);
+        }
+      }
+    };
+    void read();
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [ctx, recordKey]);
+  const outcomeHash = tracked.outcome.kind === "open" ? null : tracked.outcome.hash;
+  useEffect(() => {
+    if (!outcomeHash) return;
+    let cancelled = false;
+    void readRefundDelivery(ctx, tracked.poolId, tracked.recordId, outcomeHash).then((state) => {
+      if (!cancelled) setDelivery({ key: `${recordKey}/${outcomeHash}`, state });
+    }, () => { /* Keep allocation wording when delivery cannot be verified. */ });
+    return () => { cancelled = true; };
+  }, [ctx, recordKey, outcomeHash]);
+  const timing = windowRead?.key === recordKey ? windowRead.window : null;
+  const t0 = timing?.t0 ?? null;
+  const expiry = timing?.expiresAt ?? null;
+  const refundDelivery = delivery?.key === `${recordKey}/${outcomeHash}` ? delivery.state : null;
   const depTok =
     tracked.depositIn0 ===
     (ctx.key.currency0.toLowerCase() === ctx.quote.address.toLowerCase())
@@ -59,22 +86,24 @@ export function RecordTracker({
   const lpShare =
     o.kind === "settled" ? o.payout.toLPs : o.kind === "expired" ? 0n : null;
   const status = open
-    ? now < t0
+    ? t0 === null ? "Reading settlement timing" : BigInt(now) < t0
       ? "Reference pending"
-      : expiry !== null && now >= expiry
+      : expiry !== null && BigInt(now) >= expiry
         ? "Expiry available"
-        : "Ready to settle"
+        : "Awaiting settlement"
     : o.kind === "expired"
-      ? "Expired · refunded"
+      ? "Expired · refund allocated"
       : "Settled";
   const headline = open
     ? "Deposit held."
-    : o.kind === "expired"
-      ? "Full deposit refunded."
+    : refundDelivery === "deferred"
+      ? "Refund credited for claim."
+      : o.kind === "expired"
+      ? refundDelivery === "delivered" ? "Full deposit refunded." : "Full refund allocated."
       : o.payout.benign && o.payout.rebate > 0n
-        ? "Refunded, with a rebate."
+        ? "Refund and rebate allocated."
         : o.payout.refund === tracked.deposit
-          ? "Full deposit refunded."
+          ? refundDelivery === "delivered" ? "Full deposit refunded." : "Full refund allocated."
           : "The deposit has settled.";
   return (
     <Card className={`settlement-card ${open ? "is-pending" : "is-settled"}`}>
@@ -95,10 +124,12 @@ export function RecordTracker({
               <strong>{amt(tracked.deposit)}</strong>
             </div>
             <p className="receipt-explanation">
-              {now < t0
-                ? `Eligible for settlement in ${t0 - now}s. The next qualifying signed Pyth price measures the trade.`
-                : expiry !== null && now >= expiry
-                  ? "The settlement window has ended. The record can be expired for a full refund."
+              {t0 === null
+                ? "Reading the record's settlement schedule from the deployed Settler."
+                : BigInt(now) < t0
+                ? `Settlement target in ${t0 - BigInt(now)}s. A qualifying signed Pyth price is still required.`
+                : expiry !== null && BigInt(now) >= expiry
+                  ? "Expiry is available for a full refund. The deposit remains held until a settlement or expiry transaction confirms."
                   : "Waiting for a settlement transaction with a qualifying signed Pyth price. The payout appears once confirmed."}
             </p>
           </>
@@ -106,17 +137,17 @@ export function RecordTracker({
           <>
             <div className="receipt-totals">
               <div>
-                <span>Refund to trader</span>
+                <span>Refund allocation</span>
                 <strong>{amt(refund!)}</strong>
               </div>
               <div>
-                <span>LP share · vested</span>
+                <span>LP share · vesting</span>
                 <strong className="gold">{amt(lpShare!)}</strong>
               </div>
             </div>
             {o.kind === "settled" && o.payout.rebate > 0n && (
               <p className="receipt-rebate">
-                Plus {amt(o.payout.rebate)} rebate to the trader
+                Plus {amt(o.payout.rebate)} rebate allocated to the rebate recipient
               </p>
             )}
             {o.kind === "settled" && (
@@ -140,6 +171,13 @@ export function RecordTracker({
           </>
         )}
       </div>
+      {!open && refundDelivery === "deferred" && (
+        <p className="demo-error" role="status">
+          Refund delivery failed. The refund is credited in RebateLedger; the beneficiary can claim it to a receiving address.
+          Finalization succeeded and the deposit is no longer held by the hook.
+        </p>
+      )}
+      {windowRead?.key === recordKey && windowRead.error && <p className="demo-error">{windowRead.error}</p>}
       {error && (
         <p className="demo-error" role="alert">
           Outcome read unavailable: {error}. Showing the last confirmed state.
@@ -153,7 +191,7 @@ export function RecordTracker({
               <dt>Original deposit</dt>
               <dd>{amt(tracked.deposit)}</dd>
               <dt>Settlement eligible from</dt>
-              <dd>{utc(t0)}</dd>
+              <dd>{t0 === null ? "Reading Settler schedule" : utc(t0)}</dd>
               <dt>Full-refund expiry</dt>
               <dd>
                 {expiry === null ? "Pool window unavailable" : utc(expiry)}
@@ -178,7 +216,7 @@ export function RecordTracker({
               <PayoutDetails payout={o.payout} amt={amt} />
               <dl className="receipt-kv">
                 <dt>Settlement markout</dt>
-                <dd>{units(o.markout, 6, 2)} quote units</dd>
+                <dd>{units(o.markout, ctx.quote.decimals, 2)} {ctx.quote.symbol}</dd>
                 <dt>Retention share α</dt>
                 <dd>{o.alphaBps / 100}%</dd>
               </dl>
@@ -212,7 +250,7 @@ function SettlementMath({
   return (
     <div className="receipt-math">
       <p className="math-f mono">
-        R = min(D, α · max(0, m − (ε + c) · N))
+                R = min(D, α · max(0, m⁺ − (ε + c*) · N⁺))
       </p>
       <dl className="receipt-kv">
         <dt>Signed Pyth price P*</dt>
@@ -230,11 +268,10 @@ function SettlementMath({
         <dd className="gold">{amt(retained)}</dd>
       </dl>
       <p className="swap-meta">
-        {retained === 0n
-          ? outcome.markout <= 0n
-            ? "The trade was worth no more than it paid at P*, so nothing is retained."
-            : "Nothing is retained: the markout stayed inside the allowance of ε plus the price's confidence, or a confidence guard refunded in full."
-          : "The markout above the allowance, times α, capped at D, is retained for LPs and the rebate pool."}
+        The displayed m is the full trade's markout. Retention can assess only the in-the-money portion
+        (m⁺ and N⁺), so it is not always computed from that displayed m. The contract also applies confidence,
+        licence and closed-market guards. The formula uses quote units, then converts retained value to the deposit currency at P*.
+        {retained === 0n ? " This settlement retained nothing." : " The confirmed retained amount is shown above."}
       </p>
     </div>
   );

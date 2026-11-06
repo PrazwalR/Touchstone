@@ -6,6 +6,7 @@ import {
   erc20Abi,
   keccak256,
   maxUint256,
+  parseAbi,
   zeroAddress,
   type Account,
   type Address,
@@ -199,24 +200,7 @@ export async function previewSwap(ctx: SwapContext, side: Side, specified: bigin
   ]);
   const amountIn = exactOutput ? quote : specified;
   const netOut = exactOutput ? specified : quote;
-  const readDeposit = (n: bigint, swapper: Address) => ctx.client.readContract({
-    ...at, address: ctx.hook, abi: touchstoneHookAbi, functionName: "previewDeposit",
-    args: [ctx.key, zfo, n, swapper],
-  });
-  // V4Quoter calls the hook as the quoter, so recover its quote leg using that identity.
-  let notionalQuote = await notionalFromQuote(quote, side, specified, exactOutput, (n) => readDeposit(n, ctx.quoter));
-  const deposit = await ctx.client.readContract({
-    ...at, address: ctx.hook, abi: touchstoneHookAbi, functionName: "previewDeposit",
-    args: [ctx.key, zfo, notionalQuote, account ?? zeroAddress],
-  });
   const needsApproval = allowance !== null && allowance < amountIn;
-  const d = deposit.depositIfFlagged;
-  // Exact-output sells pay in risky units. Net input includes any deposit, so using it
-  // for conversion rounds the bound up. Exact-input buys convert from net to gross output.
-  const depositBound = exactOutput
-    ? (side === "buy" ? d : (d * amountIn + specified - 1n) / specified)
-    : (side === "sell" ? d : notionalQuote <= d ? 0n : (d * quote + notionalQuote - d - 1n) / (notionalQuote - d));
-
   let exact: Preview["exact"] = null;
   let exactError: string | null = null;
   if (account !== undefined && !needsApproval && balanceIn !== null && balanceIn >= amountIn) {
@@ -234,14 +218,33 @@ export async function previewSwap(ctx: SwapContext, side: Side, specified: bigin
       const inputLeg = BigInt.asIntN(128, zfo ? delta >> 128n : delta);
       exact = { netOut: outOf(delta, zfo), netIn: -inputLeg, deposit: dep };
       if (exactOutput && exact.netOut !== specified) throw new Error("insufficient liquidity for the requested output");
-      notionalQuote = side === "buy"
-        ? exact.netIn - (exactOutput ? dep : 0n)
-        : exact.netOut + (exactOutput ? 0n : dep);
     } catch (err) {
       exact = null;
       exactError = shortError(err);
     }
   }
+  const readDeposit = (n: bigint, swapper: Address) => ctx.client.readContract({
+    ...at, address: ctx.hook, abi: touchstoneHookAbi, functionName: "previewDeposit",
+    args: [ctx.key, zfo, n, swapper],
+  });
+  // The real router simulation knows executed legs and the actual hold, including near-budget decisions.
+  // previewDeposit approximates risky exposure at spot and cannot safely recover that notional first.
+  const notionalQuote = exact
+    ? side === "buy"
+      ? exact.netIn - (exactOutput ? exact.deposit : 0n)
+      : exact.netOut + (exactOutput ? 0n : exact.deposit)
+    : await notionalFromQuote(quote, side, specified, exactOutput, (n) => readDeposit(n, ctx.quoter));
+  const deposit = await ctx.client.readContract({
+    ...at, address: ctx.hook, abi: touchstoneHookAbi, functionName: "previewDeposit",
+    args: [ctx.key, zfo, notionalQuote, account ?? zeroAddress],
+  });
+  const d = deposit.depositIfFlagged;
+  // Exact-output sells pay in risky units. Net input includes any deposit, so using it
+  // for conversion rounds the bound up. Exact-input buys convert from net to gross output.
+  const depositBound = exactOutput
+    ? (side === "buy" ? d : (d * amountIn + specified - 1n) / specified)
+    : (side === "sell" ? d : notionalQuote <= d ? 0n : (d * quote + notionalQuote - d - 1n) / (notionalQuote - d));
+
   return {
     side,
     exactOutput,
@@ -354,7 +357,7 @@ export interface SwapResult {
   hash: Hex;
   receipt: TransactionReceipt;
   record: TouchstoneRecord | null;
-  /** What the account actually paid and received, from its balances around the transaction. */
+  /** Confirmed swap amounts from the receipt, including the hook hold and excluding transaction gas. */
   paid: bigint;
   received: bigint;
 }
@@ -375,11 +378,39 @@ export interface TouchstoneRecord {
   raw: unknown;
 }
 
-async function balanceOf(ctx: SwapContext, t: Token, who: Address, blockNumber?: bigint): Promise<bigint> {
-  const at = blockNumber === undefined ? {} : { blockNumber };
-  return isNative(t)
-    ? ctx.client.getBalance({ address: who, ...at })
-    : ctx.client.readContract({ ...at, address: t.address, abi: erc20Abi, functionName: "balanceOf", args: [who] });
+export const poolManagerSwapAbi = parseAbi([
+  "event Swap(bytes32 indexed id,address indexed sender,int128 amount0,int128 amount1,uint160 sqrtPriceX96,uint128 liquidity,int24 tick,uint24 fee)",
+]);
+
+/** PoolManager emits the AMM legs before afterSwap; the hook hold adjusts the unspecified leg. */
+export function swapAmountsFromReceipt(
+  ctx: SwapContext,
+  side: Side,
+  receipt: TransactionReceipt,
+  record: Pick<TouchstoneRecord, "amount0" | "amount1" | "deposit" | "depositIn0"> | null,
+): { paid: bigint; received: bigint } {
+  let amounts: { amount0: bigint; amount1: bigint } | null = record;
+  for (const log of receipt.logs) {
+    if (log.address.toLowerCase() !== ctx.manager.toLowerCase()) continue;
+    try {
+      const event = decodeEventLog({ abi: poolManagerSwapAbi, data: log.data, topics: log.topics });
+      if (event.args.id.toLowerCase() !== ctx.poolId.toLowerCase() || event.args.sender.toLowerCase() !== ctx.router.toLowerCase()) continue;
+      amounts = event.args;
+      break;
+    } catch {
+      // Other PoolManager events are not this swap's signed AMM legs.
+    }
+  }
+  if (!amounts) throw new Error(`Swap confirmed in ${receipt.transactionHash}, but its swap amounts could not be decoded.`);
+  const zfo = zeroForOne(ctx, side);
+  const input = zfo ? amounts.amount0 : amounts.amount1;
+  const output = zfo ? amounts.amount1 : amounts.amount0;
+  const heldInInput = record !== null && record.depositIn0 === zfo;
+  const deposit = record?.deposit ?? 0n;
+  const paid = -input + (heldInInput ? deposit : 0n);
+  const received = output - (heldInInput ? 0n : deposit);
+  if (paid < 0n || received < 0n) throw new Error(`Swap confirmed in ${receipt.transactionHash}, but its swap amounts are invalid.`);
+  return { paid, received };
 }
 
 /** Simulates once more with the final guard, sends, waits, and decodes the record the hook opened, if any. */
@@ -391,11 +422,11 @@ export async function executeSwap(
   guard: Guard,
   deadline: bigint,
   exactOutput = false,
+  onSubmitted?: (hash: Hex) => void,
 ): Promise<SwapResult> {
   const account = wallet.account.address;
   const zfo = zeroForOne(ctx, side);
   const tIn = tokenIn(ctx, side);
-  const tOut = tokenOut(ctx, side);
   const { request, result } = await ctx.client.simulateContract({
     account: wallet.account,
     address: ctx.router,
@@ -405,19 +436,27 @@ export async function executeSwap(
     value: isNative(tIn) ? guard.maxNetIn : 0n,
   });
   if (exactOutput && outOf(result[0], zfo) !== specified) throw new Error("insufficient liquidity for the requested output");
-  const [inBefore, outBefore] = await Promise.all([balanceOf(ctx, tIn, account), balanceOf(ctx, tOut, account)]);
   const hash = await wallet.writeContract(request);
+  onSubmitted?.(hash);
+  return confirmSwap(ctx, side, hash);
+}
+
+/** A confirmed onchain revert, unlike an unresolved receipt RPC failure. */
+export class SwapRevertedError extends Error {
+  readonly hash: Hex;
+  constructor(hash: Hex) {
+    super(`Swap reverted in ${hash}`);
+    this.name = "SwapRevertedError";
+    this.hash = hash;
+  }
+}
+
+/** Resume receipt confirmation for an already submitted transaction without signing a second swap. */
+export async function confirmSwap(ctx: SwapContext, side: Side, hash: Hex): Promise<SwapResult> {
   const receipt = await ctx.client.waitForTransactionReceipt({ hash });
-  if (receipt.status !== "success") throw new Error("swap reverted");
-  const [inAfter, outAfter] = await Promise.all([
-    balanceOf(ctx, tIn, account, receipt.blockNumber),
-    balanceOf(ctx, tOut, account, receipt.blockNumber),
-  ]);
-  const gas = receipt.gasUsed * receipt.effectiveGasPrice;
-  // Native balances also moved by the gas the account paid.
-  const paid = inBefore - inAfter - (isNative(tIn) ? gas : 0n);
-  const received = outAfter - outBefore + (isNative(tOut) ? gas : 0n);
-  return { hash, receipt, record: recordFromReceipt(ctx, receipt), paid, received };
+  if (receipt.status !== "success") throw new SwapRevertedError(hash);
+  const record = recordFromReceipt(ctx, receipt);
+  return { hash, receipt, record, ...swapAmountsFromReceipt(ctx, side, receipt, record) };
 }
 
 export function recordFromReceipt(ctx: SwapContext, receipt: TransactionReceipt): TouchstoneRecord | null {
@@ -427,6 +466,7 @@ export function recordFromReceipt(ctx: SwapContext, receipt: TransactionReceipt)
       const ev = decodeEventLog({ abi: touchstoneHookAbi, data: log.data, topics: log.topics });
       if (ev.eventName !== "DepositTaken") continue;
       const r = ev.args.record;
+      if (r.poolId.toLowerCase() !== ctx.poolId.toLowerCase()) continue;
       return {
         poolId: r.poolId,
         id: r.id,

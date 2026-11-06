@@ -75,17 +75,21 @@ export function SettlementPanel({
   following?: boolean;
   followError?: string | null;
 }) {
-  const cfg = live.snapshot?.config;
+  void live;
   if (tracked)
     return (
-      <RecordTracker
-        ctx={ctx}
-        tracked={tracked}
-        onChange={onChange}
-        {...(cfg
-          ? { settleDelay: cfg.settleDelay, windowSeconds: cfg.window }
-          : {})}
-      />
+      <>
+        <RecordTracker ctx={ctx} tracked={tracked} onChange={onChange} />
+        {onFollow && (
+          <div className="receipt-bottom">
+            <Button variant="outline" disabled={following} onClick={onFollow}>
+              {following && <LoaderCircle className="demo-spin" size={15} />}
+              {following ? "Finding a record…" : "Follow latest record"}
+            </Button>
+            {followError && <p className="demo-error" role="alert">{followError}</p>}
+          </div>
+        )}
+      </>
     );
   const unflagged = result && !result.record;
   return (
