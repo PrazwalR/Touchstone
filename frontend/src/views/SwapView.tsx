@@ -52,11 +52,12 @@ export function SwapView({ live, now }: { live: Live; now: number }) {
         <DemoDisclosure title="How deposits work">
           <div className="demo-explain-grid">
             <div>
-              <h3>Trade at the pool price</h3>
+              <h3>Swap with a deposit limit</h3>
               <p>
-                Flagged swaps post a refundable deposit. For exact input it
-                reduces what you receive now; for exact output it increases what
-                you pay.
+                The quote shows your immediate output and the maximum deposit
+                you accept. The hook checks the actual swap in afterSwap and
+                collects any deposit in the same transaction. For exact input
+                it reduces immediate output; for exact output it increases payment.
               </p>
             </div>
             <div>

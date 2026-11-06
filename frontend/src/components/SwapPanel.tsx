@@ -58,12 +58,14 @@ export function SwapPanel({
   initialAmount = "",
   onSwapped,
   title = "Swap",
+  referenceOnly = false,
 }: {
   ctx: SwapContext;
   initialSide?: Side;
   initialAmount?: string;
   onSwapped?: (r: SwapResult) => void;
   title?: string;
+  referenceOnly?: boolean;
 }) {
   const [side, setSide] = useState<Side>(initialSide);
   const [amount, setAmount] = useState(initialAmount);
@@ -249,10 +251,10 @@ export function SwapPanel({
             {f.loading
               ? "Refreshing quote…"
               : p?.exact
-                ? "Account simulation"
+                ? exactOutput ? "Estimated payment, including any hold" : "Estimated immediate output"
                 : exactOutput
-                  ? "Includes deposit · estimated"
-                  : "After deposit · estimated"}
+                  ? "Estimated payment, including any hold"
+                  : "Estimated immediate output"}
           </span>
         </div>
       </div>
@@ -267,22 +269,17 @@ export function SwapPanel({
           Quote unavailable: {f.previewError}
         </p>
       )}
-      <div
-        className={`trade-deposit ${p?.deposit.flaggedNow ? "is-flagged" : ""}`}
-      >
+      <div className="trade-deposit">
         <div>
           <span>Refundable deposit</span>
-          <strong>{depositText}</strong>
+          <strong>{f.guard ? `Up to ${fmt(f.guard.maxDeposit, depositToken)}` : "—"}</strong>
+          <p className="swap-meta">
+            {exactOutput
+              ? "May be added to your payment during execution."
+              : "May be held from your output during execution."}{" "}
+            Settlement determines how much is refunded.
+          </p>
         </div>
-        <span className="deposit-state">
-          {!p
-            ? "Awaiting quote"
-            : p.deposit.exempt
-              ? "Licence exempt"
-              : p.deposit.flaggedNow
-                ? "Flagged swap"
-                : "Not flagged"}
-        </span>
       </div>
       <div className="trade-essentials">
         <span>Price impact</span>
@@ -336,7 +333,7 @@ export function SwapPanel({
       )}
       {f.result && (
         <div className="trade-confirmed" role="status">
-          <span>Swap confirmed</span>
+          <span>{f.result.record ? "Swap complete · deposit recorded" : "Swap complete · no deposit"}</span>
           <a href={explorerTx(f.result.hash)} target="_blank" rel="noreferrer">
             View transaction ↗
           </a>
@@ -345,6 +342,18 @@ export function SwapPanel({
             {fmt(f.result.received, tOut)} · block{" "}
             {f.result.receipt.blockNumber.toString()}
           </p>
+          <p>
+            {f.result.record
+              ? `${fmt(f.result.record.deposit, depositToken)} was held by the hook during execution. Follow its refund in the settlement panel.`
+              : "The hook collected no deposit during execution. There is nothing to settle."}
+          </p>
+          {f.result.record && (
+            <p>
+              {f.result.record.mode === 1
+                ? "Reason: this trade was recorded in closed-market mode."
+                : "The deposit requirement was confirmed on-chain. This deployment does not record which individual trigger fired."}
+            </p>
+          )}
         </div>
       )}
       <Accordion className="trade-details">
@@ -410,34 +419,46 @@ export function SwapPanel({
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="quote">
-          <AccordionTrigger>Quote details</AccordionTrigger>
+          <AccordionTrigger>Quote and deposit details</AccordionTrigger>
           <AccordionContent>
+            <p className="swap-meta">
+              This is a preview using current state, not a decision about your
+              trade. The hook checks the actual swap amounts after the AMM swap,
+              within the same transaction. Your output, payment and deposit
+              limits remain enforced.
+            </p>
             {p ? (
               <div className="kv swap-kv">
-                <Row k="Triggers" v={triggerNames(p.deposit.triggers)} />
+                <Row k="Estimated hold at this quote" v={depositText} />
+                <Row
+                  k={referenceOnly ? "Chainlink gap preview" : "Rules met in this preview"}
+                  v={referenceOnly
+                    ? (p.deposit.triggers & 4 ? "Directional drift threshold reached" : "Directional drift threshold not reached")
+                    : triggerNames(p.deposit.triggers)}
+                />
                 <Row
                   k="Deposit rate"
                   v={`${p.deposit.rateBps} bps · ${p.deposit.mode === 1 ? "closure record" : "continuous"}`}
                 />
                 <Row
-                  k="Settlement eligible from"
+                  k="Estimated settlement eligibility"
                   v={
                     p.deposit.flaggedNow
                       ? utc(p.deposit.settleAfter)
-                      : "No record"
+                      : "Only if a deposit is collected"
                   }
                 />
                 <Row
-                  k="Full-refund expiry"
+                  k="Estimated refund expiry"
                   v={
                     p.deposit.flaggedNow
                       ? utc(p.deposit.expiresAt)
-                      : "No record"
+                      : "Only if a deposit is collected"
                   }
                 />
                 <Row
-                  k="Licence exemption"
-                  v={p.deposit.exempt ? "Active for this account" : "None"}
+                  k="Licence exemption preview"
+                  v={p.deposit.exempt ? "Eligible under current state" : "None under current state"}
                 />
                 {f.guard && (
                   <Row

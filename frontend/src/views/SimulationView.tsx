@@ -193,6 +193,7 @@ export function SimulationView({ live }: { live: Live }) {
             initialAmount={preset}
             onSwapped={onSwapped}
             title="Arbitrage swap"
+            referenceOnly
           />
         )}
         <div className="demo-context">
@@ -238,20 +239,16 @@ export function SimulationView({ live }: { live: Live }) {
         </div>
       </div>
       <div className="demo-extras">
-        <DemoDisclosure title="Demo setup and live thresholds">
+        <DemoDisclosure title="Chainlink price difference">
           <p>
             {gapBps === null
               ? "Reading prices."
               : `${side === "buy" ? "Buy" : "Sell"} ${R.symbol} to move the pool toward the reference.`}{" "}
-            The trade starts at 1.2 × the large-swap threshold, in the direction
-            of the reference. Edit the amount freely. Quotes use the live pool;
+            This demonstration compares the pool price with Chainlink and
+            prepares a trade toward that reference. Edit the amount freely;
             your wallet signs real testnet transactions.
           </p>
           <div className="kv">
-            <div>Large-swap threshold N₀</div>
-            <div className="v">
-              {n0 === null ? "—" : `${units(n0, Q.decimals, 2)} ${Q.symbol}`}
-            </div>
             <div>Drift threshold τ</div>
             <div className="v">{s ? `${s.config.tauBps} bps` : "—"}</div>
             <div>Reference vs pool</div>
@@ -268,9 +265,9 @@ export function SimulationView({ live }: { live: Live }) {
           </div>
           <p className="swap-meta">
             The Chainlink reference informs the trade direction and deposit.
-            Settlement uses a qualifying signed Pyth price. A first large swap
-            in a block can trigger a deposit on size; sustained flow and drift
-            toward a stale pool price can also trigger it.
+            Settlement uses a qualifying signed Pyth price. This screen focuses
+            on the reference gap; the deployed hook still evaluates its full
+            execution-time rules. A deposit alone does not prove drift triggered it.
           </p>
           {live.error && <p className="demo-error">{live.error}</p>}
         </DemoDisclosure>

@@ -159,25 +159,13 @@
   color: var(--text-2);
 }
 .trade-deposit strong {
-  font: 500 24px/1.2 var(--sans);
-  letter-spacing: -0.035em;
+  font: 500 15px/1.4 var(--sans);
+  letter-spacing: -0.015em;
   overflow-wrap: anywhere;
 }
-.trade-deposit.is-flagged strong {
-  color: var(--gold-hot);
-}
-.deposit-state {
-  flex: none;
-  font-size: 13px;
-  padding: 4px 8px;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  color: var(--text-2);
-}
-.is-flagged .deposit-state {
-  color: var(--gold-hot);
-  background: #e8b44a0a;
-  border-color: var(--gold-line);
+.trade-deposit .swap-meta {
+  margin: 0;
+  max-width: 46ch;
 }
 .trade-essentials {
   display: grid;

@@ -104,12 +104,12 @@ export function SettlementPanel({
           </div>
         )}
         <h3>
-          {unflagged ? "Swap confirmed. No deposit." : "Follow the deposit."}
+          {unflagged ? "Swap complete. No deposit." : "Your swap outcome appears here."}
         </h3>
         <p>
           {unflagged
-            ? "This swap wasn’t flagged. No deposit was taken and there is nothing to settle."
-            : "A flagged swap opens a record. A signed price determines the refund and the share returned to liquidity providers."}
+            ? "The hook collected no deposit during execution. There is nothing to settle."
+            : "After your swap executes, this panel shows whether a deposit was held. If it was, you can follow its settlement and refund here."}
         </p>
         {unflagged && (
           <a
