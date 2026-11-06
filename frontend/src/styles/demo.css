@@ -140,39 +140,16 @@
   border-radius: 9px;
   color: var(--text-3);
 }
-.trade-deposit {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.trade-deposit > div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-.trade-deposit > div > span {
-  font-size: 14px;
-  color: var(--text-2);
-}
-.trade-deposit strong {
-  font: 500 15px/1.4 var(--sans);
-  letter-spacing: -0.015em;
-  overflow-wrap: anywhere;
-}
-.trade-deposit .swap-meta {
-  margin: 0;
-  max-width: 46ch;
-}
 .trade-essentials {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 7px 12px;
   font-size: 14px;
   color: var(--text-2);
+}
+.demo-grid.swap-single {
+  grid-template-columns: minmax(0, 480px);
+  justify-content: center;
 }
 .trade-essentials strong {
   font-size: 14px;
@@ -855,9 +832,6 @@
   transform: translate(-50%, -50%) rotate(-90deg);
   top: 53%;
   z-index: 1;
-}
-.demo-view .trade-deposit {
-  padding-block: 8px;
 }
 .demo-view .trade-essentials {
   gap: 5px 12px;

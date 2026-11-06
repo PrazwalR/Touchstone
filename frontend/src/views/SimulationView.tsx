@@ -193,7 +193,6 @@ export function SimulationView({ live }: { live: Live }) {
             initialAmount={preset}
             onSwapped={onSwapped}
             title="Arbitrage swap"
-            referenceOnly
           />
         )}
         <div className="demo-context">

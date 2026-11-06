@@ -33,20 +33,22 @@ export function SwapView({ live, now }: { live: Live; now: number }) {
   return (
     <section className="demo-view wrap" aria-labelledby="swap-title">
       <DemoHeader id="swap-title" title="Swap" live={live} next="simulation" />
-      <div className="demo-grid">
+      <div className={`demo-grid${result ? "" : " swap-single"}`}>
         <SwapPanel
           ctx={swapContext}
           initialAmount="1"
           onSwapped={onSwapped}
           title="ETH / USDC"
         />
-        <SettlementPanel
-          ctx={swapContext}
-          tracked={tracked}
-          onChange={setTracked}
-          result={result}
-          live={live}
-        />
+        {result && (
+          <SettlementPanel
+            ctx={swapContext}
+            tracked={tracked}
+            onChange={setTracked}
+            result={result}
+            live={live}
+          />
+        )}
       </div>
       <div className="demo-extras">
         <DemoDisclosure title="How deposits work">

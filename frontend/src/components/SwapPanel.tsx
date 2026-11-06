@@ -11,8 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Fragment, useEffect, useState } from "react";
 import { deployment, explorerTx } from "../chain/deployment.ts";
-import { TRIGGERS } from "../content/acts.ts";
-import { units, utc } from "../format.ts";
+import { units } from "../format.ts";
 import {
   BPS,
   isNative,
@@ -43,11 +42,6 @@ function Row({ k, v, em }: { k: string; v: string; em?: boolean }) {
   );
 }
 
-const triggerNames = (mask: number) =>
-  TRIGGERS.filter(([bit]) => mask & bit)
-    .map(([, n]) => n)
-    .join(" · ") || "none";
-
 /**
  * A DEX-style swap through GuardedRouter (decision 0060). Without a wallet it still quotes; with one it approves
  * exactly the input, simulates, and sends swapGuarded with a guard computed from a fresh simulation.
@@ -58,14 +52,12 @@ export function SwapPanel({
   initialAmount = "",
   onSwapped,
   title = "Swap",
-  referenceOnly = false,
 }: {
   ctx: SwapContext;
   initialSide?: Side;
   initialAmount?: string;
   onSwapped?: (r: SwapResult) => void;
   title?: string;
-  referenceOnly?: boolean;
 }) {
   const [side, setSide] = useState<Side>(initialSide);
   const [amount, setAmount] = useState(initialAmount);
@@ -85,7 +77,6 @@ export function SwapPanel({
   }, [f.phase, f.result, onSwapped]);
 
   const netOut = p?.exact?.netOut ?? p?.netOut ?? null;
-  const depositNow = p?.exact ? p.exact.deposit : null;
   const insufficient =
     p?.balanceIn !== null &&
     p?.balanceIn !== undefined &&
@@ -132,13 +123,6 @@ export function SwapPanel({
       disabled: busy || !f.guard,
     };
 
-  const depositText = p
-    ? depositNow !== null
-      ? fmt(depositNow, depositToken)
-      : p.deposit.flaggedNow
-        ? `≈ ${fmt(p.depositBound, depositToken)}`
-        : fmt(0n, depositToken)
-    : "—";
   const impact = p ? priceImpactBps(ctx, p) : null;
   const impactText = impact === null ? "—" : `${(impact / 100).toFixed(2)}%`;
   if (busy)
@@ -269,25 +253,7 @@ export function SwapPanel({
           Quote unavailable: {f.previewError}
         </p>
       )}
-      <div className="trade-deposit">
-        <div>
-          <span>Refundable deposit</span>
-          <strong>{f.guard ? `Up to ${fmt(f.guard.maxDeposit, depositToken)}` : "—"}</strong>
-          <p className="swap-meta">
-            {exactOutput
-              ? "May be added to your payment during execution."
-              : "May be held from your output during execution."}{" "}
-            Settlement determines how much is refunded.
-          </p>
-        </div>
-      </div>
       <div className="trade-essentials">
-        <span>Price impact</span>
-        <strong
-          className={impact !== null && impact > 100 ? "impact-high" : ""}
-        >
-          {impactText}
-        </strong>
         {f.guard && (
           <>
             <span>{exactOutput ? "Maximum payment" : "Minimum received"}</span>
@@ -299,11 +265,6 @@ export function SwapPanel({
           </>
         )}
       </div>
-      {impact !== null && impact > 100 && (
-        <p className="impact-note">
-          High price impact. This testnet pool has limited liquidity.
-        </p>
-      )}
       {exactOutput && (
         <p className="swap-meta">
           Output may be partially filled if liquidity changes.
@@ -419,59 +380,41 @@ export function SwapPanel({
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="quote">
-          <AccordionTrigger>Quote and deposit details</AccordionTrigger>
+          <AccordionTrigger>Quote details</AccordionTrigger>
           <AccordionContent>
             <p className="swap-meta">
-              This is a preview using current state, not a decision about your
-              trade. The hook checks the actual swap amounts after the AMM swap,
-              within the same transaction. Your output, payment and deposit
-              limits remain enforced.
+              The displayed output includes any hold estimated under current
+              state. The hook decides whether to collect a refundable deposit
+              during execution. Your minimum output, maximum payment and deposit
+              cap are enforced on-chain.
             </p>
             {p ? (
-              <div className="kv swap-kv">
-                <Row k="Estimated hold at this quote" v={depositText} />
-                <Row
-                  k={referenceOnly ? "Chainlink gap preview" : "Rules met in this preview"}
-                  v={referenceOnly
-                    ? (p.deposit.triggers & 4 ? "Directional drift threshold reached" : "Directional drift threshold not reached")
-                    : triggerNames(p.deposit.triggers)}
-                />
-                <Row
-                  k="Deposit rate"
-                  v={`${p.deposit.rateBps} bps · ${p.deposit.mode === 1 ? "closure record" : "continuous"}`}
-                />
-                <Row
-                  k="Estimated settlement eligibility"
-                  v={
-                    p.deposit.flaggedNow
-                      ? utc(p.deposit.settleAfter)
-                      : "Only if a deposit is collected"
-                  }
-                />
-                <Row
-                  k="Estimated refund expiry"
-                  v={
-                    p.deposit.flaggedNow
-                      ? utc(p.deposit.expiresAt)
-                      : "Only if a deposit is collected"
-                  }
-                />
-                <Row
-                  k="Licence exemption preview"
-                  v={p.deposit.exempt ? "Eligible under current state" : "None under current state"}
-                />
-                {f.guard && (
+              <>
+                <div className="kv swap-kv">
+                  <Row k="Price impact" v={impactText} />
+                  {f.guard && (
+                    <Row
+                      k="Maximum deposit accepted"
+                      v={fmt(f.guard.maxDeposit, depositToken)}
+                    />
+                  )}
+                  <Row k="Quote block" v={p.blockNumber.toString()} />
                   <Row
-                    k="Maximum deposit accepted"
-                    v={fmt(f.guard.maxDeposit, depositToken)}
+                    k="Quote source"
+                    v={p.exact ? "Account simulation" : "Uniswap V4Quoter"}
                   />
+                </div>
+                <p className="swap-meta">
+                  Price impact is the difference from the pool’s current price
+                  caused by execution against its liquidity, including the LP fee.
+                  It does not determine whether a deposit was collected.
+                </p>
+                {impact !== null && impact > 100 && (
+                  <p className="impact-note">
+                    High price impact. This testnet pool has limited liquidity.
+                  </p>
                 )}
-                <Row k="Quote block" v={p.blockNumber.toString()} />
-                <Row
-                  k="Quote source"
-                  v={p.exact ? "Account simulation" : "Uniswap V4Quoter"}
-                />
-              </div>
+              </>
             ) : (
               <p className="swap-meta">
                 {f.loading
