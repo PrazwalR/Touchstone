@@ -1,0 +1,38 @@
+{
+  "contract_tests": {
+    "nonfork_passed": 170,
+    "fork_passed": 3,
+    "fork_rpc": "configured archive-capable RPC; public RPC lacked fixture history"
+  },
+  "backend_tests": {
+    "shared": 2,
+    "keeper": 36,
+    "indexer": 24,
+    "bots": 5,
+    "skipped": 0
+  },
+  "research": {
+    "passed": 65,
+    "mypy_files": 41,
+    "ruff": "pass"
+  },
+  "frontend": {
+    "passed": 26,
+    "typecheck": "pass",
+    "build": "pass with existing large-chunk warning"
+  },
+  "dependency_audits": {
+    "backend": "no known vulnerabilities reported",
+    "frontend": "no known vulnerabilities reported",
+    "python_lock": "no known vulnerabilities reported"
+  },
+  "research_runs": {
+    "E3": "not run; data absent",
+    "E4": "not run; data absent",
+    "E5": "draft; not run",
+    "E6": "draft; not run",
+    "E9": "owner skipped"
+  },
+  "live_transactions_submitted": 0,
+  "solidity_source_changed": false
+}

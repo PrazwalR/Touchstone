@@ -1,0 +1,1784 @@
+[
+  {
+    "file": "src/LicenceAuction.sol",
+    "line": 67,
+    "kind": "line",
+    "source": "_lock();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Bid_ATokenCannotReenterTheAuction"
+  },
+  {
+    "file": "src/LicenceAuction.sol",
+    "line": 87,
+    "kind": "branch",
+    "source": "if (quote.isAddressZero()) revert Touchstone__QuoteNotErc20();",
+    "category": "unreachable",
+    "reason": "register is callable only by the factory, and the factory rejects a licence pool with a native quote before registering it (TouchstoneFactory._validateLease; test_CreatePool_LicenceNeedsAnErc20Quote)",
+    "evidence": "no input reaches it; see reason"
+  },
+  {
+    "file": "src/LicenceAuction.sol",
+    "line": 310,
+    "kind": "branch",
+    "source": "if (raised > type(uint128).max) raised = type(uint128).max;",
+    "category": "unreachable",
+    "reason": "a deposit is a uint128 covering at least k >= 60 seconds of rent, so rent < 2^128 / 60, and raised <= 1.5 x rent (minIncrementBps <= 5,000) stays below 2^128",
+    "evidence": "no input reaches it; see reason"
+  },
+  {
+    "file": "src/Settler.sol",
+    "line": 229,
+    "kind": "branch",
+    "source": "if (r == 0 || qAbs == 0) return true;",
+    "category": "unreachable",
+    "reason": "the hook records a swap only when its quote notional is non-zero and its risky leg is non-zero (TouchstoneHook._evaluate returns before recording otherwise), so neither leg of a closure record is zero",
+    "evidence": "no input reaches it; see reason"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 113,
+    "kind": "line",
+    "source": "_lock();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Reentrancy_DuringFinalizeIsBlocked; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 115,
+    "kind": "line",
+    "source": "TransientLib.setLock(false);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Reentrancy_DuringFinalizeIsBlocked; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 146,
+    "kind": "line",
+    "source": "p.beforeSwap = true;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Permissions_AddressEndsIn20C4"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 147,
+    "kind": "line",
+    "source": "p.afterSwap = true;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Permissions_AddressEndsIn20C4"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 148,
+    "kind": "line",
+    "source": "p.afterSwapReturnDelta = true;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Permissions_AddressEndsIn20C4"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 154,
+    "kind": "line",
+    "source": "PoolId id = key.toId();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every suite's setUp creates its pool through TouchstoneFactory.createPool; test_FactoryCopiesTheCalendarValidity"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 155,
+    "kind": "line",
+    "source": "if (_config[id].n0 != 0) revert Touchstone__AlreadyRegistered(id);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every suite's setUp creates its pool through TouchstoneFactory.createPool; test_FactoryCopiesTheCalendarValidity"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 156,
+    "kind": "line",
+    "source": "_config[id] = cfg;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every suite's setUp creates its pool through TouchstoneFactory.createPool; test_FactoryCopiesTheCalendarValidity"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 157,
+    "kind": "line",
+    "source": "_keys[id] = key;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every suite's setUp creates its pool through TouchstoneFactory.createPool; test_FactoryCopiesTheCalendarValidity"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 164,
+    "kind": "line",
+    "source": "PoolId id = record.poolId;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_ArbitrageRetainsAndConserves; test_Finalize_RejectsARecordAlreadyClosed"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 166,
+    "kind": "line",
+    "source": "PoolState storage st = _state[id];",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_ArbitrageRetainsAndConserves; test_Finalize_RejectsARecordAlreadyClosed"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 178,
+    "kind": "line",
+    "source": "_deliver(record, payout);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_ArbitrageRetainsAndConserves; test_Finalize_RejectsARecordAlreadyClosed"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 183,
+    "kind": "line",
+    "source": "PoolId id = key.toId();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Drip_ReleasesLinearly; test_Drip_WithNothingVestingDoesNothing"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 192,
+    "kind": "line",
+    "source": "PoolId id = key.toId();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Rent_ReachesTheHookAsVestingAndRebatePool; test_OnlyTheFactoryRegistersAndOnlyTheAuctionCreditsRent"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 193,
+    "kind": "line",
+    "source": "if (!_config[id].flags.has(PoolFlags.LICENCE)) revert Touchstone__NotLicence();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Rent_ReachesTheHookAsVestingAndRebatePool; test_OnlyTheFactoryRegistersAndOnlyTheAuctionCreditsRent"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 209,
+    "kind": "line",
+    "source": "_payOut(record, payout);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_ArbitrageRetainsAndConserves; test_Rent_ReachesTheHookAsVestingAndRebatePool"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 214,
+    "kind": "line",
+    "source": "_creditRent(rentPool, amount);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_ArbitrageRetainsAndConserves; test_Rent_ReachesTheHookAsVestingAndRebatePool"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 229,
+    "kind": "line",
+    "source": "function poolState(PoolId id) external view returns (PoolState memory) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Drip_ReleasesLinearly; test_Rent_ReachesTheHookAsVestingAndRebatePool"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 230,
+    "kind": "line",
+    "source": "return _state[id];",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Drip_ReleasesLinearly; test_Rent_ReachesTheHookAsVestingAndRebatePool"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 239,
+    "kind": "line",
+    "source": "function lastDeposit(PoolId id) external view returns (uint256 amount, uint64 recordId) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_HookSwapExactlyOncePerDepositAndNeverOtherwise"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 240,
+    "kind": "line",
+    "source": "amount = TransientLib.get(TransientLib.LAST_DEPOSIT, id);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_HookSwapExactlyOncePerDepositAndNeverOtherwise"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 241,
+    "kind": "line",
+    "source": "recordId = uint64(TransientLib.get(TransientLib.LAST_RECORD, id));",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_HookSwapExactlyOncePerDepositAndNeverOtherwise"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 273,
+    "kind": "line",
+    "source": "if (TransientLib.locked()) revert Touchstone__Reentrant();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Reentrancy_DuringFinalizeIsBlocked"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 280,
+    "kind": "line",
+    "source": "PoolId id = key.toId();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every pool creation, e.g. test_FactoryCopiesTheCalendarValidity"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 282,
+    "kind": "line",
+    "source": "return this.beforeInitialize.selector;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every pool creation, e.g. test_FactoryCopiesTheCalendarValidity"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 292,
+    "kind": "line",
+    "source": "uint256 len = hookData.length;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 295,
+    "kind": "branch",
+    "source": "if (len != 0 && uint256(bytes32(hookData[:32])) >> 160 != 0) revert IALFHook.MalformedHookData();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 297,
+    "kind": "line",
+    "source": "PoolId id = key.toId();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 303,
+    "kind": "line",
+    "source": "TransientLib.set(TransientLib.PRE_SQRT_PRICE, id, sqrtPriceX96);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 305,
+    "kind": "line",
+    "source": "TransientLib.set(TransientLib.PRE_SWAP_FEE, id, swapFee);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 306,
+    "kind": "line",
+    "source": "TransientLib.set(TransientLib.LAST_DEPOSIT, id, 0);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 307,
+    "kind": "line",
+    "source": "TransientLib.set(TransientLib.LAST_RECORD, id, 0);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 308,
+    "kind": "line",
+    "source": "return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, 0);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_Swap_RejectsDirtyHookData"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 321,
+    "kind": "line",
+    "source": "SwapView memory v = _view(key, params, delta);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 324,
+    "kind": "line",
+    "source": "_takeDeposit(sender, key, params, delta, hookData, v, deposit);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 334,
+    "kind": "line",
+    "source": "v.id = key.toId();",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every swap, e.g. test_FirstTouch_FlagsAndTakesDepositFromSwapper"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 348,
+    "kind": "line",
+    "source": "PoolConfig storage cfg = _config[v.id];",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendSmallSwapIsNotFlagged; test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 352,
+    "kind": "branch",
+    "source": "if (!large && !flowHit) return 0;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendSmallSwapIsNotFlagged; test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 358,
+    "kind": "line",
+    "source": "uint8 flags = cfg.flags;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendSmallSwapIsNotFlagged; test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 360,
+    "kind": "line",
+    "source": "if (flags.has(PoolFlags.CALENDAR)) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendSmallSwapIsNotFlagged; test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 361,
+    "kind": "line",
+    "source": "bool known;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendSmallSwapIsNotFlagged; test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 363,
+    "kind": "line",
+    "source": "if (!known) return 0;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendSmallSwapIsNotFlagged; test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 380,
+    "kind": "line",
+    "source": "uint256 depositQuote;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendSmallSwapIsNotFlagged; test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 394,
+    "kind": "branch",
+    "source": "if (!success || ret.length < 64) return false;",
+    "category": "unreachable",
+    "reason": "LICENCE is the immutable LicenceAuction, whose holderOf neither reverts nor returns fewer than two words; the check guards a misdeployed hook only",
+    "evidence": "no input reaches it; see reason"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 398,
+    "kind": "line",
+    "source": "address holder = address(uint160(holderWord));",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FastPath_UntrustedRouterIsNeverExempt; test_Preview_HolderExemptOncePerBlock"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 410,
+    "kind": "branch",
+    "source": "if (!_isTrustedRouter(sender)) return sender;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FastPath_UntrustedRouterIsNeverExempt; test_FastPath_RouterThatCannotReportIsNotExempt"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 425,
+    "kind": "line",
+    "source": "depositQuote = DepositLib.quoteAmount(v.notional, _rate(cfg, v));",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper; test_WeekendLargeSwapIsAClosureRecordAtDeltaC"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 448,
+    "kind": "line",
+    "source": "st.flowBuy = newBuy;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Flow_TripsOnManySmallSwaps; test_Flow_DrainsOverHorizon; test_Flow_SplitBelowN0FillsBucket"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 449,
+    "kind": "line",
+    "source": "st.flowSell = newSell;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Flow_TripsOnManySmallSwaps; test_Flow_DrainsOverHorizon; test_Flow_SplitBelowN0FillsBucket"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 450,
+    "kind": "line",
+    "source": "st.flowTime = uint40(block.timestamp);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Flow_TripsOnManySmallSwaps; test_Flow_DrainsOverHorizon; test_Flow_SplitBelowN0FillsBucket"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 451,
+    "kind": "line",
+    "source": "return h;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Flow_TripsOnManySmallSwaps; test_Flow_DrainsOverHorizon; test_Flow_SplitBelowN0FillsBucket"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 477,
+    "kind": "line",
+    "source": "bool okNext = _calendarAnswersNextOpen(cfg.calendar);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_WeekendLargeSwapIsAClosureRecordAtDeltaC; test_CalendarWithoutNextOpenPostsNoDeposit"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 500,
+    "kind": "branch",
+    "source": "if (consumes) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_CoversEveryLargeSwapInTheTransaction; test_FirstTouch_LaterTransactionInBlockIsNotFirst"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 500,
+    "kind": "line",
+    "source": "if (consumes) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_CoversEveryLargeSwapInTheTransaction; test_FirstTouch_LaterTransactionInBlockIsNotFirst"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 501,
+    "kind": "line",
+    "source": "st.lastTouchBlock = nowBlock;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_CoversEveryLargeSwapInTheTransaction; test_FirstTouch_LaterTransactionInBlockIsNotFirst"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 502,
+    "kind": "line",
+    "source": "TransientLib.set(TransientLib.FIRST_TOUCH_TX, id, 1);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_CoversEveryLargeSwapInTheTransaction; test_FirstTouch_LaterTransactionInBlockIsNotFirst"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 504,
+    "kind": "line",
+    "source": "return isFirst;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_CoversEveryLargeSwapInTheTransaction; test_FirstTouch_LaterTransactionInBlockIsNotFirst"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 529,
+    "kind": "branch",
+    "source": "if (outQuote + depositQuote > budget) return false;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Budget_LargeSwapPostsNoDepositOnceTheBudgetIsFull"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 545,
+    "kind": "line",
+    "source": "PoolState storage st = _state[v.id];",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 571,
+    "kind": "line",
+    "source": "st.nextRecordId = r.id + 1;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 575,
+    "kind": "line",
+    "source": "TransientLib.set(TransientLib.LAST_DEPOSIT, v.id, deposit);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 576,
+    "kind": "line",
+    "source": "TransientLib.set(TransientLib.LAST_RECORD, v.id, r.id);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_FirstTouch_FlagsAndTakesDepositFromSwapper"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 617,
+    "kind": "branch",
+    "source": "if (sender == address(0)) return false;",
+    "category": "unreachable",
+    "reason": "sender is the address the PoolManager received swap() from, which is never the zero address",
+    "evidence": "no input reaches it; see reason"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 624,
+    "kind": "line",
+    "source": "PoolId id = record.poolId;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_BenignRefundsInFullAndEarnsRebate; test_Settle_ProtocolShareCreditedToRecipient; test_Refund_RejectedIsDeferredToLedger"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 630,
+    "kind": "line",
+    "source": "_toLedger(c, record.rebateTo, payout.rebate, IRebateLedger.Kind.REBATE);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_BenignRefundsInFullAndEarnsRebate; test_Settle_ProtocolShareCreditedToRecipient; test_Refund_RejectedIsDeferredToLedger"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 636,
+    "kind": "line",
+    "source": "} else if (payout.toProtocol != 0) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_BenignRefundsInFullAndEarnsRebate; test_Settle_ProtocolShareCreditedToRecipient; test_Refund_RejectedIsDeferredToLedger"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 640,
+    "kind": "branch",
+    "source": "if (payout.refund != 0) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_BenignRefundsInFullAndEarnsRebate; test_Settle_ProtocolShareCreditedToRecipient; test_Refund_RejectedIsDeferredToLedger"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 640,
+    "kind": "line",
+    "source": "if (payout.refund != 0) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_BenignRefundsInFullAndEarnsRebate; test_Settle_ProtocolShareCreditedToRecipient; test_Refund_RejectedIsDeferredToLedger"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 641,
+    "kind": "line",
+    "source": "_toLedger(c, record.beneficiary, payout.refund, IRebateLedger.Kind.DEFERRED_REFUND);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_BenignRefundsInFullAndEarnsRebate; test_Settle_ProtocolShareCreditedToRecipient; test_Refund_RejectedIsDeferredToLedger"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 675,
+    "kind": "line",
+    "source": "bool refundDelivered = true;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Settle_ArbitrageRetainsAndConserves; test_Refund_RejectedIsDeferredToLedger"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 699,
+    "kind": "line",
+    "source": "PoolConfig storage cfg = _config[id];",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Rent_ReachesTheHookAsVestingAndRebatePool; test_Rent_SplitsIntoCurrency1AndPaysTheProtocolShare"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 700,
+    "kind": "line",
+    "source": "PoolState storage st = _state[id];",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Rent_ReachesTheHookAsVestingAndRebatePool; test_Rent_SplitsIntoCurrency1AndPaysTheProtocolShare"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 701,
+    "kind": "line",
+    "source": "PoolKey memory key = _keys[id];",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Rent_ReachesTheHookAsVestingAndRebatePool; test_Rent_SplitsIntoCurrency1AndPaysTheProtocolShare"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 702,
+    "kind": "line",
+    "source": "bool quoteIs0 = cfg.flags.has(PoolFlags.QUOTE_IS_0);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Rent_ReachesTheHookAsVestingAndRebatePool; test_Rent_SplitsIntoCurrency1AndPaysTheProtocolShare"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 726,
+    "kind": "line",
+    "source": "st.vestLast = uint40(block.timestamp);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Drip_ReleasesLinearly; test_Drip_WithNothingVestingDoesNothing"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 727,
+    "kind": "branch",
+    "source": "if (st.vest0 == 0 && st.vest1 == 0) return (0, 0);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Drip_ReleasesLinearly; test_Drip_WithNothingVestingDoesNothing"
+  },
+  {
+    "file": "src/TouchstoneHook.sol",
+    "line": 734,
+    "kind": "line",
+    "source": "st.vest0 -= uint128(amount0);",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Drip_ReleasesLinearly; test_Drip_WithNothingVestingDoesNothing"
+  },
+  {
+    "file": "src/calendar/NyseCalendar.sol",
+    "line": 47,
+    "kind": "line",
+    "source": "uint256 last = lastDay;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "every ClosedMarket setUp deploys the calendar; test_CalendarReportsItsData"
+  },
+  {
+    "file": "src/libraries/FlowBucketLib.sol",
+    "line": 36,
+    "kind": "branch",
+    "source": "if (horizon == 0) revert ITouchstoneErrors.Touchstone__ZeroHorizon();",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FlowBucket_PythonVector; test_FlowBucket_RejectsAZeroHorizon; testFuzz_FlowBucket_SplitTradeFillsLikeOne"
+  },
+  {
+    "file": "src/libraries/FlowBucketLib.sol",
+    "line": 50,
+    "kind": "line",
+    "source": "newBuy = uint104(buy + 1);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FlowBucket_PythonVector; test_FlowBucket_RejectsAZeroHorizon; testFuzz_FlowBucket_SplitTradeFillsLikeOne"
+  },
+  {
+    "file": "src/libraries/FlowBucketLib.sol",
+    "line": 51,
+    "kind": "line",
+    "source": "newSell = uint104(sell + 1);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FlowBucket_PythonVector; test_FlowBucket_RejectsAZeroHorizon; testFuzz_FlowBucket_SplitTradeFillsLikeOne"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 33,
+    "kind": "line",
+    "source": "function fairPriceX36(int64 pBase, int32 eBase, int64 pQuote, int32 eQuote, uint8 decRisky, uint8 decQuote)",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 38,
+    "kind": "branch",
+    "source": "if (pBase <= 0 || pQuote <= 0) revert ITouchstoneErrors.Touchstone__NonPositivePrice();",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 38,
+    "kind": "line",
+    "source": "if (pBase <= 0 || pQuote <= 0) revert ITouchstoneErrors.Touchstone__NonPositivePrice();",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 39,
+    "kind": "line",
+    "source": "int256 k = int256(eBase) - int256(eQuote) + int256(uint256(decQuote)) - int256(uint256(decRisky)) + 36;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 40,
+    "kind": "branch",
+    "source": "if (k > MAX_POW10 || k < -MAX_POW10) revert ITouchstoneErrors.Touchstone__ExponentOutOfRange(k);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 40,
+    "kind": "line",
+    "source": "if (k > MAX_POW10 || k < -MAX_POW10) revert ITouchstoneErrors.Touchstone__ExponentOutOfRange(k);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 41,
+    "kind": "line",
+    "source": "uint256 base = uint256(int256(pBase));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 42,
+    "kind": "line",
+    "source": "uint256 quote = uint256(int256(pQuote));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 43,
+    "kind": "branch",
+    "source": "if (k >= 0) return FullMath.mulDiv(base, 10 ** uint256(k), quote);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 43,
+    "kind": "line",
+    "source": "if (k >= 0) return FullMath.mulDiv(base, 10 ** uint256(k), quote);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 44,
+    "kind": "line",
+    "source": "return base / (quote * 10 ** uint256(-k));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_FairPrice_PythonVectors; test_FairPrice_RevertsOnNonPositive; test_FairPrice_RevertsOnExponentOutOfRange; test_FairPrice_NegativeScaleDivides; test_Settle_RejectsANonPositivePrice"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 49,
+    "kind": "line",
+    "source": "function confBpsUp(int64 pBase, uint64 confBase, int64 pQuote, uint64 confQuote) internal pure returns (uint256) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Conf_PythonVector; test_Conf_RevertsOnNonPositive; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 50,
+    "kind": "branch",
+    "source": "if (pBase <= 0 || pQuote <= 0) revert ITouchstoneErrors.Touchstone__NonPositivePrice();",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Conf_PythonVector; test_Conf_RevertsOnNonPositive; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 50,
+    "kind": "line",
+    "source": "if (pBase <= 0 || pQuote <= 0) revert ITouchstoneErrors.Touchstone__NonPositivePrice();",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Conf_PythonVector; test_Conf_RevertsOnNonPositive; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 51,
+    "kind": "line",
+    "source": "uint256 b = uint256(int256(pBase));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Conf_PythonVector; test_Conf_RevertsOnNonPositive; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 52,
+    "kind": "line",
+    "source": "uint256 q = uint256(int256(pQuote));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Conf_PythonVector; test_Conf_RevertsOnNonPositive; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 53,
+    "kind": "line",
+    "source": "uint256 num = (uint256(confBase) * q + uint256(confQuote) * b) * BPS;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Conf_PythonVector; test_Conf_RevertsOnNonPositive; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 54,
+    "kind": "line",
+    "source": "return FullMath.mulDivRoundingUp(num, 1, b * q);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Conf_PythonVector; test_Conf_RevertsOnNonPositive; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 61,
+    "kind": "line",
+    "source": "uint256 q192 = uint256(FixedPoint96.Q96) << 96;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Gap_MatchesOriginalInRange; test_Drift_FlagsAgainstAUsableReference"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 68,
+    "kind": "line",
+    "source": "uint256 p96 = FullMath.mulDiv(sqrtPriceX96, sqrtPriceX96, FixedPoint96.Q96);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Gap_MatchesOriginalInRange; test_Drift_FlagsAgainstAUsableReference"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 69,
+    "kind": "line",
+    "source": "return riskyIs0",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Gap_MatchesOriginalInRange; test_Drift_FlagsAgainstAUsableReference"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 75,
+    "kind": "line",
+    "source": "function sqrtPriceX96At(uint256 priceX36, bool riskyIs0) internal pure returns (uint160) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 76,
+    "kind": "line",
+    "source": "return riskyIs0 ? _sqrtRatioX96(priceX36, PRICE_SCALE) : _sqrtRatioX96(PRICE_SCALE, priceX36);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 99,
+    "kind": "line",
+    "source": "function _sqrtRatioX96(uint256 num, uint256 den) private pure returns (uint160) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 100,
+    "kind": "branch",
+    "source": "if (num / den < (uint256(1) << 64)) return uint160(_sqrt(FullMath.mulDiv(num, uint256(1) << 192, den)));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 100,
+    "kind": "line",
+    "source": "if (num / den < (uint256(1) << 64)) return uint160(_sqrt(FullMath.mulDiv(num, uint256(1) << 192, den)));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 101,
+    "kind": "line",
+    "source": "return uint160(_sqrt(FullMath.mulDiv(num, uint256(1) << 128, den)) << 32);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 105,
+    "kind": "line",
+    "source": "function _sqrt(uint256 x) private pure returns (uint256 r) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 106,
+    "kind": "branch",
+    "source": "if (x == 0) return 0;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 106,
+    "kind": "line",
+    "source": "if (x == 0) return 0;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 107,
+    "kind": "line",
+    "source": "r = 1 << ((_log2(x) >> 1) + 1);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 109,
+    "kind": "line",
+    "source": "for (uint256 i; i < 7; ++i) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 110,
+    "kind": "line",
+    "source": "r = (r + x / r) >> 1;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 112,
+    "kind": "line",
+    "source": "uint256 down = x / r;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 113,
+    "kind": "line",
+    "source": "return r < down ? r : down;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip; test_SqrtPrice_OfZeroIsZero"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 116,
+    "kind": "line",
+    "source": "function _log2(uint256 x) private pure returns (uint256 n) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 117,
+    "kind": "line",
+    "source": "for (uint256 s = 128; s > 0; s >>= 1) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 118,
+    "kind": "branch",
+    "source": "if (x >= (uint256(1) << s)) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 118,
+    "kind": "line",
+    "source": "if (x >= (uint256(1) << s)) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 119,
+    "kind": "line",
+    "source": "x >>= s;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/PriceLib.sol",
+    "line": 120,
+    "kind": "line",
+    "source": "n += s;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_SqrtPrice_RoundTrip"
+  },
+  {
+    "file": "src/libraries/RecordLib.sol",
+    "line": 19,
+    "kind": "line",
+    "source": "function receipts(Record memory r, bool quoteIs0) internal pure returns (int256 xRisky, int256 xQuote) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Record_ReceiptsAndNotional; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/RecordLib.sol",
+    "line": 20,
+    "kind": "line",
+    "source": "return quoteIs0 ? (int256(r.amount1), int256(r.amount0)) : (int256(r.amount0), int256(r.amount1));",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Record_ReceiptsAndNotional; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/RecordLib.sol",
+    "line": 24,
+    "kind": "line",
+    "source": "function notional(Record memory r, bool quoteIs0) internal pure returns (uint256) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Record_ReceiptsAndNotional; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/RecordLib.sol",
+    "line": 25,
+    "kind": "line",
+    "source": "int256 q = quoteIs0 ? int256(r.amount0) : int256(r.amount1);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Record_ReceiptsAndNotional; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/RecordLib.sol",
+    "line": 26,
+    "kind": "line",
+    "source": "return q >= 0 ? uint256(q) : uint256(-q);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Record_ReceiptsAndNotional; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/RecordLib.sol",
+    "line": 30,
+    "kind": "line",
+    "source": "function depositIsQuote(Record memory r, bool quoteIs0) internal pure returns (bool) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Record_ReceiptsAndNotional; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/RecordLib.sol",
+    "line": 31,
+    "kind": "line",
+    "source": "return r.depositIn0 == quoteIs0;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Record_ReceiptsAndNotional; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 30,
+    "kind": "branch",
+    "source": "if (aggregator == address(0)) return (false, 0);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ConvertsToX36; test_Reference_RejectsStaleNonPositiveRevertingAndZero; test_Reference_ShortDecimalsReturnAbsent; test_Drift_IgnoresAStaleAnswer"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 33,
+    "kind": "line",
+    "source": "int256 answer = int256(words[1]);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ConvertsToX36; test_Reference_RejectsStaleNonPositiveRevertingAndZero; test_Reference_ShortDecimalsReturnAbsent; test_Drift_IgnoresAStaleAnswer"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 34,
+    "kind": "line",
+    "source": "uint256 updatedAt = words[3];",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ConvertsToX36; test_Reference_RejectsStaleNonPositiveRevertingAndZero; test_Reference_ShortDecimalsReturnAbsent; test_Drift_IgnoresAStaleAnswer"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 36,
+    "kind": "branch",
+    "source": "if (block.timestamp - updatedAt > maxAge) return (false, 0);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ConvertsToX36; test_Reference_RejectsStaleNonPositiveRevertingAndZero; test_Reference_ShortDecimalsReturnAbsent; test_Drift_IgnoresAStaleAnswer"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 38,
+    "kind": "branch",
+    "source": "if (!decimalsOk || data.length < 32) return (false, 0);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ConvertsToX36; test_Reference_RejectsStaleNonPositiveRevertingAndZero; test_Reference_ShortDecimalsReturnAbsent; test_Drift_IgnoresAStaleAnswer"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 50,
+    "kind": "branch",
+    "source": "if (!ok) return false;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Sequencer_UpDownAndGrace; test_Sequencer_ShortRoundDataReturnsDown; test_Drift_IgnoresTheReferenceWhileTheSequencerIsDown"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 51,
+    "kind": "line",
+    "source": "uint256 startedAt = words[2];",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Sequencer_UpDownAndGrace; test_Sequencer_ShortRoundDataReturnsDown; test_Drift_IgnoresTheReferenceWhileTheSequencerIsDown"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 53,
+    "kind": "branch",
+    "source": "if (words[1] != 0 || startedAt == 0 || startedAt > block.timestamp) return false;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Sequencer_UpDownAndGrace; test_Sequencer_ShortRoundDataReturnsDown; test_Drift_IgnoresTheReferenceWhileTheSequencerIsDown"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 63,
+    "kind": "branch",
+    "source": "if (words[0] > type(uint80).max || words[4] > type(uint80).max) return (false, words);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_DirtyRoundIdsReturnAbsent; test_Sequencer_DirtyRoundIdsReturnDown"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 76,
+    "kind": "branch",
+    "source": "if (uint256(k) > MAX_POW10) return (false, 0);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ExponentOutOfRange; test_Drift_IgnoresUnscalableDecimals"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 79,
+    "kind": "branch",
+    "source": "if (answer > type(uint256).max / factor) return (false, 0);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ExponentOutOfRange; test_Drift_IgnoresUnscalableDecimals"
+  },
+  {
+    "file": "src/libraries/ReferenceLib.sol",
+    "line": 82,
+    "kind": "branch",
+    "source": "if (uint256(-k) > MAX_POW10) return (false, 0);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Reference_ExponentOutOfRange; test_Drift_IgnoresUnscalableDecimals"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 32,
+    "kind": "line",
+    "source": "function markout(int256 xRisky, int256 xQuote, uint256 priceX36) internal pure returns (int256) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Markout_IsFloor; test_Markout_ArbitrageRow"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 35,
+    "kind": "branch",
+    "source": "if (xRisky >= 0) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Markout_IsFloor; test_Markout_ArbitrageRow"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 35,
+    "kind": "line",
+    "source": "if (xRisky >= 0) {",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Markout_IsFloor; test_Markout_ArbitrageRow"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 36,
+    "kind": "line",
+    "source": "return SafeCast.toInt256(FullMath.mulDiv(uint256(xRisky), priceX36, PRICE_SCALE)) + xQuote;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Markout_IsFloor; test_Markout_ArbitrageRow"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 38,
+    "kind": "line",
+    "source": "uint256 paid = FullMath.mulDivRoundingUp(uint256(-xRisky), priceX36, PRICE_SCALE);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Markout_IsFloor; test_Markout_ArbitrageRow"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 39,
+    "kind": "line",
+    "source": "return xQuote - SafeCast.toInt256(paid);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Markout_IsFloor; test_Markout_ArbitrageRow"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 47,
+    "kind": "line",
+    "source": "function alphaBps(",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Settlement_OutsiderInTheBandUsesAlphaLicensed; test_SaturdayRecordSettlesAtMondayOpenAfterDstEnds; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 56,
+    "kind": "branch",
+    "source": "if (mode == MODE_CLOSED) return alphaClosed;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Settlement_OutsiderInTheBandUsesAlphaLicensed; test_SaturdayRecordSettlesAtMondayOpenAfterDstEnds; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 56,
+    "kind": "line",
+    "source": "if (mode == MODE_CLOSED) return alphaClosed;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Settlement_OutsiderInTheBandUsesAlphaLicensed; test_SaturdayRecordSettlesAtMondayOpenAfterDstEnds; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 57,
+    "kind": "branch",
+    "source": "if (!licenceActive || !inBand) return alpha;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Settlement_OutsiderInTheBandUsesAlphaLicensed; test_SaturdayRecordSettlesAtMondayOpenAfterDstEnds; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 57,
+    "kind": "line",
+    "source": "if (!licenceActive || !inBand) return alpha;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Settlement_OutsiderInTheBandUsesAlphaLicensed; test_SaturdayRecordSettlesAtMondayOpenAfterDstEnds; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 58,
+    "kind": "line",
+    "source": "return byHolder ? 0 : alphaLicensed;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Settlement_OutsiderInTheBandUsesAlphaLicensed; test_SaturdayRecordSettlesAtMondayOpenAfterDstEnds; test_Settle_ArbitrageRetainsAndConserves"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 68,
+    "kind": "line",
+    "source": "function clawback(uint256 depositQuote, int256 mPlus, uint256 nPlus, uint256 epsBps, uint256 confBps, uint256 alpha)",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 73,
+    "kind": "branch",
+    "source": "if (mPlus <= 0 || alpha == 0) return 0;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 73,
+    "kind": "line",
+    "source": "if (mPlus <= 0 || alpha == 0) return 0;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 74,
+    "kind": "line",
+    "source": "uint256 margin = FullMath.mulDiv(nPlus, epsBps + confBps, BPS);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 75,
+    "kind": "line",
+    "source": "uint256 m = uint256(mPlus);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 76,
+    "kind": "branch",
+    "source": "if (m <= margin) return 0;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 76,
+    "kind": "line",
+    "source": "if (m <= margin) return 0;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 77,
+    "kind": "line",
+    "source": "uint256 r = FullMath.mulDiv(alpha, m - margin, BPS);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 78,
+    "kind": "line",
+    "source": "return r < depositQuote ? r : depositQuote;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Clawback_Bounded; test_Clawback_CapBindsAtDeposit; test_Settle_WideConfidenceRefundsInFull"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 86,
+    "kind": "line",
+    "source": "function splitRetained(uint128 deposit, uint128 retained, SplitParams memory p, address tipTo)",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 91,
+    "kind": "branch",
+    "source": "if (retained > deposit) revert ITouchstoneErrors.Touchstone__RetainedAboveDeposit(retained, deposit);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 91,
+    "kind": "line",
+    "source": "if (retained > deposit) revert ITouchstoneErrors.Touchstone__RetainedAboveDeposit(retained, deposit);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 92,
+    "kind": "line",
+    "source": "uint256 tip = FullMath.mulDiv(retained, p.tipBps, BPS);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 93,
+    "kind": "branch",
+    "source": "if (tip > p.tipCap) tip = p.tipCap;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 93,
+    "kind": "line",
+    "source": "if (tip > p.tipCap) tip = p.tipCap;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 99,
+    "kind": "line",
+    "source": "uint256 rest = retained - tip;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 100,
+    "kind": "line",
+    "source": "uint256 toProtocol = FullMath.mulDiv(rest, p.protocolShareBps, BPS);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 101,
+    "kind": "line",
+    "source": "rest -= toProtocol;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 102,
+    "kind": "line",
+    "source": "uint256 toRebate = FullMath.mulDiv(rest, p.rhoBps, BPS);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 103,
+    "kind": "line",
+    "source": "out = Payout({",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Split_Conserves; test_Split_RevertsWhenRetainedAboveDeposit"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 122,
+    "kind": "line",
+    "source": "function benign(",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 132,
+    "kind": "line",
+    "source": "uint256 gross = FullMath.mulDiv(notional, uint256(feePips) * kappaBps, PIPS * BPS);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 134,
+    "kind": "branch",
+    "source": "if (gross > rebatePool) gross = rebatePool;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 134,
+    "kind": "line",
+    "source": "if (gross > rebatePool) gross = rebatePool;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 135,
+    "kind": "line",
+    "source": "uint256 tip = FullMath.mulDiv(gross, tipBps, BPS);",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 136,
+    "kind": "branch",
+    "source": "if (tip > tipCap) tip = tipCap;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 136,
+    "kind": "line",
+    "source": "if (tip > tipCap) tip = tipCap;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/SettlementMath.sol",
+    "line": 137,
+    "kind": "line",
+    "source": "out = Payout({",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Benign_NeverExceedsPool; test_Benign_RebateMatchesReference"
+  },
+  {
+    "file": "src/libraries/TransientLib.sol",
+    "line": 33,
+    "kind": "line",
+    "source": "tstore(s, value)",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Transient_KeyedByPool; test_Transient_Lock; test_Transient_ClearsBetweenTransactions"
+  },
+  {
+    "file": "src/libraries/TransientLib.sol",
+    "line": 41,
+    "kind": "line",
+    "source": "value := tload(s)",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Transient_KeyedByPool; test_Transient_Lock; test_Transient_ClearsBetweenTransactions"
+  },
+  {
+    "file": "src/libraries/TransientLib.sol",
+    "line": 47,
+    "kind": "line",
+    "source": "bytes32 s = LOCK;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Transient_KeyedByPool; test_Transient_Lock; test_Transient_ClearsBetweenTransactions"
+  },
+  {
+    "file": "src/libraries/TransientLib.sol",
+    "line": 49,
+    "kind": "line",
+    "source": "held := tload(s)",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Transient_KeyedByPool; test_Transient_Lock; test_Transient_ClearsBetweenTransactions"
+  },
+  {
+    "file": "src/libraries/TransientLib.sol",
+    "line": 55,
+    "kind": "line",
+    "source": "bytes32 s = LOCK;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Transient_KeyedByPool; test_Transient_Lock; test_Transient_ClearsBetweenTransactions"
+  },
+  {
+    "file": "src/libraries/TransientLib.sol",
+    "line": 57,
+    "kind": "line",
+    "source": "tstore(s, held)",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "testFuzz_Transient_KeyedByPool; test_Transient_Lock; test_Transient_ClearsBetweenTransactions"
+  },
+  {
+    "file": "src/libraries/TriggerLib.sol",
+    "line": 47,
+    "kind": "branch",
+    "source": "if (flowHit) mask |= FLOW;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Flow_TripsOnManySmallSwaps; testFuzz_Triggers_SmallSwapsOnlyFlow; test_FirstTouch_Table"
+  },
+  {
+    "file": "src/libraries/TriggerLib.sol",
+    "line": 47,
+    "kind": "line",
+    "source": "if (flowHit) mask |= FLOW;",
+    "category": "executed",
+    "reason": "internal library code is inlined into its caller under --ir-minimum and keeps no source map of its own; the tests named in evidence execute it directly and through the contracts that call it",
+    "evidence": "test_Flow_TripsOnManySmallSwaps; testFuzz_Triggers_SmallSwapsOnlyFlow; test_FirstTouch_Table"
+  },
+  {
+    "file": "src/periphery/GuardedRouter.sol",
+    "line": 106,
+    "kind": "branch",
+    "source": "if (amount < 0) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Router_NativeInputRefundsUnusedValue; test_Router_RefundNamesTheTraderWithoutHookData"
+  },
+  {
+    "file": "src/periphery/GuardedRouter.sol",
+    "line": 108,
+    "kind": "branch",
+    "source": "if (currency.isAddressZero()) {",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Router_NativeInputRefundsUnusedValue; test_Router_RefundNamesTheTraderWithoutHookData"
+  },
+  {
+    "file": "src/periphery/TouchstoneLens.sol",
+    "line": 168,
+    "kind": "branch",
+    "source": "if (amountSpecified < 0) amountOut = amountOut > deposit ? amountOut - deposit : 0;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Quote_ExactOutputFlaggedAddsTheDeposit"
+  },
+  {
+    "file": "src/periphery/TouchstoneLens.sol",
+    "line": 168,
+    "kind": "line",
+    "source": "if (amountSpecified < 0) amountOut = amountOut > deposit ? amountOut - deposit : 0;",
+    "category": "executed",
+    "reason": "forge coverage --ir-minimum compiles through the IR pipeline, whose optimised code keeps no reliable source map for this statement; the test named in evidence executes it and asserts its effect",
+    "evidence": "test_Quote_ExactOutputFlaggedAddsTheDeposit"
+  },
+  {
+    "file": "src/periphery/TouchstoneLens.sol",
+    "line": 312,
+    "kind": "branch",
+    "source": "if (!success || ret.length < 64) return false;",
+    "category": "unreachable",
+    "reason": "LICENCE is the immutable LicenceAuction, whose holderOf neither reverts nor returns fewer than two words; the check guards a misdeployed lens only",
+    "evidence": "no input reaches it; see reason"
+  }
+]

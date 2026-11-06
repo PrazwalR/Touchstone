@@ -1,0 +1,10 @@
+{
+  "settle_retaining": {
+    "baseline": 298640,
+    "decision": "0042, 0044, 0055"
+  },
+  "expire": {
+    "baseline": 217662,
+    "decision": "0042, 0044, 0055"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-30",
+  "base_revision": "07f4bbe",
+  "solidity_tests": 130,
+  "solidity_coverage_run_tests": 130,
+  "keeper_tests_including_anvil": 35,
+  "indexer_tests_including_anvil": 17,
+  "research_tests": 55,
+  "release_gate_tests": 5,
+  "core_runtime_bytes": {
+    "TouchstoneHook": 20753,
+    "Settler": 14363,
+    "TouchstoneFactory": 8571,
+    "RebateLedger": 3882
+  },
+  "coverage": {
+    "LF": 855,
+    "LH": 687,
+    "BRF": 175,
+    "BRH": 122
+  },
+  "coverage_lines_percent": 80.35087719298245,
+  "coverage_branches_percent": 69.71428571428571,
+  "gas_measured": {
+    "drip": "41098",
+    "expire": "217662",
+    "hook_added_flagged": "141857",
+    "hook_added_unflagged_at_or_above_n0": "47069",
+    "hook_added_unflagged_below_n0": "21242",
+    "settle_retaining": "298640"
+  },
+  "gas_before": {
+    "drip": "41183",
+    "expire": "172206",
+    "hook_added_flagged": "139453",
+    "hook_added_unflagged_at_or_above_n0": "45398",
+    "hook_added_unflagged_below_n0": "20822",
+    "settle_retaining": "245418"
+  },
+  "gas_percent_change": {
+    "drip": -0.20639584294490643,
+    "expire": 26.396292812097144,
+    "hook_added_flagged": 1.723878295913317,
+    "hook_added_unflagged_at_or_above_n0": 3.68077888893783,
+    "hook_added_unflagged_below_n0": 2.017097300931714,
+    "settle_retaining": 21.686265881068213
+  },
+  "slither_findings": 62,
+  "slither_unreviewed": 0,
+  "github_workflow_run": false,
+  "historical_experiments_run": false,
+  "deployment_performed": false
+}

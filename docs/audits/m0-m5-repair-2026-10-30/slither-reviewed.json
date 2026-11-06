@@ -1,0 +1,1610 @@
+[
+  {
+    "id": "4be7ca167f0698ce5ed9f34b7faf414bba59cbdce1dea90d12ea7db37196845f",
+    "check": "divide-before-multiply",
+    "impact": "Medium",
+    "location": "CalendarMath.civilFromDays(uint256) (src/libraries/CalendarMath.sol#38-48) performs a multiplication on the result of a division:",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "4f49aa78bffdde42419d552cabfd8bbf195b0af4a876ce8503facbdada1d56d7",
+    "check": "divide-before-multiply",
+    "impact": "Medium",
+    "location": "CalendarMath.civilFromDays(uint256) (src/libraries/CalendarMath.sol#38-48) performs a multiplication on the result of a division:",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "72607b9e846faf0ee128a3443a310f4d692b42e05cb0532cc846da2033ed40b5",
+    "check": "divide-before-multiply",
+    "impact": "Medium",
+    "location": "CalendarMath.daysFromCivil(uint256,uint256,uint256) (src/libraries/CalendarMath.sol#23-32) performs a multiplication on the result of a division:",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "9c126467bfc6da910a100a46377d1d23ae9db4c5ab29143e87f7e27a153aedc6",
+    "check": "divide-before-multiply",
+    "impact": "Medium",
+    "location": "CalendarMath.daysFromCivil(uint256,uint256,uint256) (src/libraries/CalendarMath.sol#23-32) performs a multiplication on the result of a division:",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "b24f26fbb0f701c93e56005c24e2e0b61f8f086ae78f346c4c74e1ce5ada6952",
+    "check": "divide-before-multiply",
+    "impact": "Medium",
+    "location": "CalendarMath.civilFromDays(uint256) (src/libraries/CalendarMath.sol#38-48) performs a multiplication on the result of a division:",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "cd3123eff2652286ce82455665f4baedee7e014ad4df833557757ce424fb2aae",
+    "check": "divide-before-multiply",
+    "impact": "Medium",
+    "location": "CalendarMath.civilFromDays(uint256) (src/libraries/CalendarMath.sol#38-48) performs a multiplication on the result of a division:",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "f62650f1255fd1322520fbde456dee6aeb3d48fc122c9985cb6aaf6af62fc16b",
+    "check": "divide-before-multiply",
+    "impact": "Medium",
+    "location": "CalendarMath.civilFromDays(uint256) (src/libraries/CalendarMath.sol#38-48) performs a multiplication on the result of a division:",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "6cb817e5e6174d63f98d67168dcaca7142856c4cd30857661f3dfd667742b9c0",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "RebateLedger.push(address,Currency) (src/RebateLedger.sol#56-60) ignores return value by POOL_MANAGER.unlock(abi.encode(currency,recipient,amount)) (src/RebateLedger.sol#58)",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "7536e0b7eb470ef07c11d6e6f1d560e15c4a398ebef1e2e9def0d697d39a0b65",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "RebateLedger.claimAsClaims(Currency,address) (src/RebateLedger.sol#49-53) ignores return value by POOL_MANAGER.transfer(to,currency.toId(),amount) (src/RebateLedger.sol#51)",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "756a5d12e49f17a4b59af1884a16a49663f3f57f2dc5158a4fa3d3cae38dd23f",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "RebateLedger.claim(Currency,address) (src/RebateLedger.sol#42-46) ignores return value by POOL_MANAGER.unlock(abi.encode(currency,to,amount)) (src/RebateLedger.sol#44)",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "54ec91b91ad56e780dfdca87865df9ea5efe842a8e23682111946bd69a62f7a2",
+    "check": "missing-zero-check",
+    "impact": "Low",
+    "location": "RebateLedger.constructor(IPoolManager,address).hook (src/RebateLedger.sol#25) lacks a zero-check on :",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "333294cf7e8988557f8bf6d343d3e9f56be8adb5128bfa43fc79f07a31e9228e",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in Settler.settle(Record,bytes[]) (src/Settler.sol#63-89):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "eb87f73de80fc31c0ba378047dbd662e484aed73a3a2bf85907adc04de1bbae5",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in Settler.expire(Record) (src/Settler.sol#92-99):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "1e37bb0164b161c9f310c43b3be09317284a4da2f00334a7c514fcede02952e3",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in RebateLedger.claimAsClaims(Currency,address) (src/RebateLedger.sol#49-53):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "56b50c3bd4f8feaca6db38559dc60f66f30447ebb1ddf08c66c575bdbe1866d3",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in RebateLedger.push(address,Currency) (src/RebateLedger.sol#56-60):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "92bf6829c28bb4650f1bde71d723a5dd673a47fe24b42dd22255c407708398bc",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in RebateLedger.claim(Currency,address) (src/RebateLedger.sol#42-46):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "1cc75dbf2b5f45fe7b0977abb7a52a01616b2f82bfb7f22613bab17691119cb3",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "Settler.expire(Record) (src/Settler.sol#92-99) uses timestamp for comparisons",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "9560e1a26fa80cfd1f4a4c7886e68e2ea2d501cc23660089dd9be501b7db9995",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "Settler.settle(Record,bytes[]) (src/Settler.sol#63-89) uses timestamp for comparisons",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "41bab4ef8861281b1b841ad2b4748a858455edb6b3ef29f672086fa0dea4c2b0",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "ReferenceLib.sequencerUp(address,uint32) (src/libraries/ReferenceLib.sol#47-55) uses timestamp for comparisons",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "c0bbc9a5a9ccce145d9e2446f8db2fec121a171b0badd88c5acd197a659eedbd",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "ReferenceLib.readX36(address,uint32,uint8,uint8) (src/libraries/ReferenceLib.sol#25-42) uses timestamp for comparisons",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "af110e0872ec37646ae06c6740566450564dbea9e85c4c5c3bc4a3f883a3728b",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in Settler.settle(Record,bytes[]) (src/Settler.sol#63-89):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "7b857a50c9cc4e4053cb4b151f6c4ed67f78c38c6b596eff5280f74747e36d39",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in ReferenceLib._roundData(address) (src/libraries/ReferenceLib.sol#59-65):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "fa31766de9bdddaaadef4af04d793106363331161712eb33ec3f705d02e190c1",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in ReferenceLib.readX36(address,uint32,uint8,uint8) (src/libraries/ReferenceLib.sol#25-42):",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "168a069899f0bcbda5dd98843fd709b578cb46b9eaec53891a924af137d05bbf",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable Settler.HOOK (src/Settler.sol#50) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "26217b9bb4260dabff34f182cca156ce1b2f2d5745f3d9e6af6a0c1968b50c42",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable Settler.PYTH (src/Settler.sol#49) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "e40b88f793f225654d4f6bb19cd1020042f6b0425cbdd4c35b193b2110aaf889",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable Settler.FACTORY (src/Settler.sol#51) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "1dc1140124f78ab45aa794a7f39773fce039821a569c431f817c49701c1877cb",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.TRUSTED_ROUTER_0 (src/TouchstoneHook.sol#81) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "235698c9e8fcb469c5cc4826568b0f198760a25bb5ac7e5aa2713e1ec68c15fa",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.SEQUENCER_FEED (src/TouchstoneHook.sol#79) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "5426f98292224448c419e883a0eeee086bdd4c0ef968af435f33a850f6dda992",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.TRUSTED_ROUTER_2 (src/TouchstoneHook.sol#83) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "6c9ed38a2c7523f2b6e146697efc81c04a0d1e1bc16139ae6c287d43933165bb",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.FACTORY (src/TouchstoneHook.sol#77) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "70fd936cd2fa8df14eba38863e7f3c467168e3da6619e7a46965053c8010fd7e",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.BLOCK_SOURCE (src/TouchstoneHook.sol#78) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "9d0a15f35833a2e85c7aca90d0f540dfbc154aae1b7091fff3606d49ac5c649f",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.LEDGER (src/TouchstoneHook.sol#76) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "abf9c39a8c44e0b9791d16ebe90ad53c44620cca00544377bdec5f20f823f1eb",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.SETTLER (src/TouchstoneHook.sol#75) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "c0b4cda7b34ba55a81ea5694adcd27e70d0af0d5c0ec0a3c6ba9a212b6e31ce4",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.TRUSTED_ROUTER_3 (src/TouchstoneHook.sol#84) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "d898fb8f56ff37809d7834d518873d42a53a2b32d044b63368a9e2c1e5fc185e",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.TRUSTED_ROUTER_1 (src/TouchstoneHook.sol#82) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "e9e7090991e77bfb2f32e4274cfbf4a60f8bddac40bb55e521c44d260fe8591a",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.SEQUENCER_GRACE (src/TouchstoneHook.sol#80) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "04c84f9e29c07948144c88f4290ffe02f93f427ddbc2eaa471ca2cc20109bd6c",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable RebateLedger.HOOK (src/RebateLedger.sol#18) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "46f50cce02abb895913b66a7faec4591861f2e015537c02af96ee95452a52f47",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneFactory.HOOK (src/TouchstoneFactory.sol#101) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "c33d6fa6c98084c50e9b1656f89fe8c86621f107b56c4ac2d67124dc51072f4b",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneFactory.POOL_MANAGER (src/TouchstoneFactory.sol#100) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "ce1889e92879e8f301bac3fd59a2be90afb82b01cec0a3ee3ad8a132d8d2393f",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable RebateLedger.POOL_MANAGER (src/RebateLedger.sol#17) is not in mixedCase",
+    "triage": "slither-triage.md"
+  },
+  {
+    "id": "890a1052100e49e7fc337cf032e1177d80fc97b9f58172a3c18a995eca3c5219",
+    "check": "arbitrary-send-erc20",
+    "impact": "High",
+    "location": "GuardedRouter._resolve(Currency,int128,address) (src/periphery/GuardedRouter.sol#105-118) uses arbitrary from in transferFrom: IERC20(Currency.unwrap(currency)).safeTransferFrom(trader,address(POOL_MANAGER),owed) (src/periphery/GuardedRouter.sol#112)",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "e36cc5f97becf2d01e1795e8be05eeae44e19e96d864ddc5ad8fe61e72abab4b",
+    "check": "arbitrary-send-eth",
+    "impact": "High",
+    "location": "GuardedRouter.swapGuarded(PoolKey,SwapParams,Guard,address,uint256) (src/periphery/GuardedRouter.sol#47-64) sends eth to arbitrary user",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "004b53a04b274c5bf48257951459349b463be47c3490b2ef1570b1d36f7ebdd2",
+    "check": "uninitialized-local",
+    "impact": "Medium",
+    "location": "NyseCalendar._contains(uint32[],uint256).lo (src/calendar/NyseCalendar.sol#98) is a local variable never initialized",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "9131a110d56ced1d23de01bb1314b84261738dd41676ec636515fd4f7474c684",
+    "check": "uninitialized-local",
+    "impact": "Medium",
+    "location": "TouchstoneHook.previewDeposit(PoolKey,bool,uint256,address).v (src/TouchstoneHook.sol#217) is a local variable never initialized",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "521a5ca036dbf72d6fa58ae1b81eec84ef7655a9934cc59a6de9c2e1e5cf57d7",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "GuardedRouter.unlockCallback(bytes) (src/periphery/GuardedRouter.sol#69-80) ignores return value by (deposit,None) = HOOK.lastDeposit(key.toId()) (src/periphery/GuardedRouter.sol#75)",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "de9f2c9bd66ecd6acdc13f35114c171b8f25ff1a26fdebeef04f8a0c4aa1f9a0",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "GuardedRouter._resolve(Currency,int128,address) (src/periphery/GuardedRouter.sol#105-118) ignores return value by POOL_MANAGER.settle{value: owed}() (src/periphery/GuardedRouter.sol#109)",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "f645189fcdd510a3643f215b3e8e91f2f323b309dd6d14367eabb6ec57103873",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "GuardedRouter._resolve(Currency,int128,address) (src/periphery/GuardedRouter.sol#105-118) ignores return value by POOL_MANAGER.settle() (src/periphery/GuardedRouter.sol#113)",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "e35e1a2e07a30603b9ad4788097b5fc30abcf42ecb32bce77a0ebf0fce1f862a",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "GuardedRouter.swapGuarded(PoolKey,SwapParams,Guard,address,uint256) (src/periphery/GuardedRouter.sol#47-64) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "7b7efd3370ceb7453622a816a42adb401af2b725399b6aa04d0937eccdd225b7",
+    "check": "assembly",
+    "impact": "Informational",
+    "location": "TransientLib.get(bytes32,PoolId) (src/libraries/TransientLib.sol#38-43) uses assembly",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "aff3b4685caa09b7cffa3f6e2e77f4e1f70bb63d2f3efacb8b3c2df65634c229",
+    "check": "assembly",
+    "impact": "Informational",
+    "location": "TransientLib.set(bytes32,PoolId,uint256) (src/libraries/TransientLib.sol#30-35) uses assembly",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "b328a6ff0bf5a1f3e8f5b46e291f39e62b541cb36952d2a9572522712d197d89",
+    "check": "assembly",
+    "impact": "Informational",
+    "location": "TransientLib.locked() (src/libraries/TransientLib.sol#46-51) uses assembly",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "f7d8d69d01491bc48edff71331454bd837f7f5300785e5afe98dc46ab97123ad",
+    "check": "assembly",
+    "impact": "Informational",
+    "location": "TransientLib.setLock(bool) (src/libraries/TransientLib.sol#54-59) uses assembly",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "e0dc7a205f657170f184faa4bf661880ed3bed8718a322419175093732dfed45",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in GuardedRouter.swapGuarded(PoolKey,SwapParams,Guard,address,uint256) (src/periphery/GuardedRouter.sol#47-64):",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "af8c764259cfd051e034ab621bc98dae1b3881e08ac5009692b13a466aed2fc4",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Function ISettler.HOOK() (src/interfaces/ISettler.sol#28) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "24b62942288403bff4a0870a3beda275a7039e4b0e8ab9145da0736a32a6a11f",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable NyseCalendar.FIRST_DAY (src/calendar/NyseCalendar.sol#25) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "4a4a52227490f1a1b5749c38cee6c6ba5ef9e76cb6f3cf42a5e80ef16d35e694",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable NyseCalendar.VALID_UNTIL (src/calendar/NyseCalendar.sol#27) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "5d1eb3bc668a3ede02be40a3696ccf86fdf5139b2fd48bea7614daa42b53572c",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable NyseCalendar.LAST_DAY (src/calendar/NyseCalendar.sol#26) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "a18837b036e54fdc01d2ef12e9de2f89603447e26b7e82f6f69b6ceee98f97c7",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable GuardedRouter.HOOK (src/periphery/GuardedRouter.sol#37) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "ebb27e3b2ad2f0660db555f0d7b5d2397c1cf7415adf8dafacea62dc56f79a57",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable GuardedRouter.POOL_MANAGER (src/periphery/GuardedRouter.sol#36) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 (re-run 2 November 2026)"
+  },
+  {
+    "id": "55b9a76a79e5c6dfbc71b18bf13a6668ec240b1f9864f57257b29da908cb925b",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#773-787) uses a dangerous strict equality:",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "93d33873023899e83e1e7b30f15e15ea3c88cdab8404e96678d1abf6bdd1d2d1",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#790-797) uses a dangerous strict equality:",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "e5110868674b40da677efc7d23a6e0073ad6e097b2276324a31e92b49aa236b8",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook.previewDeposit(PoolKey,bool,uint256,address) (src/TouchstoneHook.sol#238-291) uses a dangerous strict equality:",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "ea636ba9dcf9872206871741f7811c4c0335ed855d2d6dfc8df98f2b070d16c8",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#368-403) uses a dangerous strict equality:",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "cce22b69b48d567b43a1b7ac8aa360f111bc426d22b8388a81e90347dcb77eed",
+    "check": "uninitialized-local",
+    "impact": "Medium",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta).closed (src/TouchstoneHook.sol#379) is a local variable never initialized",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "12a5069bebda6779538e876dce3ce8073e8b18b1a4d352e9100206ffcdad51da",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneFactory.createPool(PoolKey,PoolConfig,ILicenceAuction.LeaseParams,uint160) (src/TouchstoneFactory.sol#130-157) ignores return value by POOL_MANAGER.initialize(key,sqrtPriceX96) (src/TouchstoneFactory.sol#155)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "190e7847b6158ea99b147c1d1ef19c9ab364fb38edf5386555271606b1108d31",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._beforeSwap(address,PoolKey,SwapParams,bytes) (src/TouchstoneHook.sol#308-330) ignores return value by (sqrtPriceX96,None,packedProtocolFee,lpFee) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#319)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "3fb5b8419e9555a0e032ccfcd74dafcf6f01e40f338d2bed8af32d0d13bec3fc",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.previewDeposit(PoolKey,bool,uint256,address) (src/TouchstoneHook.sol#238-291) ignores return value by (None,None,flowHit) = FlowBucketLib.update(st.flowBuy,st.flowSell,st.flowTime,uint40(block.timestamp),cfg.nMin,cfg.flowHorizon,notionalQuote,v.buysRisky) (src/TouchstoneHook.sol#261-270)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "408dfbc163ba475c7ed910d859982cc3b61cd53a0dfeb50a6485ba28a92d0a18",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._sqrtPriceNow(PoolId) (src/TouchstoneHook.sol#638-640) ignores return value by (sqrtPriceX96,None,None,None) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#639)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "4af7cde5a7cae5591f77b0f5360bfe396ffcca219febea682d80e80f0e099a89",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.previewDeposit(PoolKey,bool,uint256,address) (src/TouchstoneHook.sol#238-291) ignores return value by (firstNow,None) = TriggerLib.firstTouch(st.lastTouchBlock,BlockLib.number(BLOCK_SOURCE),TransientLib.get(TransientLib.FIRST_TOUCH_TX,v.id) != 0) (src/TouchstoneHook.sol#277-279)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "8e207de7c132cb811656eaef7688cf5ce15055e4223457f16be2ee4b631926ab",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#790-797) ignores return value by poolManager.donate(key,amount0,amount1,) (src/TouchstoneHook.sol#795)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "c66eb22da009fb5083e411acfcfc853d0d302dd74ffbd52dbeb84dd4e4b2101f",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.creditRent(PoolKey,uint256) (src/TouchstoneHook.sol#183-188) ignores return value by poolManager.unlock(abi.encode(ACTION_RENT,abi.encode(id,amount))) (src/TouchstoneHook.sol#187)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "d122709393ef8146ea4f88840d7592ef304a8679434f7a212346cad5a0042c63",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.finalize(Record,Payout,bool) (src/TouchstoneHook.sol#155-172) ignores return value by poolManager.unlock(abi.encode(ACTION_FINALIZE,abi.encode(record,payout))) (src/TouchstoneHook.sol#170)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "d350202119fe5f7de87a2e8440e7aa5897fc9b405e9a98e425ba1d45c738ddea",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._push(Currency,address) (src/TouchstoneHook.sol#732-738) ignores return value by LEDGER.push(recipient,c) (src/TouchstoneHook.sol#733-737)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "f1464a968cc035c7ef0099f419cc80e280b144fe8ef947ff0426edb173486965",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._toLedger(Currency,address,uint256,IRebateLedger.Kind) (src/TouchstoneHook.sol#740-743) ignores return value by poolManager.transfer(address(LEDGER),c.toId(),amount) (src/TouchstoneHook.sol#741)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "e6dd9470bfb36d4eef3f57d9d3853f2928c697c393ae382cccab408c49d35641",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneFactory.createPool(PoolKey,PoolConfig,ILicenceAuction.LeaseParams,uint160) (src/TouchstoneFactory.sol#130-157):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "01b908283f1db0ea30f6071a5c1132e55300c33e9a6f515f9e508bd9379dc4fd",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._payOut(Record,Payout) (src/TouchstoneHook.sol#673-693):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "024124cd2d3f0a136427a327eb59df39e39a94c69ebc2d0ed4d59cc156ab9879",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._takeDeposit(address,PoolKey,SwapParams,BalanceDelta,bytes,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#574-624):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "386d1a29512565364d6b2faa0674e5096012f4d85f0611a22eac1152b7d0b092",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook.unlockCallback(bytes) (src/TouchstoneHook.sol#193-214):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "4edc2b74ddb70ffa5970537a2f80eed5dae5523aa874f7400a7cadf1e6cd4315",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._creditRent(PoolId,uint256) (src/TouchstoneHook.sol#748-768):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "a972539f83ddf385cdde4d361ac82d0e8a5e68f3201b0dbb88567ac25d4f12c5",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#790-797):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "00790391de3dde622184be40aee0e32d5375b23d25b163c11b743462b13e4f7a",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction.bid(PoolId,address,uint128,uint128) (src/LicenceAuction.sol#94-109) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "9f19f0bb9aa55c6f6662e1bd48e049a44b2f499fe1c56971d4cd793da9e739be",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneFactory._calendarValidUntil(PoolConfig) (src/TouchstoneFactory.sol#220-227) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "0c23df5bed2b6c6b7835b2cb3877e65e38addbda4d79894a2c2e405b2b3e4ef5",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._closedNow(PoolConfig) (src/TouchstoneHook.sol#506-516) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "25687acfcac7de2b406f3be6a0f434ff9ba34fc5eae5b90d8ce2045908c22aef",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#773-787) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "5bdd68bed797e5e149e5f9f71ca13cbca700d5321df535c2fb4f353e342f7a7b",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._withinBudget(PoolState,PoolConfig,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#558-571) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "6a1c5f659e6ac9d1b39e01b5363d4f82d14a7c2deb177fc97b93f7224e048b23",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#527-531) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "7ff7a2fe0edc39d55c03be665efd533a53456b0dbafc583d862c6c6b88845e79",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#790-797) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "8a9b33a006a0b08f8fd4f04a56db96472983407b32d6f4128a6908b406886257",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarNextOpen(address) (src/TouchstoneHook.sol#518-523) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "a6b686322032b1c3e4dd9ad876465ee5b9a73baedcf43fade4cec118e64e6fd0",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#368-403) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "b6353fe3f9bbe139c15df5608f065503f27e00b4f1b27a87990257d9dae157df",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook.previewDeposit(PoolKey,bool,uint256,address) (src/TouchstoneHook.sol#238-291) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "340d700b4c46c5b4a26086227cd659d1bbc1fa6e333f87428cc7e8accd84a8b3",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#527-531):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "419015b83fae64a001272ea4d93e1fa55c2f33130c612e069277553c47690a9d",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._licence(PoolState,PoolConfig,TouchstoneHook.SwapView,address) (src/TouchstoneHook.sol#425-442):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "be30957cd726723370987004c4648aad545976e767f98c9a1c944c2d5c54a749",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarNextOpen(address) (src/TouchstoneHook.sol#518-523):",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "28c1dae9cceae1c5f11ca003fa2a97b8e4993c7744beefdcec0653193026823c",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable LicenceAuction.FACTORY (src/LicenceAuction.sol#59) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "454732ef2a81d60672484df397f9e5c212039bad0999452ec814d49db66c18d6",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable LicenceAuction.POOL_MANAGER (src/LicenceAuction.sol#57) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "a54f6c2b4d9dd6040320b5dbcfddd7be43298b0b5f2064862b5c2119cce15919",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable LicenceAuction.HOOK (src/LicenceAuction.sol#58) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "b6ad29135c8d6182e8288bd3f830ae7561f74fd029f4b9c62217feed7b16cdf1",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneFactory.LICENCE (src/TouchstoneFactory.sol#116) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "5652ceb537925ced0e8b8478cfd0569432483853d8ac7565e8d3eaf1d062739b",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.LICENCE (src/TouchstoneHook.sol#92) is not in mixedCase",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "47b4002668eaa27853cf386ed7fcaec40903e02ebec4ead5129772ad67bd157a",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "LicenceAuction._sendRent(PoolId,address,uint256) (src/LicenceAuction.sol#216-220) uses a dangerous strict equality:",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "f08ad5b2977f5cb2a28df04ba9ac7e090cc03575305e362fdffd0670f1e86157",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "LicenceAuction._minNextRent(LicenceAuction.Terms,uint128,uint128) (src/LicenceAuction.sol#300-306) uses a dangerous strict equality:",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "1e9972a1423fd3ccca0889a2d35251007f438249259d14aa899b1b4c53968abe",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "LicenceAuction.unlockCallback(bytes) (src/LicenceAuction.sol#226-235) ignores return value by POOL_MANAGER.settle() (src/LicenceAuction.sol#232)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "996acbe529c83554c88034e44945369c68049a5caf583cfd5358185ccbf53576",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "LicenceAuction._sendRent(PoolId,address,uint256) (src/LicenceAuction.sol#216-220) ignores return value by POOL_MANAGER.unlock(abi.encode(quote,charged)) (src/LicenceAuction.sol#218)",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "03775efbbc291e786e37e32daced59eb3bcb5b73c5b6c7229d0b05372bd83021",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._minNextRent(LicenceAuction.Terms,uint128,uint128) (src/LicenceAuction.sol#300-306) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "257796cd6ee1202f55d4c1639239570f359ac48f89df73508c9c014fae2e83fd",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._advanceStored(PoolId,LicenceAuction.Terms) (src/LicenceAuction.sol#203-213) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "30de5e93720a7019e8cd5c6e7c86afc2249fffbe9eba23f12bbd51493a6b37a9",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._sendRent(PoolId,address,uint256) (src/LicenceAuction.sol#216-220) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "36329d3f282693df43e0352b35fbc370f6cead6339125b1a49a5bfcd47efcaad",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._end(PoolId,address,address,uint256,uint40) (src/LicenceAuction.sol#237-240) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "43a36adfeed39d81ecc540648b72f85038d1247aa8e9688efb99affca2d583ce",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._advance(Lease,Lease,uint32,uint256) (src/LicenceAuction.sol#250-279) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "4b52a34a8063942cab5771de93820659e59ef548b7f1fce5ec9a451b14bfb6ee",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction.holderOf(PoolId) (src/LicenceAuction.sol#165-179) uses timestamp for comparisons",
+    "triage": "slither-triage.md",
+    "decision": "0032 and 0056 (M9, 2 November 2026)"
+  },
+  {
+    "id": "6a2cb918f50673187413b41f6a1e88b04a485e40882e2cac73970a73873de518",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#739-746) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "cf3b097e540634d46ac359a1d7770be27349634d5fee1d6df33de44265a6da3b",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#722-736) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "f5707f0a97d6210092343a41b6de1678db390738bd255c8d21dc356546a4a1ec",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#346-382) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "47239d7ffb5a2e40f9b4a47653d123260a324c57519d9767ddb77727f55c588b",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneLens._quote(PoolKey,bool,int256,uint160,bytes,bool) (src/periphery/TouchstoneLens.sol#150-170) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "a441c9e048c0975b1a6b1bfb9a86f57f8286ddfb824026df0a2e90d9be6d9d81",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneLens._evaluate(PoolConfig,PoolState,TouchstoneLens.View) (src/periphery/TouchstoneLens.sol#199-232) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "ed20d02786d6a8021e785294b015307c1e30c0095008d0e17da823cf968be81c",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneLens._depositFor(PoolKey,StaticQuoteLib.Quote,bool,bool,bool) (src/periphery/TouchstoneLens.sol#174-196) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "39efd977375a0ed91926618e913eaec52b442c6ff7e8e50376f51cc660834bba",
+    "check": "uninitialized-local",
+    "impact": "Medium",
+    "location": "TouchstoneLens._depositFor(PoolKey,StaticQuoteLib.Quote,bool,bool,bool).v (src/periphery/TouchstoneLens.sol#181) is a local variable never initialized",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "7d9eae46cd500c6d7dada6dc86bcf5b5abefb4af4e8d8b620cc7c7bf64da5017",
+    "check": "uninitialized-local",
+    "impact": "Medium",
+    "location": "TouchstoneLens.previewDeposit(PoolKey,bool,uint256,address,bool).v (src/periphery/TouchstoneLens.sol#89) is a local variable never initialized",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "24cc3c72ad6fcc46cce1126361b8be812b0dd947038b87c075a353e9f53187be",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._sqrtPriceNow(PoolId) (src/TouchstoneHook.sol#587-589) ignores return value by (sqrtPriceX96,None,None,None) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#588)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "391cae5d889f77507d263c6a95df776e2a4a9a20e7902433eaa967974e176504",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.creditRent(PoolKey,uint256) (src/TouchstoneHook.sol#189-194) ignores return value by poolManager.unlock(abi.encode(ACTION_RENT,abi.encode(id,amount))) (src/TouchstoneHook.sol#193)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "7384859392751db74f2fe9342f1769eed62f142d342f52d22f37952bbf5d05c5",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._toLedger(Currency,address,uint256,IRebateLedger.Kind) (src/TouchstoneHook.sol#689-692) ignores return value by poolManager.transfer(address(LEDGER),c.toId(),amount) (src/TouchstoneHook.sol#690)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "923b571d18548fff747e51b12ed7c44b6aacb34f7dbcfd56b9f383445169d72d",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.finalize(Record,Payout,bool) (src/TouchstoneHook.sol#161-178) ignores return value by poolManager.unlock(abi.encode(ACTION_FINALIZE,abi.encode(record,payout))) (src/TouchstoneHook.sol#176)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "9d102c0b8219816e409d09158e45e917e191d32bf717c23bb42a12f1ebc0e8b3",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#739-746) ignores return value by poolManager.donate(key,amount0,amount1,) (src/TouchstoneHook.sol#744)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "c49f2c3b591813d339166db9775e280c75c8128db5219b63ab51adc0334557fd",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._push(Currency,address) (src/TouchstoneHook.sol#681-687) ignores return value by LEDGER.push(recipient,c) (src/TouchstoneHook.sol#682-686)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "fc52004e272057f94b000df5aa28cd27206a8f4f043625b93d7fd69785bb0ab3",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._beforeSwap(address,PoolKey,SwapParams,bytes) (src/TouchstoneHook.sol#286-308) ignores return value by (sqrtPriceX96,None,packedProtocolFee,lpFee) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#297)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "0a3eff36ced909876af4d9453bb436ffdca3c7e620f5259b1f8731648cfb88bf",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneLens._triggers(PoolConfig,PoolState,TouchstoneLens.View,bool,bool,bool) (src/periphery/TouchstoneLens.sol#234-243) ignores return value by (firstNow,None) = TriggerLib.firstTouch(st.lastTouchBlock,BlockLib.number(HOOK.BLOCK_SOURCE()),v.touchedInTx) (src/periphery/TouchstoneLens.sol#239)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "6389b03014d8db713b74873a2c9e14020285d0dd9c6f37ea3ffca1faaa83b8e8",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "StaticQuoteLib._cross(IPoolManager,StaticQuoteLib.Run,int24,bool) (src/libraries/StaticQuoteLib.sol#162-178) ignores return value by (None,liquidityNet) = manager.getTickLiquidity(r.id,tickNext) (src/libraries/StaticQuoteLib.sol#164)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "97fc9535ecf6eb3f5517f59b4e00e9d14f7e7574e2be9d65548a5f658fe56ce5",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneLens._depositFor(PoolKey,StaticQuoteLib.Quote,bool,bool,bool) (src/periphery/TouchstoneLens.sol#174-196) ignores return value by (v.pre,None,None,None) = POOL_MANAGER.getSlot0(v.id) (src/periphery/TouchstoneLens.sol#184)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "ee86f48fb23e9adac9ca2d981115c69f273a1bc4b837487e01e2283056a4c920",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneLens._evaluate(PoolConfig,PoolState,TouchstoneLens.View) (src/periphery/TouchstoneLens.sol#199-232) ignores return value by (None,None,flowHit) = FlowBucketLib.update(st.flowBuy,st.flowSell,st.flowTime,uint40(block.timestamp),cfg.nMin,cfg.flowHorizon,v.notional,v.buysRisky) (src/periphery/TouchstoneLens.sol#211-220)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "fd2fae7334825f5e78047414f2e80ede2687be03bc7185f7317318dd43bc2c8e",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneLens.previewDeposit(PoolKey,bool,uint256,address,bool) (src/periphery/TouchstoneLens.sol#82-104) ignores return value by (v.pre,None,None,None) = POOL_MANAGER.getSlot0(v.id) (src/periphery/TouchstoneLens.sol#95)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "478dc2e5cb80db53940eb087cc790a1ebabcead6633a8825184c7b0f5375f873",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._payOut(Record,Payout) (src/TouchstoneHook.sol#622-642):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "7c70fa036bd3211cdad88fc5486bb5015bf1b061060bf626c651605ad696cc65",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._creditRent(PoolId,uint256) (src/TouchstoneHook.sol#697-717):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "8f2572004876b4fd7cee2c89281305370ace5dd1b53b79ef452e398cbaa1ac0d",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook.unlockCallback(bytes) (src/TouchstoneHook.sol#199-220):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "9c0e9cd3ad080943adf9ec032d295d598b86fba5134993397a61d855c4b1db19",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._takeDeposit(address,PoolKey,SwapParams,BalanceDelta,bytes,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#535-585):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "e8302988c5bd049560f547eac344de5d0b33e4fc4137904b45448a4a65478836",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#739-746):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "1ebea3bd1921a1a78709b84e639bb45e8c6b0c69699967d42b321389a0fa2410",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#346-382) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "41c5e91dc8082c1d56a0192b079dcf33f7b8c1821c681a38f824cc424acff178",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#480-484) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "50bf8cd03db32c8e29eb9d0e028cae2f1340a8504407725d424cc5c0f23b7cd0",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#722-736) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "670e6a2eb5d369d5bb82df1c6a0237b27e76227cb1d7ed068beb204c64b427e7",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#739-746) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "847373ddae9860bef1c198b882956f4f70d571d2cb72e1edecf240b9faf15f7e",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._closedNow(PoolConfig) (src/TouchstoneHook.sol#468-478) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "acf13879521d3950847b429ef80c9b67e30f0a9c7709e594a9e4badc2b2764b0",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#488-492) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "02fba25669921011954a543c4000aeda80270c674610e95f2b85f39d42b3f4cb",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._quote(PoolKey,bool,int256,uint160,bytes,bool) (src/periphery/TouchstoneLens.sol#150-170) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "13c64fd3aab25f2e229655ea2b99e8ba1bbe14f8974e2a523b8ca741160f0430",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._evaluate(PoolConfig,PoolState,TouchstoneLens.View) (src/periphery/TouchstoneLens.sol#199-232) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "1c6e1ba829e442eaae317664608ff6346fc1058e3f482bac64e6fca0df5e12e3",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._depositFor(PoolKey,StaticQuoteLib.Quote,bool,bool,bool) (src/periphery/TouchstoneLens.sol#174-196) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "457f860a852ee0418ecc009d2a7c217ca5aa44b7fe5a60f3e9924a19303d9f91",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._withinBudget(PoolState,PoolConfig,TouchstoneLens.View,uint256) (src/periphery/TouchstoneLens.sol#322-333) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "7aa0d55349fd510f304d60ae08fdcaeee1a1bbe70d68474073fbb706e54655ff",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._triggers(PoolConfig,PoolState,TouchstoneLens.View,bool,bool,bool) (src/periphery/TouchstoneLens.sol#234-243) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "a7aabcdb6fb82c517a65f3826fdd30e24ff9aa72b11557c27ba12a7c097f18c9",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._closedNow(PoolConfig) (src/periphery/TouchstoneLens.sol#282-290) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "aefdb12f0d47f786b671bbc2073b1b0bc82b03a650af89fd28d106cc72eb26cc",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._calendarOpen(address,uint256) (src/periphery/TouchstoneLens.sol#299-303) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "ea4d7519ee93fb188ec27fdf2355ac747ca200510eb2d7248be0722aa728900c",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneLens._calendarNextOpen(address) (src/periphery/TouchstoneLens.sol#292-297) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "06886e8a6b0453e4ad5c6bfdbddca5ed6b66059ce87e1bfb5b8f89bcb959a6dc",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#488-492):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "196d447c49adf145c70f53a548cb023f0717de8b1ca7d22c718e39b0f48f458a",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._licence(PoolState,PoolConfig,TouchstoneHook.SwapView,address) (src/TouchstoneHook.sol#387-404):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "2a46e7fa4838d9923becf667a9235a60012d501432dc03cf80ecc450bbf99a3f",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#480-484):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "0f13ee2c217b56da41e22b82ab0b0f2b295d80a3c9ebed9f9f74eafcd8d67a87",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneLens._exempt(PoolState,PoolConfig,TouchstoneLens.View,address) (src/periphery/TouchstoneLens.sol#306-319):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "2250fa4608f695cf101332d2d3ab4b66101b62e33906080f63639ad0ea51be91",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneLens._calendarNextOpen(address) (src/periphery/TouchstoneLens.sol#292-297):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "6c26bb341dff6885aae4709be6902eb5dae6a58cd582ec7a7ba79c9febd9270b",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneLens._calendarOpen(address,uint256) (src/periphery/TouchstoneLens.sol#299-303):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "39b5b5aa058601a39c2f258ec1b032ac620ca1e74280165613c212db2b39508b",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneHook.LENS (src/TouchstoneHook.sol#97) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "4188395f67d7c6650ad4524eceb5d1cfabaa394765e5a03f58834815c50bded7",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Function ITouchstoneHook.LICENCE() (src/interfaces/ITouchstoneHook.sol#40) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "7b8697537046cec8d5400f66ea46d4c4af30511dc6c6b40bf5d3930b2aac4695",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Function ITouchstoneHook.SEQUENCER_GRACE() (src/interfaces/ITouchstoneHook.sol#49) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "bde3c635481ebf1eefe7683798086b55f2006653ee1942b9a9593bc20a19f5d9",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Function ITouchstoneHook.SEQUENCER_FEED() (src/interfaces/ITouchstoneHook.sol#46) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "bf933da854e63f4134e7dc0d03e24e27b75b2a013fed5bda029484668500271f",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Function ITouchstoneHook.BLOCK_SOURCE() (src/interfaces/ITouchstoneHook.sol#43) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "2260d8b79e95850525234f39239b002679b2395b6ba8e73874c9870fa040867a",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneLens.HOOK (src/periphery/TouchstoneLens.sol#57) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "a609f22947936c9107ced6090c7fb816e8c19c3ce2319db37ffec1f59ee1cafd",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneLens.POOL_MANAGER (src/periphery/TouchstoneLens.sol#56) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "c4ee52e3bef304fd1ab90948288180bf17feacb67556bb0c85624d1d3ef9a339",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneLens.MAX_QUOTE_TICKS (src/periphery/TouchstoneLens.sol#59) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "ef8a875eaef9efb26a356ffce437508dc9b32ef0a09de634a43ec7088f8318ec",
+    "check": "naming-convention",
+    "impact": "Informational",
+    "location": "Variable TouchstoneLens.FACTORY (src/periphery/TouchstoneLens.sol#58) is not in mixedCase",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "27e26b8751e9b822cab6278ed10ef0552cd2c5b038978e170e62ab99105565e3",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#724-738) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "cdaf8b3a16fb226211271cd8e38603b1cdb139c5cefa73b39a283fe19baaabd1",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#741-748) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "e23495ea58b48593e0dc5d8fd4165a92c47ee04d1ef2f975409af4e4660c469c",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#348-384) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "a2799c9749af2b02ea2efc5f88aeb7a3c6cccc682b468e519c77f2b320afd4fe",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "StaticQuoteLib._cross(IPoolManager,StaticQuoteLib.Run,int24,bool) (src/libraries/StaticQuoteLib.sol#160-176) ignores return value by (None,liquidityNet) = manager.getTickLiquidity(r.id,tickNext) (src/libraries/StaticQuoteLib.sol#162)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "052723b4aaaaec504f3c3164431593796e068fd24468e7150137554bbac4867d",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._sqrtPriceNow(PoolId) (src/TouchstoneHook.sol#589-591) ignores return value by (sqrtPriceX96,None,None,None) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#590)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "0bafe884f45d4010fe54a75419eb7295042f918c1031725f77369bf083a0545d",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._toLedger(Currency,address,uint256,IRebateLedger.Kind) (src/TouchstoneHook.sol#691-694) ignores return value by poolManager.transfer(address(LEDGER),c.toId(),amount) (src/TouchstoneHook.sol#692)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "1068d35490558ef79ab103769de33a4022db36d97e121e5123d4b3f6e032511f",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#741-748) ignores return value by poolManager.donate(key,amount0,amount1,) (src/TouchstoneHook.sol#746)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "4f9906f90b6853f34b312840376efa2b0e97f4599c8c13866982e1f315350124",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.finalize(Record,Payout,bool) (src/TouchstoneHook.sol#163-180) ignores return value by poolManager.unlock(abi.encode(ACTION_FINALIZE,abi.encode(record,payout))) (src/TouchstoneHook.sol#178)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "55b70825bdc7e0d6ad3b8647a833ea2ee360dea3a8f0587bd99970bd00493375",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._push(Currency,address) (src/TouchstoneHook.sol#683-689) ignores return value by LEDGER.push(recipient,c) (src/TouchstoneHook.sol#684-688)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "9846bf516db9f0f1de7070d48a2869b9af65ade50fc629f9a722c2dbc514bb2c",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.creditRent(PoolKey,uint256) (src/TouchstoneHook.sol#191-196) ignores return value by poolManager.unlock(abi.encode(ACTION_RENT,abi.encode(id,amount))) (src/TouchstoneHook.sol#195)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "b11200ea64494e7b8cf35bcebe6279c0e22106090b7e29950ea84e18779974ac",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._beforeSwap(address,PoolKey,SwapParams,bytes) (src/TouchstoneHook.sol#288-310) ignores return value by (sqrtPriceX96,None,packedProtocolFee,lpFee) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#299)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "10259e1baa71a099062059af62f5e8b1f5e004b80e0d9eb966313f39404e2f3a",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._creditRent(PoolId,uint256) (src/TouchstoneHook.sol#699-719):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "25f717752cd4386b7071670572811151a72dcc3e0b36daa7a2654c90a29254cf",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook.unlockCallback(bytes) (src/TouchstoneHook.sol#201-222):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "2e421251a45a8a2bf65692e9e700fb3ed013aa22484ed37a40583d8c74bb7536",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._payOut(Record,Payout) (src/TouchstoneHook.sol#624-644):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "84fbb8c75f94cb5eb4da9181b2c244f568d6622573a668ecef96d61c2d8760f6",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#741-748):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "f0bda3878eb62d12008351b6f55f5f1f206a6e5d5e0e3ceb0ebc9e8bc9d02222",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._takeDeposit(address,PoolKey,SwapParams,BalanceDelta,bytes,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#537-587):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "1781019e402f0cf550ed30745d651d0527c2dc4d9dfb87b64b0cdad8ca63c5f7",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#490-494) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "29834fdf3da63cc52da1c3d6b74520b1bfae4e14cfeb3f569d6a506e8e54a228",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#348-384) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "9a33bafb679f7f71918947faea735b02a032dd3733f7b6ebdca6f23c512bd9fb",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._closedNow(PoolConfig) (src/TouchstoneHook.sol#470-480) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "bc4224e6891044ff40c6a352545ac7a1a19e0fe0922331bbc5a42ee8a1b65151",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#482-486) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "c27ade1823d9998a47436f34e8f1bda6aa945de1616746c14af69143037e8c8b",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#741-748) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "daa633ff1821bbee6a7d708f3f530f1afd9bfd9c9de801e634fc2067e60f97eb",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#724-738) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "154e05b0458de0f27bd2a7ec3d8c3adb6ce4d286251c1dc6dcfc977a1f7ae74b",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._licence(PoolState,PoolConfig,TouchstoneHook.SwapView,address) (src/TouchstoneHook.sol#389-406):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "aec9e97573ef90bc8cb3ccc0e55ae9237b1804783878f40ad3fbc03de452fd80",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#482-486):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "fe798f1168e73694b0405ff71f842c97ca66ab9fdf6849505f3185ba9d3e4207",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#490-494):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "c0495df10e778c653b26bcfdf359b54ce5205792a4f827d790dd133db266e83e",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#740-747) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "edbdbdfb7743f377d848645e6c2a40f3bcd0dede131f85cd5d50ea41b06ee2a3",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#347-383) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "ee753d9b5028f87849c39611bd1a93fc681f16c8350cea40e25b72039a0b1aca",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#723-737) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "29feca88e8e9b755935b9c1510ac83ad070a3f044c5877ac89e18af62bdeb97c",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "LicenceAuction._sendRent(PoolId,address,uint256) (src/LicenceAuction.sol#222-226) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "c3cc9e5b772865d1cf222e27c1c3587f904433c4d2384723abfa664ed7435210",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "LicenceAuction._minNextRent(LicenceAuction.Terms,uint128,uint128) (src/LicenceAuction.sol#306-312) uses a dangerous strict equality:",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "0fa4eacee205fc122f28c1308036906652bb08205e99d7a5dc0b6d865c06e5f5",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._sqrtPriceNow(PoolId) (src/TouchstoneHook.sol#588-590) ignores return value by (sqrtPriceX96,None,None,None) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#589)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "2ad1b4de6b49c2052b9ce2e61a22bfb092500df9bf3949edde06a2a5cd5258e1",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._push(Currency,address) (src/TouchstoneHook.sol#682-688) ignores return value by LEDGER.push(recipient,c) (src/TouchstoneHook.sol#683-687)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "3f8d0fa844c88eecd9355169930c2fab7577c7a9aded71a2e6c9f18f03e64465",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._toLedger(Currency,address,uint256,IRebateLedger.Kind) (src/TouchstoneHook.sol#690-693) ignores return value by poolManager.transfer(address(LEDGER),c.toId(),amount) (src/TouchstoneHook.sol#691)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "499457ff555ad5b8e866dbdb4e39f00eb17a7ab45ac120a6b2769e584820d95d",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.finalize(Record,Payout,bool) (src/TouchstoneHook.sol#162-179) ignores return value by poolManager.unlock(abi.encode(ACTION_FINALIZE,abi.encode(record,payout))) (src/TouchstoneHook.sol#177)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "4c4c90452b129beaae84d135603ba7ebec3d14f806477df6b9e5a6f5d891e3e1",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.creditRent(PoolKey,uint256) (src/TouchstoneHook.sol#190-195) ignores return value by poolManager.unlock(abi.encode(ACTION_RENT,abi.encode(id,amount))) (src/TouchstoneHook.sol#194)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "a6770ba31dae141c5484de8283330ba271fc1288a89d8f755157fe61c692dd0b",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#740-747) ignores return value by poolManager.donate(key,amount0,amount1,) (src/TouchstoneHook.sol#745)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "af4a62a517796885d06cbaf546b59b77a9b83e975530a92037e8f27787055386",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._beforeSwap(address,PoolKey,SwapParams,bytes) (src/TouchstoneHook.sol#287-309) ignores return value by (sqrtPriceX96,None,packedProtocolFee,lpFee) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#298)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "03fe621c511759f3ee824d41d10ae4e46bd67652df3dde7cf1d4df49f7f7ed5b",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "LicenceAuction._sendRent(PoolId,address,uint256) (src/LicenceAuction.sol#222-226) ignores return value by POOL_MANAGER.unlock(abi.encode(quote,charged)) (src/LicenceAuction.sol#224)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "4e2d55d30c4e72d354650e43e8ece6672eaebc2bf3a607a773caf1ffbbd920c9",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "LicenceAuction.unlockCallback(bytes) (src/LicenceAuction.sol#232-241) ignores return value by POOL_MANAGER.settle() (src/LicenceAuction.sol#238)",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "655a538ba7927817ce1bc14888e7ac845cb6d2b4600aa51454ae3adccbcdf250",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._takeDeposit(address,PoolKey,SwapParams,BalanceDelta,bytes,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#536-586):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "7bf1508d34ff2d0fd4e440478fb9d815a2f6f27c80702d9f0671f2ac00c7ada0",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook.unlockCallback(bytes) (src/TouchstoneHook.sol#200-221):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "dc644dc260ee82a6467a1d499a6f6cffd7b6e5f6d287e2cbbfc8ba62f4b15137",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._payOut(Record,Payout) (src/TouchstoneHook.sol#623-643):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "eafb60963b66e42563e3f823b02b49d87a4a46629e8c1cb6bd2093a3a6737513",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#740-747):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "ed50fda400f3ac54fae210b28e7e79b9cf7f2c69b43f77832372a3f2ffcadaed",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._creditRent(PoolId,uint256) (src/TouchstoneHook.sol#698-718):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "1e3c4f67d0535d2d72063aa0a68d617ce656df733fd2b0788cd18701d46ed4ea",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#481-485) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "2c7ef95fc9e58a3bf106391aecd3a53ae02c50aa88a1121073fddf4aac96ab8d",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#740-747) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "845906f76ecc3876e92b85c3825c89bb41c603380b7eb2ad84ab25f808c40de8",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#489-493) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "da4623a9bfd816765a82467aefcf61aa23cabf795afd00cfd1f787fdc6a3ef49",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#347-383) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "e490d567b9309ed78f4b3ec0f532e96d431c042d4744a330ed528fb462344236",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#723-737) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "f267cb8434b4b6a825202c33524827d33d6715d2c8aa8a1583ff93c0c74485ba",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._closedNow(PoolConfig) (src/TouchstoneHook.sol#469-479) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "653259ad7857f8f42e0b9fcdb640890991eed4679bc19b2ef476532ef69906f0",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._minNextRent(LicenceAuction.Terms,uint128,uint128) (src/LicenceAuction.sol#306-312) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "6a9fbcd836a991eb80453654db2358e5bb7728484a451388395c7f6e6e1da06a",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._end(PoolId,address,address,uint256,uint40) (src/LicenceAuction.sol#243-246) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "71b21db8befb2b6548b40f566e5769c52ad79288907bc301627f155d89c3f097",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._sendRent(PoolId,address,uint256) (src/LicenceAuction.sol#222-226) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "798a5281d5721aa5e3e05afb9b6dab066b65aeb61310212370fb31462c64a180",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._advanceStored(PoolId,LicenceAuction.Terms) (src/LicenceAuction.sol#209-219) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "86cd082739090a2d75ed51f2b7093c143f1f66e92319b7c0d47a96a2ebdde867",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "LicenceAuction._advance(Lease,Lease,uint32,uint256) (src/LicenceAuction.sol#256-285) uses timestamp for comparisons",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "13897d6e3b33a06951a514a3e4564ad9273c03d4b10504c4ba8298ac96391afc",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#481-485):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "67532175aa3a3bb2a40839408a181a3e8cde363c560b61b001f6f8b43616e677",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#489-493):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "adf05590d99ff4424016395f1147ae406bae5e9d2fd45c46ecfa28d568cbd249",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._licence(PoolState,PoolConfig,TouchstoneHook.SwapView,address) (src/TouchstoneHook.sol#388-405):",
+    "triage": "../m10-2026-11-03/slither-triage.md"
+  }
+]
