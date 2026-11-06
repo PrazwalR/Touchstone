@@ -1,3 +1,4 @@
+import { submissionFees } from "./fees.ts";
 // Quoting, guarding, executing and following a Touchstone swap (decision 0060). Pure functions over injected
 // clients and addresses, so the Swap page, the Simulation page and the Anvil test run the same code.
 import {
@@ -348,7 +349,15 @@ export async function approveExact(ctx: SwapContext, wallet: Wallet, token: Toke
     functionName: "approve",
     args: [ctx.router, amount],
   });
-  const receipt = await ctx.client.waitForTransactionReceipt({ hash: await wallet.writeContract(request) });
+  const receipt = await ctx.client.waitForTransactionReceipt({ hash: await wallet.writeContract({
+    address: request.address,
+    abi: request.abi,
+    functionName: request.functionName,
+    args: request.args,
+    account: wallet.account,
+    value: request.value,
+    ...await submissionFees(ctx.client),
+  }) });
   if (receipt.status !== "success") throw new Error("approval reverted");
   return receipt;
 }
@@ -436,7 +445,15 @@ export async function executeSwap(
     value: isNative(tIn) ? guard.maxNetIn : 0n,
   });
   if (exactOutput && outOf(result[0], zfo) !== specified) throw new Error("insufficient liquidity for the requested output");
-  const hash = await wallet.writeContract(request);
+  const hash = await wallet.writeContract({
+    address: request.address,
+    abi: request.abi,
+    functionName: request.functionName,
+    args: request.args,
+    account: wallet.account,
+    value: request.value,
+    ...await submissionFees(ctx.client),
+  });
   onSubmitted?.(hash);
   return confirmSwap(ctx, side, hash);
 }
