@@ -1,3 +1,4 @@
+import { beginAnnotations } from "../stone/annotations.ts";
 import { useEffect, useRef, useState } from "react";
 import { CAPP, CAPS, RAIL, RAILP } from "../content/acts.ts";
 import type { Motion } from "../hooks/useMotion.ts";
@@ -73,7 +74,12 @@ function theatre(
           target: [0.12, -0.02, -0.1],
           focal: 1.15,
         };
-        V3 = { pos: [0.0, 4.4, 2.0], target: [0.0, -0.15, 0.05], focal: 1.2 };
+        // Pull back for allocation on portrait screens so both payout destinations stay in view.
+        V3 = {
+          pos: [0.0, 4.4, 2.0],
+          target: [0.0, -0.15, 0.05],
+          focal: Math.min(1.2, (s.cssW / s.cssH) * 1.45),
+        };
       }
       const [a, b, c] = [V1, V2, V3];
       const view =
@@ -149,6 +155,22 @@ function theatre(
       }
     },
     overlay: (ctx, proj, t, P) => {
+      const width = ctx.canvas.width / ctx.getTransform().a;
+      beginAnnotations(
+        ctx,
+        fixed
+          ? {}
+          : {
+              top: width < 600 ? 180 : 146,
+              bottom:
+                width < 600
+                  ? Math.min(
+                      230,
+                      (ctx.canvas.height / ctx.getTransform().d) * 0.28,
+                    )
+                  : 64,
+            },
+      );
       const p = getP();
       const at = (x: number, z: number) => proj(x, HY, z);
       drawPrism(
@@ -170,10 +192,10 @@ function theatre(
         0.3 + p * 2,
       );
       const refOn = (P.ref ?? 0) > 0.5;
-      tag(ctx, at(DEMO[0][0], DEMO[0][1]), -30, 44, "SWAP · FLAGGED", {
+      tag(ctx, at(DEMO[0][0], DEMO[0][1]), -30, 44, "Flagged swap", {
         alpha: sm(0.08, 0.12, p) * (1 - sm(0.32, 0.36, p)),
       });
-      tag(ctx, at(DEP[0] - 0.1, DEP[1] + 0.05), -26, 46, "DEPOSIT D · $1,500", {
+      tag(ctx, at(DEP[0] - 0.1, DEP[1] + 0.05), -26, 46, "Deposit · $1,500", {
         alpha: sm(0.22, 0.27, p) * (1 - sm(0.74, 0.78, p)),
       });
       tag(
@@ -181,9 +203,7 @@ function theatre(
         at(DIAL[0], DIAL[1] - 0.5),
         30,
         -40,
-        refOn
-          ? "P* · SIGNED PRICE (ILLUSTRATED)"
-          : "P* · AWAITING A SIGNED PRICE",
+        refOn ? "Signed price · P*" : "Awaiting signed price",
         {
           alpha: sm(0.3, 0.36, p) * (1 - sm(0.76, 0.8, p)),
           dot: refOn ? CYAN : null,
@@ -191,20 +211,15 @@ function theatre(
         },
       );
       const sp = sm(0.79, 0.83, p);
-      tag(
-        ctx,
-        at(DEMO[7][0], DEMO[7][1]),
-        -20,
-        -44,
-        "MARGIN (ε+c*)·N⁺ · $100",
-        { alpha: sp },
-      );
+      tag(ctx, at(DEMO[7][0], DEMO[7][1]), -20, -44, "Margin · $100", {
+        alpha: sp,
+      });
       tag(
         ctx,
         at(DEMO[48][0], DEMO[48][1]),
         24,
         -42,
-        "EXCESS $400 × α 80% = R $320",
+        "$400 excess × 80% = $320 retained",
         { alpha: sp, color: HOT },
       );
       const fin = sm(0.9, 0.95, p);
@@ -213,10 +228,10 @@ function theatre(
         at(VAULT[0], VAULT[1] + 0.33),
         22,
         30,
-        "R → TIP $5 · POOL $31.50 · LPs $283.50",
+        "LPs $283.50 · rebates $31.50 · tip $5",
         { alpha: fin, color: HOT },
       );
-      tag(ctx, at(-1.5, 0.43), 20, 46, "REFUND $1,180 → BENEFICIARY", {
+      tag(ctx, at(-1.5, 0.43), 20, 46, "Refund · $1,180", {
         alpha: fin,
       });
     },

@@ -287,21 +287,28 @@ export function Lab({ motion, live }: { motion: Motion; live: Live }) {
         const { out: o, step: k } = r.current;
         const idle = k < 0;
         const at = (x: number, z: number) => proj(x, HY, z);
-        tag(ctx, at(DEP[0], DEP[1] + 0.07), -10, 40, `D ${usd(o.D)}`, {
+        tag(ctx, at(DEP[0], DEP[1] + 0.07), -10, 40, `Deposit · ${usd(o.D)}`, {
           alpha: idle || k >= 1 ? 1 : 0,
         });
         if (idle || k >= 4) {
-          tag(ctx, at(VAULT[0], VAULT[1] + 0.33), -10, 36, `R ${usd(o.R)}`, {
-            color: o.R > 0n ? HOT : null,
-          });
+          tag(
+            ctx,
+            at(VAULT[0], VAULT[1] + 0.33),
+            -10,
+            36,
+            `Retained · ${usd(o.R)}`,
+            {
+              color: o.R > 0n ? HOT : null,
+            },
+          );
           tag(
             ctx,
             at(DEMO[2][0], DEMO[2][1]),
             -14,
             -34,
             o.m > 0n
-              ? `m⁺ ${usd(o.m)} · MARGIN ${usd(o.margin)}`
-              : `m⁺ ${usd(o.m)} · NO EXCESS`,
+              ? `Markout ${usd(o.m)} · margin ${usd(o.margin)}`
+              : `Markout ${usd(o.m)} · no excess`,
           );
         }
       },

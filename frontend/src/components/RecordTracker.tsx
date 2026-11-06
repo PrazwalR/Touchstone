@@ -1,24 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { deployment, explorerTx } from "../chain/deployment.ts";
 import { units, utc } from "../format.ts";
 import { useRecordOutcome, type TrackedRecord } from "../swap/useSwapFlow.ts";
 import type { SwapContext } from "../swap/swap.ts";
+import { SettlementRail } from "./SettlementRail.tsx";
 
 const SETTLE_DELAY_FALLBACK = 3;
-
 function useClock(): number {
   const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
   useEffect(() => {
-    const i = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
-    return () => clearInterval(i);
+    const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
+    return () => clearInterval(id);
   }, []);
   return now;
 }
 
-/**
- * A record from deposit to outcome: the deposit held, the countdown to t0, the wait for a settler, and the payout
- * as the Settler emitted it. Every figure is read from the chain: a testnet demonstration.
- */
 export function RecordTracker({
   ctx,
   tracked,
@@ -28,7 +32,7 @@ export function RecordTracker({
 }: {
   ctx: SwapContext;
   tracked: TrackedRecord;
-  onChange: (t: TrackedRecord) => void;
+  onChange(t: TrackedRecord): void;
   settleDelay?: number;
   windowSeconds?: number;
 }) {
@@ -45,70 +49,136 @@ export function RecordTracker({
   const amt = (v: bigint) =>
     `${units(v, depTok.decimals, depTok.decimals > 6 ? 6 : 2)} ${depTok.symbol}`;
   const o = tracked.outcome;
-  const step = o.kind !== "open" ? 4 : now < t0 ? 2 : 3;
-
+  const open = o.kind === "open";
+  const refund =
+    o.kind === "settled"
+      ? o.payout.refund
+      : o.kind === "expired"
+        ? o.refund
+        : null;
+  const lpShare =
+    o.kind === "settled" ? o.payout.toLPs : o.kind === "expired" ? 0n : null;
+  const status = open
+    ? now < t0
+      ? "Reference pending"
+      : expiry !== null && now >= expiry
+        ? "Expiry available"
+        : "Ready to settle"
+    : o.kind === "expired"
+      ? "Expired · refunded"
+      : "Settled";
+  const headline = open
+    ? "Deposit held."
+    : o.kind === "expired"
+      ? "Full deposit refunded."
+      : o.payout.benign && o.payout.rebate > 0n
+        ? "Refunded, with a rebate."
+        : o.payout.refund === tracked.deposit
+          ? "Full deposit refunded."
+          : "The deposit has settled.";
   return (
-    <div className="tracker">
-      <h3 className="data-title">
-        Record #{tracked.recordId.toString()} · testnet demonstration
-      </h3>
-      <ol className="track-steps">
-        <li className={step >= 1 ? "done" : ""}>
-          <b>Deposit held</b>
-          <span>
-            {amt(tracked.deposit)} held by the hook, in the swap's output
-            currency
-          </span>
-        </li>
-        <li className={step > 2 ? "done" : step === 2 ? "now" : ""}>
-          <b>Waiting for t₀</b>
-          <span>
-            {now < t0
-              ? `${t0 - now} s until the settlement price is fixed`
-              : `t₀ passed at ${utc(t0)}`}
-          </span>
-        </li>
-        <li className={step > 3 ? "done" : step === 3 ? "now" : ""}>
-          <b>Settlement</b>
-          <span>
-            {o.kind === "open"
-              ? `Any address may settle with the first Pyth update at or after t₀; the keeper does it automatically.${expiry ? ` Unsettled by ${utc(expiry)}, it expires and refunds in full.` : ""}`
-              : o.kind === "settled"
-                ? "Settled against the signed Pyth price"
-                : "Expired: nobody settled in the window, so the deposit was refunded in full"}
-          </span>
-        </li>
-        <li className={step === 4 ? "done" : ""}>
-          <b>Outcome</b>
-          <span>
-            {o.kind === "open"
-              ? "Pending"
-              : o.kind === "expired"
-                ? `Refunded ${amt(o.refund)}`
-                : o.payout.benign
-                  ? "Benign: refunded in full, plus a rebate"
-                  : `Retained for LPs at α ${o.alphaBps / 100}%`}
-          </span>
-        </li>
-      </ol>
-      {o.kind === "settled" && (
-        <Payout payout={o.payout} amt={amt} hash={o.hash} markout={o.markout} />
-      )}
-      {o.kind === "expired" && (
-        <p className="src">
-          <a href={explorerTx(o.hash)} target="_blank" rel="noreferrer">
-            Expiry transaction
-          </a>
+    <Card className={`settlement-card ${open ? "is-pending" : "is-settled"}`}>
+      <div className="receipt-head">
+        <h2>Settlement</h2>
+        <span className={`receipt-state ${open ? "pending" : "complete"}`}>
+          {status}
+        </span>
+      </div>
+      <SettlementRail stage={open ? 1 : 3} expired={o.kind === "expired"} />
+      <div className="receipt-main" aria-live="polite">
+        <p className="receipt-record">Record #{tracked.recordId.toString()}</p>
+        <h3>{headline}</h3>
+        {open ? (
+          <>
+            <div className="receipt-held">
+              <span>Refundable deposit</span>
+              <strong>{amt(tracked.deposit)}</strong>
+            </div>
+            <p className="receipt-explanation">
+              {now < t0
+                ? `Eligible for settlement in ${t0 - now}s. The next qualifying signed Pyth price measures the trade.`
+                : expiry !== null && now >= expiry
+                  ? "The settlement window has ended. The record can be expired for a full refund."
+                  : "Waiting for a settlement transaction with a qualifying signed Pyth price. The payout appears once confirmed."}
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="receipt-totals">
+              <div>
+                <span>Refund to trader</span>
+                <strong>{amt(refund!)}</strong>
+              </div>
+              <div>
+                <span>LP share · vested</span>
+                <strong className="gold">{amt(lpShare!)}</strong>
+              </div>
+            </div>
+            {o.kind === "settled" && o.payout.rebate > 0n && (
+              <p className="receipt-rebate">
+                Plus {amt(o.payout.rebate)} rebate to the trader
+              </p>
+            )}
+            {o.kind === "settled" && <PayoutBar payout={o.payout} amt={amt} />}
+            <a
+              className="receipt-link"
+              href={explorerTx(o.hash)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View {o.kind === "expired" ? "expiry" : "settlement"} transaction
+              <ArrowUpRight size={16} />
+            </a>
+          </>
+        )}
+      </div>
+      {error && (
+        <p className="demo-error" role="alert">
+          Outcome read unavailable: {error}. Showing the last confirmed state.
         </p>
       )}
-      {error && (
-        <p className="err">Could not read the record's outcome: {error}</p>
-      )}
-      <p className="src">
-        Read from DepositTaken, Settled and Expired on {deployment.name}. A
-        testnet record says nothing about LP returns.
-      </p>
-    </div>
+      <Accordion className="receipt-details">
+        <AccordionItem value="record">
+          <AccordionTrigger>Record details</AccordionTrigger>
+          <AccordionContent>
+            <dl className="receipt-kv">
+              <dt>Original deposit</dt>
+              <dd>{amt(tracked.deposit)}</dd>
+              <dt>Settlement eligible from</dt>
+              <dd>{utc(t0)}</dd>
+              <dt>Full-refund expiry</dt>
+              <dd>
+                {expiry === null ? "Pool window unavailable" : utc(expiry)}
+              </dd>
+              <dt>Deposit block</dt>
+              <dd>{tracked.fromBlock.toString()}</dd>
+              <dt>Network</dt>
+              <dd>{deployment.name}</dd>
+            </dl>
+            <p className="swap-meta">
+              Read from DepositTaken, Settled and Expired events. Anyone can
+              settle with the first qualifying Pyth update. If the record
+              remains unsettled past its window, anyone can expire it for a full
+              deposit refund.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+        {o.kind === "settled" && (
+          <AccordionItem value="allocation">
+            <AccordionTrigger>Allocation details</AccordionTrigger>
+            <AccordionContent>
+              <PayoutDetails payout={o.payout} amt={amt} />
+              <dl className="receipt-kv">
+                <dt>Settlement markout</dt>
+                <dd>{units(o.markout, 6, 2)} quote units</dd>
+                <dt>Retention share α</dt>
+                <dd>{o.alphaBps / 100}%</dd>
+              </dl>
+            </AccordionContent>
+          </AccordionItem>
+        )}
+      </Accordion>
+    </Card>
   );
 }
 
@@ -121,35 +191,34 @@ type PayoutShape = {
   toLPs: bigint;
   rebate: bigint;
 };
-
-function Payout({
-  payout: p,
-  amt,
-  hash,
-  markout,
-}: {
-  payout: PayoutShape;
-  amt: (v: bigint) => string;
-  hash: string;
-  markout: bigint;
-}) {
-  const total =
-    p.refund + p.tip + p.toProtocol + p.toRebatePool + p.toLPs + p.rebate;
-  const parts: [string, string, bigint][] = [
-    ["sw-refund", "Refunded to the trader", p.refund],
-    ["sw-rebate", "Rebate to the trader", p.rebate],
-    ["sw-lps", "To LPs, vested", p.toLPs],
-    ["sw-pool", "To the rebate pool", p.toRebatePool],
-    ["sw-tip", "Settler's tip", p.tip],
+function parts(p: PayoutShape): [string, string, bigint][] {
+  return [
+    ["sw-refund", "Trader refund", p.refund],
+    ["sw-rebate", "Trader rebate", p.rebate],
+    ["sw-lps", "LPs · vested", p.toLPs],
+    ["sw-pool", "Rebate pool", p.toRebatePool],
+    ["sw-tip", "Settlement tip", p.tip],
     ["sw-proto", "Protocol", p.toProtocol],
   ];
-  const shown = parts.filter(([, , v]) => v > 0n);
+}
+function PayoutBar({
+  payout,
+  amt,
+}: {
+  payout: PayoutShape;
+  amt(v: bigint): string;
+}) {
+  const shown = parts(payout).filter(([, , v]) => v > 0n);
+  const total = shown.reduce((sum, [, , v]) => sum + v, 0n);
   return (
-    <div className="payout">
+    <div className="receipt-allocation">
+      <span>Confirmed allocation</span>
       <div
         className="bar"
         role="img"
-        aria-label={shown.map(([, l, v]) => `${l} ${amt(v)}`).join(", ")}
+        aria-label={shown
+          .map(([, label, v]) => `${label} ${amt(v)}`)
+          .join(", ")}
       >
         {shown.map(([cls, , v]) => (
           <span
@@ -161,21 +230,27 @@ function Payout({
           />
         ))}
       </div>
-      <ul className="legend">
-        {shown.map(([cls, label, v]) => (
-          <li key={cls}>
-            <i className={cls} />
-            {label}: <span className="mono">{amt(v)}</span>
-          </li>
-        ))}
-      </ul>
-      <p className="src">
-        Markout at the settlement price:{" "}
-        <span className="mono">{units(markout, 6, 2)}</span> quote units ·{" "}
-        <a href={explorerTx(hash)} target="_blank" rel="noreferrer">
-          settlement transaction
-        </a>
-      </p>
     </div>
+  );
+}
+function PayoutDetails({
+  payout,
+  amt,
+}: {
+  payout: PayoutShape;
+  amt(v: bigint): string;
+}) {
+  return (
+    <dl className="receipt-kv">
+      {parts(payout).map(([cls, label, v]) => (
+        <div className="allocation-row" key={cls}>
+          <dt>
+            <i className={cls} />
+            {label}
+          </dt>
+          <dd>{amt(v)}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }

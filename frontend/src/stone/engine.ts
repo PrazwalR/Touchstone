@@ -1,3 +1,5 @@
+import { beginAnnotations } from "./annotations.ts";
+
 // The stone: one ray-marched WebGL context shared by every illustration on the page, with a Canvas2D fallback.
 // Ported from frontend/design (Main.dc.html). Every picture it draws is illustrative; none of it reads the chain.
 
@@ -101,9 +103,9 @@ const FS = [
   "float map(vec3 p){return uMode<0.5?sdRB(p,H,RB):sdArt(p);}",
   "vec3 calcN(vec3 p){vec2 e=vec2(0.0011,-0.0011);return normalize(e.xyy*map(p+e.xyy)+e.yyx*map(p+e.yyx)+e.yxy*map(p+e.yxy)+e.xxx*map(p+e.xxx));}",
   "vec2 boxHit(vec3 ro,vec3 rd,vec3 b){vec3 m=1./(rd+vec3(1e-6));vec3 n=m*ro;vec3 k=abs(m)*b;vec3 t1=-n-k,t2=-n+k;return vec2(max(max(t1.x,t1.y),t1.z),min(min(t2.x,t2.y),t2.z));}",
-  "vec3 env(vec3 r,float rough){float w=0.0065+rough*0.16;float s=dot(r,uKeyN);float strip=exp(-s*s/(w*w))*smoothstep(-0.15,0.3,r.y);",
+  "vec3 env(vec3 r,float rough){float w=0.018+rough*0.20;float s=dot(r,uKeyN);float strip=exp(-s*s/(w*w))*smoothstep(-0.15,0.3,r.y);",
   " vec3 ax=normalize(cross(uKeyN,vec3(0.,1.,0.)));strip*=smoothstep(1.05,0.25,abs(dot(r,ax)));float en=1./(1.+rough*7.);",
-  " vec3 kc=mix(vec3(1.0,0.90,0.76),vec3(0.74,0.84,1.0),uCold);vec3 c=kc*strip*3.0*en;c+=kc*exp(-s*s/0.02)*smoothstep(-0.15,0.3,r.y)*0.035;",
+  " vec3 kc=mix(vec3(1.0,0.90,0.76),vec3(0.74,0.84,1.0),uCold);vec3 c=kc*strip*1.9*en;c+=kc*exp(-s*s/0.02)*smoothstep(-0.15,0.3,r.y)*0.035;",
   " c+=mix(vec3(0.0045,0.0040,0.0036),vec3(0.0035,0.0045,0.006),uCold)*smoothstep(-0.3,1.0,r.y);",
   " c+=vec3(0.8,0.84,0.92)*pow(max(0.,dot(r,normalize(vec3(0.15,0.10,-1.)))),60.)*0.6*en;",
   " c+=vec3(1.,0.86,0.66)*pow(max(0.,dot(r,normalize(vec3(-1.,0.25,0.3)))),10.)*0.22*en;c+=vec3(1.,0.9,0.8)*pow(max(0.,dot(r,normalize(vec3(-0.5,0.42,0.75)))),5.)*0.10*en;return c;}",
@@ -115,16 +117,16 @@ const FS = [
   "  vec3 fl=mix(vec3(0.010,0.0088,0.0072),vec3(0.006,0.0075,0.0095),uCold)*pool*1.4*sh;",
   "  c+=fl*exp(-0.06*tg)*edgeFade;c-=base*(1.-sh)*0.6*edgeFade;}",
   " float hz=exp(-pow(dot(q-0.5,normalize(vec2(1.,-0.55)))*3.2+0.2,2.))*0.0035;c+=mix(vec3(1.,0.86,0.66),vec3(0.7,0.8,1.),uCold)*hz*edgeFade;return max(c,vec3(0.));}",
-  "vec3 shade(vec3 p,vec3 rd){vec3 n=calcN(p);vec3 V=-rd;float rough=0.06;vec3 alb=vec3(0.0105,0.0100,0.0108);float spec=0.045;",
+  "vec3 shade(vec3 p,vec3 rd){vec3 n=calcN(p);vec3 V=-rd;float rough=0.16;vec3 alb=vec3(0.023,0.025,0.031);float spec=0.065;",
   " vec3 emis=vec3(0.);float metal=0.;vec3 gF0=vec3(0.96,0.64,0.22);bool top=false;vec2 tuv=vec2(0.);float groove=0.,inlay=0.,refm=0.;",
   " vec2 px=vec2(1./1024.,1./512.);vec2 pe=vec2(1./2048.,1./1024.);vec2 wxz=p.xz;float heatD=0.;float dark=0.;",
-  " float bands=sin((p.x*0.9+p.z*2.2)*6.0+fbm(p.xz*1.2+uMode*7.)*5.0);alb*=0.78+0.34*bands;rough=mix(0.018,0.05,0.5+0.5*bands);",
+  " float bands=sin((p.x*0.9+p.z*2.2)*6.0+fbm(p.xz*1.2+uMode*7.)*5.0);alb*=0.94+0.06*bands;rough=mix(0.12,0.18,0.5+0.5*bands);",
   " if(uMode<0.5){top=n.y>0.97;tuv=vec2((p.x+H.x)/(2.*H.x),(p.z+H.z)/(2.*H.z));",
   "  if(!top&&abs(n.y)<0.2&&max(abs(p.x)-H.x,abs(p.z)-H.z)>-0.004){rough=0.26;alb*=1.4;}",
   "  if(top){vec2 wv=vec2(fbm(p.xz*1.1+3.),fbm(p.xz*1.1+9.))-0.5;n=normalize(n+vec3(wv.x,0.,wv.y)*0.007);",
   "   vec4 e=texture2D(uEngr,tuv);groove=e.r;inlay=e.g;refm=e.b;",
   "   float gx=texture2D(uEngr,tuv+vec2(pe.x,0.)).r-texture2D(uEngr,tuv-vec2(pe.x,0.)).r;float gz=texture2D(uEngr,tuv+vec2(0.,pe.y)).r-texture2D(uEngr,tuv-vec2(0.,pe.y)).r;",
-  "   n=normalize(n+vec3(gx,0.,gz)*0.9);alb*=1.-0.55*groove;spec*=1.-0.4*groove;}",
+  "   n=normalize(n+vec3(gx,0.,gz)*0.35);alb*=1.-0.55*groove;spec*=1.-0.4*groove;emis+=groove*vec3(0.024,0.028,0.036);}",
   " }else{vec3 q=rotY(vec3(p.x,p.y-uFloat,p.z),uRot);vec3 nq=rotY(n,uRot);",
   "  if(abs(nq.y)<0.75){float fi;vec2 fu;float k=artK(q.y);float hv=(q.y+0.72)/1.44;",
   "   if(abs(nq.z)>abs(nq.x)){if(nq.z>0.){fi=0.;fu=vec2(q.x/k*0.758+0.5,hv);}else{fi=2.;fu=vec2(-q.x/k*0.758+0.5,hv);}}",
@@ -133,7 +135,7 @@ const FS = [
   "   if(fu.x>0.02&&fu.x<0.98&&fu.y>0.02&&fu.y<0.98){vec4 e=texture2D(uFacet,auv);groove=e.r;inlay=e.g;",
   "    float gx=texture2D(uFacet,auv+vec2(0.0012,0.)).r-texture2D(uFacet,auv-vec2(0.0012,0.)).r;n=normalize(n+rotY(vec3(gx,0.,0.),-uRot)*0.6);",
   "    alb*=1.-0.55*groove;float selF=1.-step(0.5,abs(fi-uSel));float pulseF=0.5+0.5*sin(uTime*2.1);",
-  "    emis+=inlay*GOLDL*(0.13+selF*(0.5+0.15*pulseF));emis+=groove*selF*GOLDL*0.10;}}",
+  "    emis+=inlay*GOLDL*(0.30+selF*(0.4+0.08*pulseF));emis+=groove*vec3(0.022,0.026,0.034)+groove*selF*GOLDL*0.08;}}",
   "  if(q.y<-0.6)rough=0.45;if(nq.y<-0.25)dark=1.;wxz=q.xz;}",
   " if(top){vec4 s=texture2D(uStreak,tuv);float core=s.r,heat=s.g,halo=s.b;heatD=halo;",
   "  core*=0.72+0.28*noise(tuv*vec2(1500.,750.));float gm=smoothstep(0.06,0.5,core);float cx=texture2D(uStreak,tuv+vec2(px.x,0.)).r-texture2D(uStreak,tuv-vec2(px.x,0.)).r;",
@@ -154,7 +156,7 @@ const FS = [
   " float NoV=max(dot(n,V),0.);vec3 r=reflect(rd,n);",
   " if(heatD>0.01){r=normalize(r+(vec3(noise(tuv*90.+uTime*2.3),0.,noise(tuv*90.-uTime*2.1+5.))-0.5)*0.05*heatD);}",
   " vec3 F0=mix(vec3(spec),gF0,metal);vec3 F=F0+(1.-F0)*pow(1.-NoV,5.)*(1.-metal*0.6);",
-  " vec3 c=alb*(1.-metal)*0.35+F*env(r,rough)+emis;",
+  " vec3 c=alb*(1.-metal)*(0.55+0.16*max(n.y,0.))+F*env(r,rough)+emis;",
   " if(top&&uCold>0.001){vec2 fq=p.xz;float fr=fbm(fq*6.+fbm(fq*2.5)*2.);float feather=smoothstep(0.30,0.78,fr);vec3 vr=vor(fq*4.2);",
   "  float edge=1.-smoothstep(0.,0.016,vr.y-vr.x);float melt=smoothstep(uThaw*1.3-0.25,uThaw*1.3,0.25+0.5*vr.z+0.25*fr);float fa=uCold*(0.30+0.70*feather)*melt;",
   "  vec3 ri=reflect(rd,normalize(vec3((fr-0.5)*0.10,1.,(noise(fq*9.)-0.5)*0.10)));vec3 iceRef=env(ri,0.10)*0.07*vec3(0.85,0.93,1.0);",
@@ -356,12 +358,12 @@ function paintEngraving(c: HTMLCanvasElement, fontMono: string): void {
   circ(D[0], D[1], 0.42, "r", 2.0, 0.9);
   circ(D[0], D[1], 0.3, "r", 1.3, 0.8);
   circ(D[0], D[1], 0.36, "r", 0.9, 0.4);
-  for (let i = 0; i < 120; i++) {
-    const an = (i / 120) * Math.PI * 2;
+  for (let i = 0; i < 60; i++) {
+    const an = (i / 60) * Math.PI * 2;
     const ca = Math.sin(an);
     const sa = -Math.cos(an);
-    const L = i % 10 === 0 ? 0.055 : i % 5 === 0 ? 0.035 : 0.02;
-    line(D[0] + ca * 0.43, D[1] + sa * 0.43, D[0] + ca * (0.43 + L), D[1] + sa * (0.43 + L), "r", i % 10 === 0 ? 1.5 : 0.9, 0.85);
+    const L = i % 5 === 0 ? 0.055 : 0.025;
+    line(D[0] + ca * 0.43, D[1] + sa * 0.43, D[0] + ca * (0.43 + L), D[1] + sa * (0.43 + L), "r", i % 5 === 0 ? 2.0 : 1.2, 0.85);
   }
   line(D[0], D[1] - 0.29, D[0], D[1] - 0.5, "b", 2.2, 1);
   line(D[0] - 0.02, D[1] - 0.52, D[0] + 0.02, D[1] - 0.52, "b", 2.0, 1);
@@ -378,7 +380,7 @@ function paintEngraving(c: HTMLCanvasElement, fontMono: string): void {
   circ(P[0], P[1], 0.26, "r", 0.9, 0.35);
   g.setLineDash([]);
   const Vt = LAYOUT.vault;
-  [0.08, 0.13, 0.18, 0.23, 0.28, 0.33].forEach((r, k) => circ(Vt[0], Vt[1], r, "r", k === 0 ? 2.2 : 1.2, 0.85 - k * 0.08));
+  [0.08, 0.16, 0.24, 0.33].forEach((r, k) => circ(Vt[0], Vt[1], r, "r", k === 0 ? 2.2 : 1.2, 0.85 - k * 0.08));
   circ(Vt[0], Vt[1], 0.08, "g", 1.5, 0.9);
   strokePath(g, sampleCubic(PATHS.toVault, 80, 0, 1), "r", 0.5, 1.0 * K);
   strokePath(g, sampleCubic(PATHS.toTrader, 40, 0, 1), "r", 0.5, 1.0 * K);
@@ -390,10 +392,9 @@ function paintEngraving(c: HTMLCanvasElement, fontMono: string): void {
   g.lineWidth = 1.3 * K;
   g.strokeRect(-1.48, -0.9, 0.3, 0.12);
   text("T  S", -1.42, -0.84, 15, 600);
-  text("TOUCHSTONE  ·  REFERENCE INSTRUMENT  ·  ASSAY 0001", -1.48, 0.9, 11);
   text("P*", D[0] + 0.03, D[1] - 0.52, 12, 600);
-  text("DEPOSIT  D", P[0] - 0.1, P[1] + 0.33, 11);
-  text("LPs  ·  VESTED", Vt[0] - 0.12, Vt[1] + 0.41, 11);
+  text("DEPOSIT", P[0] - 0.13, P[1] + 0.33, 17);
+  text("LPs", Vt[0] - 0.06, Vt[1] + 0.41, 17);
   for (let k = 0; k <= 32; k++) {
     const xx = -1.5 + k * 0.09375;
     line(xx, -0.97, xx, k % 4 === 0 ? -0.93 : -0.95, "r", 0.9, 0.5);
@@ -426,7 +427,8 @@ function paintFacets(c: HTMLCanvasElement, fontSerif: string, fontMono: string):
     g.textAlign = "center";
     g.textBaseline = "middle";
     g.fillText(`0${i + 1}`, 256, 160);
-    g.font = `600 22px ${fontMono}`;
+    g.font = `500 34px ${fontMono}`;
+    g.fillStyle = G;
     g.fillText(names[i], 256, 400);
     g.strokeStyle = G;
     g.lineWidth = 3;
@@ -518,7 +520,7 @@ export class Engine {
   private readonly sctx: CanvasRenderingContext2D;
   private readonly engrC: HTMLCanvasElement;
   private readonly facetC: HTMLCanvasElement;
-  private readonly fonts = { mono: '"JetBrains Mono", ui-monospace, monospace', serif: '"Bodoni Moda", Didot, serif' };
+  private readonly fonts = { mono: '"JetBrains Mono", ui-monospace, monospace', serif: '"Manrope", system-ui, sans-serif' };
   private glc: HTMLCanvasElement | null = null;
   private gl: WebGLRenderingContext | null = null;
   private U = {} as Record<UniformName, WebGLUniformLocation | null>;
@@ -721,7 +723,7 @@ export class Engine {
 
   private size(s: Stage): V2 {
     const rect = s.canvas.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, s.maxDpr ?? 1.5) * this.quality * (s.scale ?? 1);
+    const dpr = Math.min(window.devicePixelRatio || 1, s.maxDpr ?? 1.5) * (s.scale ?? 1);
     const w = Math.max(2, Math.round(rect.width * dpr));
     const h = Math.max(2, Math.round(rect.height * dpr));
     if (s.canvas.width !== w || s.canvas.height !== h) {
@@ -758,6 +760,7 @@ export class Engine {
     if (s.overlay) {
       s.ctx.save();
       s.ctx.scale(w / s.cssW, h / s.cssH);
+      beginAnnotations(s.ctx);
       s.overlay(s.ctx, proj, t, P);
       s.ctx.restore();
     }
@@ -768,13 +771,16 @@ export class Engine {
     const c = this.glc;
     const U = this.U;
     if (!gl || !c || !this.tex) return;
-    if (c.width < w || c.height < h) {
-      c.width = Math.max(c.width, w);
-      c.height = Math.max(c.height, h);
+    // Only the expensive shader adapts resolution. Canvas annotations remain at device resolution.
+    const rw = Math.max(2, Math.round(w * this.quality));
+    const rh = Math.max(2, Math.round(h * this.quality));
+    if (c.width < rw || c.height < rh) {
+      c.width = Math.max(c.width, rw);
+      c.height = Math.max(c.height, rh);
     }
-    gl.viewport(0, 0, w, h);
+    gl.viewport(0, 0, rw, rh);
     this.upload(0, this.tex.streak, this.streakC);
-    gl.uniform2f(U.uRes, w, h);
+    gl.uniform2f(U.uRes, rw, rh);
     gl.uniform1f(U.uTime, t);
     gl.uniform3fv(U.uCamPos, cam.pos);
     gl.uniform3fv(U.uCamF, cam.f);
@@ -798,7 +804,7 @@ export class Engine {
     gl.uniform2fv(U.uDialC, LAYOUT.dial);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     s.ctx.globalCompositeOperation = "copy";
-    s.ctx.drawImage(c, 0, c.height - h, w, h, 0, 0, w, h);
+    s.ctx.drawImage(c, 0, c.height - rh, rw, rh, 0, 0, w, h);
     s.ctx.globalCompositeOperation = "source-over";
   }
 
@@ -860,10 +866,10 @@ export class Engine {
     const oy = fit ? fit[1] : (h - sh) / 2;
     s.flat = { ox, oy, sw, sh };
     const gr = g.createLinearGradient(ox, oy, ox + sw, oy + sh);
-    gr.addColorStop(0, "#141416");
-    gr.addColorStop(0.45, "#0d0d0f");
-    gr.addColorStop(0.52, "#1d1c1a");
-    gr.addColorStop(0.6, "#0d0d0f");
+    gr.addColorStop(0, "#282a32");
+    gr.addColorStop(0.45, "#1c1e25");
+    gr.addColorStop(0.52, "#33343a");
+    gr.addColorStop(0.6, "#1c1e25");
     gr.addColorStop(1, "#0c0c0e");
     g.fillStyle = gr;
     g.fillRect(ox, oy, sw, sh);

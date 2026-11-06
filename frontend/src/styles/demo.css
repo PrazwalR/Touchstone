@@ -1,0 +1,1193 @@
+/* Presentation surfaces: a trade and its receipt share one sight line. */
+.demo-view {
+  --gut: clamp(20px, 4vw, 60px);
+  max-width: 1360px;
+  padding-top: 30px;
+  padding-bottom: 64px;
+}
+.demo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.demo-header h1 {
+  margin: 0;
+  font: 500 clamp(28px, 3.1vw, 40px)/1.1 var(--serif);
+  letter-spacing: -0.055em;
+}
+.demo-network {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.demo-network .state-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.demo-other {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--text-2);
+}
+.demo-other:hover {
+  color: var(--text);
+}
+.demo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.demo-view .demo-trade {
+  padding: 20px;
+  gap: 14px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+.demo-view .swap-head {
+  gap: 12px;
+  min-height: 26px;
+}
+.demo-view .swap-head h2,
+.receipt-head h2 {
+  margin: 0;
+  font: 550 19px/1.4 var(--sans);
+  letter-spacing: -0.025em;
+}
+.demo-view .swap-head .wallet [data-slot="button"] {
+  font-size: 13px;
+  height: 30px;
+}
+.demo-view .swap-direction {
+  padding: 3px;
+  gap: 4px;
+  border-radius: 12px;
+  background: var(--background);
+}
+.demo-view .swap-direction .opt {
+  min-height: 34px;
+  height: auto;
+  border: 0;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.demo-view .swap-direction .opt[data-pressed] {
+  background: var(--secondary);
+  box-shadow: 0 1px 4px #0002;
+}
+.trade-amounts {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.demo-view .swap-box {
+  gap: 5px;
+  min-height: 100px;
+  padding: 14px 16px;
+  border-radius: 13px;
+  border: 1px solid transparent;
+  background: var(--background);
+}
+.demo-view .swap-box label,
+.demo-view .amount-label {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.demo-view .swap-row {
+  gap: 10px;
+}
+.demo-view .swap-row input,
+.demo-view .swap-out {
+  height: 34px;
+  min-height: 0;
+  font: 450 32px/1.15 var(--sans);
+  letter-spacing: -0.04em;
+}
+.demo-view .token {
+  font: 500 12px/1 var(--sans);
+  padding: 8px 10px;
+  background: var(--secondary);
+  border: 0;
+}
+.demo-view .swap-meta {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.trade-arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  border: 4px solid var(--card);
+  border-radius: 9px;
+  color: var(--text-3);
+}
+.trade-deposit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.trade-deposit > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.trade-deposit > div > span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.trade-deposit strong {
+  font: 500 24px/1.2 var(--sans);
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+.trade-deposit.is-flagged strong {
+  color: var(--gold-hot);
+}
+.deposit-state {
+  flex: none;
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--text-2);
+}
+.is-flagged .deposit-state {
+  color: var(--gold-hot);
+  background: #e8b44a0a;
+  border-color: var(--gold-line);
+}
+.trade-essentials {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px 12px;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.trade-essentials strong {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.trade-essentials strong.impact-high {
+  color: var(--gold-hot);
+}
+.impact-note {
+  margin: -5px 0 0;
+  color: var(--gold-hot);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.demo-view .swap-go {
+  min-height: 46px;
+  font-size: 15px;
+  gap: 8px;
+}
+.wallet-primary,
+.wallet-primary > [data-slot="dropdown-menu-trigger"] {
+  width: 100%;
+}
+.demo-view .trade-details {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  margin-top: 0;
+}
+.demo-view .trade-details [data-slot="accordion-item"] {
+  background: transparent;
+}
+.demo-view .trade-details [data-slot="accordion-trigger"] {
+  padding: 12px 0;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  text-decoration: none;
+}
+.demo-view .trade-details [data-slot="accordion-content"] {
+  padding-inline: 0;
+}
+.detail-summary {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.trade-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+.trade-setting > span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.trade-setting [data-slot="toggle-group"] {
+  width: 100%;
+}
+.trade-setting .opt {
+  flex: 1;
+  text-align: center;
+}
+.demo-view .swap-kv {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+}
+.demo-view .swap-kv div {
+  font-size: 13px;
+}
+.demo-view .swap-kv .v {
+  font-family: var(--sans);
+}
+.trade-confirmed {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #e8b44a0a;
+  border: 1px solid var(--gold-line);
+  font-size: 14px;
+}
+.trade-confirmed > span {
+  color: var(--gold-hot);
+}
+.trade-confirmed a {
+  font-size: 13px;
+}
+.trade-confirmed p {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--text-2);
+  font-size: 13px;
+}
+.demo-error {
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--gold);
+  background: var(--secondary);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+/* The gold seam is the receipt's organizing device, not a decorative chart. */
+.demo-view .settlement-card {
+  min-height: 570px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold-line);
+  background: var(--background);
+  padding: 26px 28px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+.receipt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.receipt-state {
+  font-size: 14px;
+  color: var(--text-3);
+}
+.receipt-state.pending,
+.receipt-state.complete {
+  color: var(--gold-hot);
+}
+.settlement-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 30px 0 0;
+  padding: 0;
+}
+.settlement-rail li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text-3);
+  font-size: 14px;
+}
+.settlement-rail li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 28px;
+  right: 10px;
+  height: 1px;
+  background: var(--border);
+}
+.settlement-node {
+  height: 21px;
+  width: 21px;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.settlement-node > span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+.settlement-rail .complete {
+  color: var(--text);
+}
+.settlement-rail .complete .settlement-node {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: #e8b44a0b;
+}
+.settlement-rail .current {
+  color: var(--gold-hot);
+}
+.settlement-rail .current .settlement-node {
+  border-color: var(--gold-line);
+}
+.settlement-rail .current .settlement-node > span {
+  background: var(--gold);
+}
+.settlement-empty {
+  display: flex;
+  flex: 1;
+  min-height: 300px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 0;
+}
+.receipt-symbol {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+}
+.receipt-symbol > span {
+  height: 3px;
+  width: 22px;
+  background: var(--gold);
+  border-radius: 3px;
+  transform: rotate(-12deg);
+}
+.receipt-symbol.confirmed {
+  color: var(--gold);
+  border-color: var(--gold-line);
+}
+.settlement-empty h3,
+.receipt-main h3 {
+  margin: 0;
+  font: 450 clamp(25px, 2.6vw, 36px)/1.15 var(--serif);
+  letter-spacing: -0.05em;
+  max-width: 20ch;
+}
+.settlement-empty > p {
+  margin: 15px 0 0;
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 40ch;
+}
+.receipt-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+.receipt-bottom > p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-2);
+  max-width: 50ch;
+}
+.receipt-bottom > .demo-error {
+  flex-basis: 100%;
+}
+.receipt-bottom [data-slot="button"] {
+  min-height: 38px;
+  font-size: 14px;
+}
+.receipt-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 0 32px;
+}
+.receipt-record {
+  color: var(--text-3);
+  font: 400 11px/1.5 var(--mono);
+  margin: 0 0 12px;
+}
+.receipt-held {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 30px;
+}
+.receipt-held > span,
+.receipt-totals span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.receipt-held > strong {
+  font: 450 clamp(30px, 3vw, 44px)/1.2 var(--sans);
+  letter-spacing: -0.05em;
+  color: var(--gold-hot);
+  overflow-wrap: anywhere;
+}
+.receipt-explanation {
+  margin: 18px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-2);
+  max-width: 40ch;
+}
+.receipt-totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 30px;
+}
+.receipt-totals > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.receipt-totals strong {
+  font: 450 clamp(24px, 2.2vw, 32px)/1.2 var(--sans);
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+.receipt-rebate {
+  font-size: 14px;
+  color: var(--gold-hot);
+  margin: 18px 0 0;
+}
+.receipt-allocation {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 28px;
+}
+.receipt-allocation > span {
+  font-size: 13px;
+  color: var(--text-3);
+}
+.receipt-allocation .bar {
+  height: 13px;
+  border-radius: 5px;
+}
+.receipt-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 7px;
+  margin-top: 20px;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--text-2);
+}
+.demo-view .receipt-details {
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--border);
+  background: transparent;
+}
+.receipt-details [data-slot="accordion-trigger"] {
+  padding: 15px 0;
+  font-size: 14px;
+  text-decoration: none;
+}
+.receipt-details [data-slot="accordion-content"] {
+  padding-inline: 0;
+}
+.receipt-kv {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 16px;
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+.receipt-kv dt,
+.receipt-kv dd {
+  margin: 0;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-2);
+}
+.receipt-kv dd {
+  text-align: right;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.allocation-row {
+  display: contents;
+}
+.allocation-row dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.allocation-row i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+}
+/* Real price context is useful at presentation distance; configuration is secondary. */
+.demo-market {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: 8px 28px;
+  align-items: center;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 22px;
+  background: color-mix(in oklch, var(--card) 55%, var(--background));
+}
+.demo-market > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.demo-market > div > span {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.demo-market strong {
+  font: 450 clamp(23px, 2.4vw, 31px)/1.2 var(--sans);
+  letter-spacing: -0.045em;
+}
+.demo-market strong small {
+  font: 450 12px/1 var(--sans);
+  color: var(--text-3);
+  letter-spacing: 0;
+}
+.market-arrow {
+  color: var(--text-3);
+}
+.demo-market .market-gap {
+  border-left: 1px solid var(--border);
+  padding-left: 28px;
+}
+.market-gap strong {
+  color: var(--gold-hot);
+}
+.demo-market > p {
+  grid-column: 1/-1;
+  margin: 8px 0 0;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.demo-extras {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 28px;
+}
+.demo-disclosure {
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+}
+.demo-disclosure [data-slot="accordion-item"] {
+  background: transparent;
+}
+.demo-disclosure
+  > [data-slot="accordion-item"]
+  > h3
+  > [data-slot="accordion-trigger"] {
+  font-size: 14px;
+  padding: 17px 0;
+  text-decoration: none;
+}
+.demo-disclosure
+  > [data-slot="accordion-item"]
+  > [data-slot="accordion-content"] {
+  padding-inline: 0;
+}
+.demo-disclosure .live-block {
+  margin-top: 20px;
+}
+.demo-disclosure .live-block:first-child {
+  margin-top: 0;
+}
+.demo-explain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-bottom: 20px;
+}
+.demo-explain-grid h3 {
+  margin: 0 0 10px;
+  font: 500 15px/1.4 var(--sans);
+}
+.demo-explain-grid p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+.demo-loading {
+  min-height: 520px;
+}
+.demo-loading h2 {
+  font: 500 18px/1.3 var(--sans);
+  margin: 0;
+}
+.demo-loading p {
+  font-size: 15px;
+  color: var(--text-2);
+}
+.demo-spin {
+  animation: demo-spin 1s linear infinite;
+}
+@keyframes demo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 1000px) {
+  .demo-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 18px;
+  }
+  .demo-view .settlement-card {
+    padding-inline: 20px;
+  }
+  .receipt-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .receipt-totals {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .demo-market {
+    column-gap: 20px;
+  }
+}
+@media (max-width: 760px) {
+  .demo-view {
+    padding-top: 22px;
+  }
+  .demo-header {
+    gap: 14px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .demo-other {
+    font-size: 13px;
+    max-width: 115px;
+    text-align: right;
+  }
+  .demo-network {
+    font-size: 13px;
+  }
+  .demo-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .demo-view .demo-trade {
+    padding: 18px;
+  }
+  .demo-view .settlement-card {
+    min-height: 440px;
+    padding: 22px 20px 16px;
+  }
+  .receipt-head {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .settlement-empty {
+    min-height: 260px;
+    padding: 28px 0;
+  }
+  .settlement-empty h3,
+  .receipt-main h3 {
+    font-size: 32px;
+  }
+  .receipt-totals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .receipt-totals strong {
+    font-size: 25px;
+  }
+  .receipt-main {
+    padding-block: 32px;
+  }
+  .demo-market {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 18px;
+    padding: 18px;
+  }
+  .demo-market > .market-arrow {
+    display: none;
+  }
+  .demo-market strong {
+    font-size: 27px;
+  }
+  .demo-market .market-gap {
+    grid-column: 1/-1;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding: 12px 0 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .market-gap strong {
+    font-size: 20px;
+  }
+  .demo-market > p {
+    margin-top: 0;
+    line-height: 1.5;
+  }
+  .demo-explain-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .demo-view .detail-summary {
+    font-size: 12px;
+  }
+}
+/* Compare payment and receipt in one row, keeping the deposit and action in view. */
+.demo-context {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+.demo-context .demo-market {
+  grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr) minmax(0, 0.7fr);
+  gap: 10px;
+  margin: 0;
+  padding: 16px 20px;
+}
+.demo-context .demo-market strong {
+  font-size: 27px;
+}
+.demo-context .demo-market .market-gap {
+  padding-left: 14px;
+}
+.demo-context .settlement-card {
+  min-height: 390px;
+}
+.demo-context .settlement-empty {
+  min-height: 210px;
+  padding-block: 24px;
+}
+.demo-view .demo-trade {
+  gap: 11px;
+  padding: 18px;
+}
+.demo-view .trade-amounts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.demo-view .trade-amounts .swap-box {
+  position: relative;
+  min-height: 112px;
+  padding: 13px 12px;
+  gap: 6px;
+}
+.demo-view .trade-amounts label,
+.demo-view .trade-amounts .amount-label {
+  max-width: calc(100% - 48px);
+  font-size: 14px;
+}
+.demo-view .trade-amounts .token {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  padding: 3px 6px;
+  font-size: 13px;
+}
+.demo-view .trade-amounts .swap-row {
+  display: block;
+  margin-top: 4px;
+}
+.demo-view .trade-amounts .swap-row input,
+.demo-view .trade-amounts .swap-out {
+  width: 100%;
+  display: block;
+  font-size: 32px;
+  height: 34px;
+}
+.demo-view .trade-amounts .swap-meta {
+  font-size: 12px;
+}
+.demo-view .trade-arrow {
+  transform: translate(-50%, -50%) rotate(-90deg);
+  top: 53%;
+  z-index: 1;
+}
+.demo-view .trade-deposit {
+  padding-block: 8px;
+}
+.demo-view .trade-essentials {
+  gap: 5px 12px;
+}
+@media (max-width: 1000px) and (min-width: 761px) {
+  .demo-grid {
+    grid-template-columns: minmax(0, 390px) minmax(0, 1fr);
+  }
+  .demo-context .demo-market {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .demo-context .market-arrow {
+    display: none;
+  }
+  .demo-context .demo-market .market-gap {
+    grid-column: 1/-1;
+    border: 0;
+    padding: 0;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+@media (max-width: 760px) {
+  .demo-context .demo-market {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .demo-context .demo-market .market-gap {
+    padding-left: 0;
+  }
+  .demo-context .settlement-card {
+    min-height: 440px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-spin {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .demo-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .demo-view .swap-direction .opt {
+    min-height: 42px;
+  }
+}
+
+.demo-view .trade-amounts .swap-out {
+  height: auto;
+  min-height: 34px;
+  overflow-wrap: anywhere;
+}
+
+/* Pool details separate market state, token balances and immutable settings. */
+.pool-inspector {
+  padding: 8px 0 12px;
+}
+.pool-read-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.pool-read-status > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.pool-read-status .state-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.pool-read-status a {
+  margin-left: auto;
+  text-decoration: none;
+  color: var(--text);
+}
+.pool-inspector > .demo-error {
+  margin-bottom: 20px;
+}
+.pool-tabs [data-slot="tabs-list"] {
+  height: 44px;
+}
+.pool-tabs [data-slot="tabs-trigger"] {
+  min-width: 100px;
+  font-size: 14px;
+  padding-inline: 20px;
+}
+.pool-tabs [data-slot="tabs-content"] {
+  margin-top: 20px;
+}
+.pool-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 52px;
+}
+.pool-price {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  padding-top: 10px;
+}
+.pool-price h3 {
+  margin: 0 0 24px;
+  font: 500 24px/1.2 var(--serif);
+  letter-spacing: -0.04em;
+}
+.pool-price > span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.pool-price strong {
+  font: 450 clamp(30px, 3vw, 42px)/1.2 var(--sans);
+  letter-spacing: -0.045em;
+  margin-top: 8px;
+}
+.pool-price strong small {
+  font: 450 15px/1.4 var(--sans);
+  color: var(--text-2);
+  letter-spacing: 0;
+}
+.pool-price p {
+  margin: 15px 0 0;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.pool-facts {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.pool-facts > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.pool-facts dt {
+  color: var(--text-2);
+}
+.pool-facts dd {
+  margin: 0;
+  font-weight: 500;
+  text-align: right;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.pool-identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 12px 22px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-2);
+}
+.pool-identity code {
+  font: 400 12px/1.7 var(--mono);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.pool-source {
+  margin: 20px 0 0;
+  color: var(--text-3);
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 88ch;
+}
+.pool-balance-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.pool-balance-head h3,
+.pool-config-groups h3 {
+  font: 500 19px/1.4 var(--sans);
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+.pool-balance-head > span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.pool-balance-table {
+  width: 100%;
+}
+.pool-balance-table th {
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 450;
+  padding: 12px 0;
+}
+.pool-balance-table td {
+  padding: 18px 0;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.pool-balance-table th:not(:first-child),
+.pool-balance-table td:not(:first-child) {
+  text-align: right;
+}
+.pool-balance-table td:first-child {
+  color: var(--text-2);
+}
+.pool-config-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+.pool-config-groups h3 {
+  margin-bottom: 12px;
+}
+@media (max-width: 1000px) {
+  .pool-config-groups {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .pool-config-groups h3 {
+    margin-bottom: 4px;
+  }
+  .pool-overview {
+    gap: 32px;
+  }
+  .pool-identity {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .pool-identity > span:last-child {
+    grid-column: 2;
+  }
+}
+@media (max-width: 760px) {
+  .pool-read-status {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pool-read-status a {
+    margin-left: 0;
+  }
+  .pool-tabs [data-slot="tabs-list"] {
+    width: 100%;
+  }
+  .pool-tabs [data-slot="tabs-trigger"] {
+    min-width: 0;
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+  .pool-overview {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .pool-price h3 {
+    margin-bottom: 16px;
+  }
+  .pool-identity {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .pool-identity > span:last-child {
+    grid-column: 1;
+  }
+  .pool-balance-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pool-balance-table td {
+    font-size: 14px;
+    padding-block: 15px;
+  }
+  .pool-balance-table th {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 760px) {
+  .demo-view .demo-trade {
+    padding: 16px;
+  }
+  .demo-view .trade-amounts .swap-box {
+    padding-inline: 8px;
+  }
+  .demo-view .trade-amounts label,
+  .demo-view .trade-amounts .amount-label {
+    max-width: calc(100% - 50px);
+  }
+  .demo-view .trade-amounts .swap-row input,
+  .demo-view .trade-amounts .swap-out {
+    font-size: 29px;
+    letter-spacing: -0.05em;
+  }
+  .demo-view .trade-amounts .token {
+    right: 8px;
+  }
+}
+@media (max-width: 374px) {
+  .demo-view .trade-amounts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .demo-view .trade-arrow {
+    transform: translate(-50%, -50%);
+    top: 50%;
+  }
+}

@@ -5,6 +5,7 @@ import "./styles/globals.css";
 import "./styles/instrument.css";
 import "./styles/app.css";
 import "./styles/refined.css";
+import "./styles/demo.css";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("index.html has no #root");

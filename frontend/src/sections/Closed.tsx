@@ -123,21 +123,16 @@ export function Closed({ motion, live }: { motion: Motion; live: Live }) {
       overlay: (ctx, proj, _t, P) => {
         const x = r.current.v / 100;
         const at = (a: number, z: number) => proj(a, HY, z);
-        tag(
-          ctx,
-          at(DEMO[40][0], DEMO[40][1]),
-          -24,
-          -40,
-          "CLOSURE RECORD · δc · α_c",
-          { color: x < 0.8 ? FROST : null },
-        );
+        tag(ctx, at(DEMO[40][0], DEMO[40][1]), -24, -40, "Closure deposit", {
+          color: x < 0.8 ? FROST : null,
+        });
         if ((P.ref ?? 0) > 0.5)
           tag(
             ctx,
             at(DIAL[0] + 0.1, DIAL[1] - 0.45),
             26,
             -34,
-            "SIGNED PRICE AFTER REOPENING (ILLUSTRATED)",
+            "Signed price after reopening",
             { dot: CYAN, color: CYAN },
           );
       },

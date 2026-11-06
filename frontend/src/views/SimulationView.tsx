@@ -1,9 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { useCallback, useEffect, useState } from "react";
 import { deployment } from "../chain/deployment.ts";
 import { priceQuotePerRiskyE6, readEvents } from "../chain/reads.ts";
 import type { Live } from "../chain/useLive.ts";
-import { RecordTracker } from "../components/RecordTracker.tsx";
+import {
+  DemoHeader,
+  DemoDisclosure,
+  SettlementPanel,
+} from "../components/DemoLayout.tsx";
+import { ArrowRight } from "lucide-react";
 import { SwapPanel } from "../components/SwapPanel.tsx";
 import { units } from "../format.ts";
 import { swapContext } from "../swap/context.ts";
@@ -93,6 +97,8 @@ export function SimulationView({ live }: { live: Live }) {
   const { ref, error: refError } = useReference();
   const [tracked, setTracked] = useState<TrackedRecord | null>(null);
   const [latestError, setLatestError] = useState<string | null>(null);
+  const [following, setFollowing] = useState(false);
+  const [result, setResult] = useState<SwapResult | null>(null);
   const s = live.snapshot;
   const poolE6 = s ? priceQuotePerRiskyE6(s.sqrtPriceX96) : null;
   const gapBps =
@@ -117,29 +123,35 @@ export function SimulationView({ live }: { live: Live }) {
           ).replace(/,/g, "");
 
   const onSwapped = useCallback((r: SwapResult) => {
-    if (r.record)
-      setTracked({
-        poolId: r.record.poolId,
-        recordId: r.record.id,
-        fromBlock: r.receipt.blockNumber,
-        timestamp: r.record.timestamp,
-        deposit: r.record.deposit,
-        depositIn0: r.record.depositIn0,
-        outcome: { kind: "open" },
-      });
+    setResult(r);
+    setTracked(
+      r.record
+        ? {
+            poolId: r.record.poolId,
+            recordId: r.record.id,
+            fromBlock: r.receipt.blockNumber,
+            timestamp: r.record.timestamp,
+            deposit: r.record.deposit,
+            depositIn0: r.record.depositIn0,
+            outcome: { kind: "open" },
+          }
+        : null,
+    );
   }, []);
 
   const followLatest = async () => {
     setLatestError(null);
+    setFollowing(true);
     try {
       const events = await readEvents();
       const d = events.find((e) => e.kind === "deposit");
       if (!d || d.kind !== "deposit") {
         setLatestError(
-          "No flagged swap on this pool yet. Make one in step 2, or run the outsider bot.",
+          "No flagged swaps found on this pool. Make a trade to open the first record.",
         );
         return;
       }
+      setResult(null);
       setTracked({
         poolId: deployment.pools[0].poolId,
         recordId: d.recordId,
@@ -151,113 +163,124 @@ export function SimulationView({ live }: { live: Live }) {
       });
     } catch (err) {
       setLatestError(shortError(err));
+    } finally {
+      setFollowing(false);
     }
   };
 
   return (
-    <section className="view" aria-labelledby="sim-title">
-      <div className="wrap view-head">
-        <h1 id="sim-title" className="h2">
-          Follow an arbitrage.
-        </h1>
-        <p className="lead">
-          Make a real testnet swap, then follow the deposit, signed price and
-          payout. Your wallet signs each transaction.
-        </p>
+    <section className="demo-view wrap" aria-labelledby="sim-title">
+      <DemoHeader
+        id="sim-title"
+        title="Live settlement"
+        live={live}
+        next="swap"
+      />
+      <div className="demo-grid">
+        {preset === null || gapBps === null ? (
+          <div className="swap-card demo-trade demo-loading">
+            <h2>Arbitrage swap</h2>
+            <p>
+              {live.error
+                ? "Pool data is unavailable. Check the live data panel below."
+                : "Reading the pool and reference to prepare a trade…"}
+            </p>
+          </div>
+        ) : (
+          <SwapPanel
+            ctx={swapContext}
+            initialSide={side}
+            initialAmount={preset}
+            onSwapped={onSwapped}
+            title="Arbitrage swap"
+          />
+        )}
+        <div className="demo-context">
+          <div className="demo-market" aria-label="Live price comparison">
+            <div>
+              <span>Pool price</span>
+              <strong>
+                {poolE6 === null ? "—" : units(poolE6, 6, 2)}{" "}
+                <small>{Q.symbol}</small>
+              </strong>
+            </div>
+            <ArrowRight className="market-arrow" size={20} aria-hidden="true" />
+            <div>
+              <span>Chainlink reference</span>
+              <strong>
+                {ref ? units(ref.priceE6, 6, 2) : "—"} <small>{Q.symbol}</small>
+              </strong>
+            </div>
+            <div className="market-gap">
+              <span>Reference vs pool</span>
+              <strong>
+                {gapBps === null
+                  ? "—"
+                  : `${gapBps > 0 ? "+" : ""}${(gapBps / 100).toFixed(2)}%`}
+              </strong>
+            </div>
+          </div>
+          {refError && (
+            <p className="demo-error" role="alert">
+              Reference unavailable: {refError}
+            </p>
+          )}
+          <SettlementPanel
+            ctx={swapContext}
+            tracked={tracked}
+            onChange={setTracked}
+            result={result}
+            live={live}
+            onFollow={() => void followLatest()}
+            following={following}
+            followError={latestError}
+          />
+        </div>
       </div>
-
-      <div className="wrap sim-steps">
-        <div className="sim-step">
-          <h2 className="h3">The situation, read live</h2>
+      <div className="demo-extras">
+        <DemoDisclosure title="Demo setup and live thresholds">
+          <p>
+            {gapBps === null
+              ? "Reading prices."
+              : `${side === "buy" ? "Buy" : "Sell"} ${R.symbol} to move the pool toward the reference.`}{" "}
+            The trade starts at 1.2 × the large-swap threshold, in the direction
+            of the reference. Edit the amount freely. Quotes use the live pool;
+            your wallet signs real testnet transactions.
+          </p>
           <div className="kv">
-            <div>Pool price</div>
-            <div className="v">
-              {poolE6 === null ? "—" : `${units(poolE6, 6, 2)} ${Q.symbol}`}
-            </div>
-            <div>Chainlink reference</div>
-            <div className="v">
-              {ref
-                ? `${units(ref.priceE6, 6, 2)} ${Q.symbol}`
-                : refError
-                  ? "unavailable"
-                  : "—"}
-            </div>
-            <div>Gap, reference over pool</div>
-            <div className="v em">
-              {gapBps === null ? "—" : `${gapBps > 0 ? "+" : ""}${gapBps} bps`}
-            </div>
             <div>Large-swap threshold N₀</div>
             <div className="v">
               {n0 === null ? "—" : `${units(n0, Q.decimals, 2)} ${Q.symbol}`}
             </div>
             <div>Drift threshold τ</div>
             <div className="v">{s ? `${s.config.tauBps} bps` : "—"}</div>
+            <div>Reference vs pool</div>
+            <div className="v">{gapBps === null ? "—" : `${gapBps} bps`}</div>
+            <div>Chainlink reference updated</div>
+            <div className="v">
+              {ref
+                ? new Date(ref.updatedAt * 1000)
+                    .toISOString()
+                    .replace("T", " ")
+                    .replace(".000Z", " UTC")
+                : "—"}
+            </div>
           </div>
-          <p className="body">
-            {gapBps === null
-              ? "Reading prices…"
-              : `An arbitrageur ${side === "buy" ? "buys" : "sells"} ${R.symbol} here, moving the pool toward the reference. A swap of at least N₀ that is the first large swap in its block is flagged on size alone; one toward a stale pool price beyond the drift threshold is flagged on drift.`}
+          <p className="swap-meta">
+            The Chainlink reference informs the trade direction and deposit.
+            Settlement uses a qualifying signed Pyth price. A first large swap
+            in a block can trigger a deposit on size; sustained flow and drift
+            toward a stale pool price can also trigger it.
           </p>
-          {refError && <p className="err">Reference unavailable: {refError}</p>}
-        </div>
-
-        <div className="sim-step">
-          <h2 className="h3">Make the trade</h2>
-          {preset === null ? (
-            <p className="empty">Reading the pool's thresholds…</p>
-          ) : (
-            <SwapPanel
-              key={`${side}-${preset}`}
-              ctx={swapContext}
-              initialSide={side}
-              initialAmount={preset}
-              onSwapped={onSwapped}
-              title="Arbitrage swap"
-            />
-          )}
-          <p className="src">
-            Pre-filled at 1.2 × N₀ in the direction of the reference. Change it
-            freely. No wallet?{" "}
-            <Button
-              variant="link"
-              className="inline-action"
-              onClick={() => void followLatest()}
-            >
-              Follow the latest flagged swap on the pool instead
-            </Button>
-            .
-          </p>
-          {latestError && <p className="err">{latestError}</p>}
-        </div>
-
-        <div className="sim-step">
-          <h2 className="h3">Deposit, settlement, payout</h2>
-          {tracked ? (
-            <RecordTracker
-              ctx={swapContext}
-              tracked={tracked}
-              onChange={setTracked}
-              {...(s
-                ? {
-                    settleDelay: s.config.settleDelay,
-                    windowSeconds: s.config.window,
-                  }
-                : {})}
-            />
-          ) : (
-            <p className="empty">
-              Once a flagged swap lands, its record appears here: the deposit
-              held, the countdown to t₀, the settlement, and how the deposit was
-              split.
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="wrap view-live">
-        {!HISTORY_URL && <Records live={live} />}
-        <History />
-        <Licence />
+          {live.error && <p className="demo-error">{live.error}</p>}
+        </DemoDisclosure>
+        <DemoDisclosure title="Records, credits and keeper history">
+          {!HISTORY_URL && <Records live={live} />}
+          <History />
+        </DemoDisclosure>
+        <DemoDisclosure title="Arbitrage licence">
+          <Licence />
+        </DemoDisclosure>
       </div>
     </section>
   );

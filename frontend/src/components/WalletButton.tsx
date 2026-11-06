@@ -10,10 +10,10 @@ import { deployment } from "../chain/deployment.ts";
 import { shortAddr } from "../format.ts";
 import { useWallet } from "../wallet/WalletContext.tsx";
 
-export function WalletButton() {
+export function WalletButton({ prominent = false }: { prominent?: boolean }) {
   const w = useWallet();
   return (
-    <div className="wallet">
+    <div className={`wallet ${prominent ? "wallet-primary" : ""}`}>
       {w.account && !w.onRightChain && (
         <Button variant="outline" onClick={() => void w.switchToDeployment()}>
           Switch network
@@ -23,7 +23,10 @@ export function WalletButton() {
         <DropdownMenuTrigger
           render={
             <Button
-              variant={w.account ? "outline" : "secondary"}
+              variant={
+                prominent ? "default" : w.account ? "outline" : "secondary"
+              }
+              className={prominent ? "swap-go" : undefined}
               disabled={w.connecting}
               title={w.account ?? undefined}
             />

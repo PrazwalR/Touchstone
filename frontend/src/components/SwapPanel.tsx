@@ -1,3 +1,10 @@
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import { ArrowDown, LoaderCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
@@ -123,11 +130,33 @@ export function SwapPanel({
       disabled: busy || !f.guard,
     };
 
+  const depositText = p
+    ? depositNow !== null
+      ? fmt(depositNow, depositToken)
+      : p.deposit.flaggedNow
+        ? `≈ ${fmt(p.depositBound, depositToken)}`
+        : fmt(0n, depositToken)
+    : "—";
+  const impact = p ? priceImpactBps(ctx, p) : null;
+  const impactText = impact === null ? "—" : `${(impact / 100).toFixed(2)}%`;
+  if (busy)
+    action = {
+      label:
+        f.phase === "approving"
+          ? "Approving in wallet…"
+          : f.phase === "confirming"
+            ? "Confirming swap…"
+            : "Submitting swap…",
+      disabled: true,
+    };
+  else if (f.phase === "done" && f.result)
+    action = { label: "New swap", onClick: f.reset, disabled: false };
+
   return (
-    <Card className="swap-card">
+    <Card className="swap-card demo-trade">
       <div className="swap-head">
-        <h3 className="h3">{title}</h3>
-        <WalletButton />
+        <h2>{title}</h2>
+        {f.wallet.account && <WalletButton />}
       </div>
       <ToggleGroup
         className="seg swap-direction"
@@ -149,50 +178,33 @@ export function SwapPanel({
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
-      <ToggleGroup
-        className="seg swap-direction"
-        aria-label="Amount to specify"
-        value={[exactOutput ? "output" : "input"]}
-        disabled={busy}
-        onValueChange={(v) => {
-          if (v[0] && (v[0] === "output") !== exactOutput) {
-            setExactOutput(v[0] === "output");
-            setAmount("");
-            f.reset();
-          }
-        }}
-      >
-        <ToggleGroupItem value="input" className="opt">
-          Exact input
-        </ToggleGroupItem>
-        <ToggleGroupItem value="output" className="opt">
-          Exact output
-        </ToggleGroupItem>
-      </ToggleGroup>
-      <label className="swap-box" htmlFor="swap-in">
-        <span className="tl">{exactOutput ? "You request" : "You pay"}</span>
-        <span className="swap-row">
-          <Input
-            id="swap-in"
-            inputMode="decimal"
-            autoComplete="off"
-            placeholder="0.0"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value.replace(",", "."))}
-            aria-invalid={amount !== "" && f.specified === null}
-            disabled={busy}
-          />
-          <span className="token">{specifiedToken.symbol}</span>
-        </span>
-        <span className="swap-meta">
-          {p?.balanceIn !== null && p?.balanceIn !== undefined ? (
-            <>
+      <div className="trade-amounts">
+        <div className="swap-box">
+          <label htmlFor="swap-in">
+            {exactOutput ? "You request" : "You pay"}
+          </label>
+          <div className="swap-row">
+            <Input
+              id="swap-in"
+              inputMode="decimal"
+              autoComplete="off"
+              placeholder="0.0"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value.replace(",", "."))}
+              aria-invalid={amount !== "" && f.specified === null}
+              disabled={busy}
+            />
+            <span className="token">{specifiedToken.symbol}</span>
+          </div>
+          {p?.balanceIn !== null && p?.balanceIn !== undefined && (
+            <div className="swap-meta">
               Balance {fmt(p.balanceIn, tIn)}{" "}
               {!exactOutput && (
                 <Button
                   type="button"
                   variant="link"
                   className="inline-action"
+                  disabled={busy}
                   onClick={() => {
                     const max = isNative(tIn)
                       ? p.balanceIn! > GAS_RESERVE_WEI
@@ -207,195 +219,250 @@ export function SwapPanel({
                   Max
                 </Button>
               )}
-            </>
-          ) : (
-            "Connect a wallet to see your balance"
+            </div>
           )}
+        </div>
+        <span className="trade-arrow" aria-hidden="true">
+          <ArrowDown size={15} />
         </span>
-      </label>
-
-      <div className="swap-box out">
-        <span className="tl">
-          {exactOutput
-            ? "Payment including deposit"
-            : "You receive after deposit"}
-        </span>
-        <span className="swap-row">
-          <output className="swap-out">
-            {p && exactOutput
-              ? units(
-                  p.exact?.netIn ?? p.amountIn,
-                  tIn.decimals,
-                  tIn.decimals > 6 ? 6 : 2,
-                )
-              : netOut === null
-                ? "—"
-                : units(netOut, tOut.decimals, tOut.decimals > 6 ? 6 : 2)}
-          </output>
-          <span className="token">
-            {exactOutput ? tIn.symbol : tOut.symbol}
+        <div className="swap-box out">
+          <span className="amount-label">
+            {exactOutput ? "You pay" : "You receive"}
           </span>
-        </span>
-        <span className="swap-meta">
-          {p?.exact
-            ? "Simulated from your account"
-            : "Estimate includes the hook"}
-        </span>
+          <div className="swap-row">
+            <output className="swap-out">
+              {p && exactOutput
+                ? units(
+                    p.exact?.netIn ?? p.amountIn,
+                    tIn.decimals,
+                    tIn.decimals > 6 ? 6 : 2,
+                  )
+                : netOut === null
+                  ? "—"
+                  : units(netOut, tOut.decimals, tOut.decimals > 6 ? 6 : 2)}
+            </output>
+            <span className="token">
+              {exactOutput ? tIn.symbol : tOut.symbol}
+            </span>
+          </div>
+          <span className="swap-meta">
+            {f.loading
+              ? "Refreshing quote…"
+              : p?.exact
+                ? "Account simulation"
+                : exactOutput
+                  ? "Includes deposit · estimated"
+                  : "After deposit · estimated"}
+          </span>
+        </div>
       </div>
-
       {amount !== "" && f.specified === null && (
-        <p className="err">
+        <p className="demo-error" role="alert">
           Enter a positive amount with at most {specifiedToken.decimals}{" "}
           decimals.
         </p>
       )}
-      {f.previewError && <p className="err">Quote failed: {f.previewError}</p>}
-
-      {p && (
-        <div className="kv swap-kv">
-          <Row
-            k="Price impact, LP fee included"
-            v={`${(priceImpactBps(ctx, p) / 100).toFixed(2)}%`}
-            em={priceImpactBps(ctx, p) > 100}
-          />
-          <Row
-            k="Flagged if it executes now"
-            v={p.deposit.flaggedNow ? "Yes" : "No"}
-            em={p.deposit.flaggedNow}
-          />
-          <Row k="Triggers that fire" v={triggerNames(p.deposit.triggers)} />
-          <Row
-            k="Deposit held now"
-            v={
-              depositNow !== null
-                ? fmt(depositNow, depositToken)
-                : p.deposit.flaggedNow
-                  ? `about ${fmt(p.depositBound, depositToken)}`
-                  : fmt(0n, depositToken)
-            }
-            em={p.deposit.flaggedNow}
-          />
-          <Row
-            k="Deposit rate"
-            v={`${p.deposit.rateBps} bps of notional · ${p.deposit.mode === 1 ? "closure record" : "continuous"}`}
-          />
-          <Row
-            k="Settles from (t₀)"
-            v={p.deposit.flaggedNow ? utc(p.deposit.settleAfter) : "no record"}
-          />
-          <Row
-            k="Refunded in full if unsettled by"
-            v={p.deposit.flaggedNow ? utc(p.deposit.expiresAt) : "no record"}
-          />
-          <Row
-            k="Licence exemption"
-            v={p.deposit.exempt ? "Yes: this account holds the licence" : "No"}
-          />
-          {f.guard && (
-            <>
-              {exactOutput ? (
-                <Row k="Guard: most you pay" v={fmt(f.guard.maxNetIn, tIn)} />
-              ) : (
-                <Row
-                  k="Guard: least you receive"
-                  v={fmt(f.guard.minNetOut, tOut)}
-                />
-              )}
-              <Row
-                k="Guard: most deposit accepted"
-                v={fmt(f.guard.maxDeposit, depositToken)}
-              />
-            </>
-          )}
-        </div>
+      {f.previewError && (
+        <p className="demo-error" role="alert">
+          Quote unavailable: {f.previewError}
+        </p>
       )}
-
-      <div className="swap-settings">
-        <span className="tl">Slippage</span>
-        <ToggleGroup
-          aria-label="Slippage"
-          value={[String(slippage)]}
-          disabled={busy}
-          onValueChange={(v) => {
-            if (v[0]) setSlippage(BigInt(String(v[0])));
-          }}
-        >
-          {SLIPPAGE_CHOICES.map(([label, bps]) => (
-            <ToggleGroupItem key={label} value={String(bps)} className="opt">
-              {label}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-        <span className="tl">{`${Number(slippage) / Number(BPS / 100n)}% ${exactOutput ? "above" : "below"} the quote reverts on chain`}</span>
-      </div>
-
-      <Button
-        className=" swap-go"
-        onClick={action.onClick}
-        disabled={action.disabled}
+      <div
+        className={`trade-deposit ${p?.deposit.flaggedNow ? "is-flagged" : ""}`}
       >
-        {action.label}
-      </Button>
+        <div>
+          <span>Refundable deposit</span>
+          <strong>{depositText}</strong>
+        </div>
+        <span className="deposit-state">
+          {!p
+            ? "Awaiting quote"
+            : p.deposit.exempt
+              ? "Licence exempt"
+              : p.deposit.flaggedNow
+                ? "Flagged swap"
+                : "Not flagged"}
+        </span>
+      </div>
+      <div className="trade-essentials">
+        <span>Price impact</span>
+        <strong
+          className={impact !== null && impact > 100 ? "impact-high" : ""}
+        >
+          {impactText}
+        </strong>
+        {f.guard && (
+          <>
+            <span>{exactOutput ? "Maximum payment" : "Minimum received"}</span>
+            <strong>
+              {exactOutput
+                ? fmt(f.guard.maxNetIn, tIn)
+                : fmt(f.guard.minNetOut, tOut)}
+            </strong>
+          </>
+        )}
+      </div>
+      {impact !== null && impact > 100 && (
+        <p className="impact-note">
+          High price impact. This testnet pool has limited liquidity.
+        </p>
+      )}
+      {exactOutput && (
+        <p className="swap-meta">
+          Output may be partially filled if liquidity changes.
+        </p>
+      )}
+      {!f.wallet.account ? (
+        <WalletButton prominent />
+      ) : (
+        <Button
+          className="swap-go"
+          onClick={action.onClick}
+          disabled={action.disabled}
+        >
+          {busy && <LoaderCircle className="demo-spin" size={17} />}
+          {action.label}
+        </Button>
+      )}
       {p?.exactError && (
-        <p className="err">
-          Simulation from your account failed: {p.exactError}
+        <p className="demo-error" role="alert">
+          Your swap would revert: {p.exactError}
         </p>
       )}
       {f.actionError && (
-        <p className="err" role="alert">
+        <p className="demo-error" role="alert">
           {f.actionError}
         </p>
       )}
       {f.result && (
-        <div className="swap-done" role="status">
-          <p className="tl">
-            Confirmed in block {f.result.receipt.blockNumber.toString()}
-          </p>
-          <p className="body">
-            Paid <b className="mono">{fmt(f.result.paid, tIn)}</b>, received{" "}
-            <b className="mono">{fmt(f.result.received, tOut)}</b>
-            {f.result.record ? (
-              <>
-                , and{" "}
-                <b className="mono">
-                  {fmt(f.result.record.deposit, depositToken)}
-                </b>{" "}
-                is held as record #{f.result.record.id.toString()} until it
-                settles.
-              </>
-            ) : (
-              ". Not flagged: no deposit was taken."
-            )}
-          </p>
-          <p className="src">
-            <a
-              href={explorerTx(f.result.hash)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              View the transaction
-            </a>{" "}
-            ·{" "}
-            <Button variant="link" className="inline-action" onClick={f.reset}>
-              New swap
-            </Button>
+        <div className="trade-confirmed" role="status">
+          <span>Swap confirmed</span>
+          <a href={explorerTx(f.result.hash)} target="_blank" rel="noreferrer">
+            View transaction ↗
+          </a>
+          <p>
+            Paid {fmt(f.result.paid, tIn)} · received{" "}
+            {fmt(f.result.received, tOut)} · block{" "}
+            {f.result.receipt.blockNumber.toString()}
           </p>
         </div>
       )}
-      {exactOutput && (
-        <p className="src">
-          The router caps payment and deposit. If liquidity changes before
-          inclusion, the pool can fill less than the requested output.
-        </p>
-      )}
-      <p className="src">
-        Testnet only. The guard reverts the swap if the deposit exceeds its cap
-        or{" "}
-        {exactOutput
-          ? "the payment exceeds your maximum"
-          : "the output falls below your minimum"}
-        .
-      </p>
+      <Accordion className="trade-details">
+        <AccordionItem value="settings">
+          <AccordionTrigger>
+            <span>Trade settings</span>
+            <span className="detail-summary">
+              {exactOutput ? "Exact output" : "Exact input"} ·{" "}
+              {Number(slippage) / Number(BPS / 100n)}%
+            </span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="trade-setting">
+              <span>Amount to specify</span>
+              <ToggleGroup
+                aria-label="Amount to specify"
+                value={[exactOutput ? "output" : "input"]}
+                disabled={busy}
+                onValueChange={(v) => {
+                  if (v[0] && (v[0] === "output") !== exactOutput) {
+                    setExactOutput(v[0] === "output");
+                    setAmount("");
+                    f.reset();
+                  }
+                }}
+              >
+                <ToggleGroupItem value="input" className="opt">
+                  Exact input
+                </ToggleGroupItem>
+                <ToggleGroupItem value="output" className="opt">
+                  Exact output
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+            <div className="trade-setting">
+              <span>Slippage tolerance</span>
+              <ToggleGroup
+                aria-label="Slippage"
+                value={[String(slippage)]}
+                disabled={busy}
+                onValueChange={(v) => {
+                  if (v[0]) setSlippage(BigInt(String(v[0])));
+                }}
+              >
+                {SLIPPAGE_CHOICES.map(([label, bps]) => (
+                  <ToggleGroupItem
+                    key={label}
+                    value={String(bps)}
+                    className="opt"
+                  >
+                    {label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+            <p className="swap-meta">
+              The swap reverts if{" "}
+              {exactOutput
+                ? "payment exceeds your maximum"
+                : "output falls below your minimum"}{" "}
+              or the deposit exceeds its cap.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="quote">
+          <AccordionTrigger>Quote details</AccordionTrigger>
+          <AccordionContent>
+            {p ? (
+              <div className="kv swap-kv">
+                <Row k="Triggers" v={triggerNames(p.deposit.triggers)} />
+                <Row
+                  k="Deposit rate"
+                  v={`${p.deposit.rateBps} bps · ${p.deposit.mode === 1 ? "closure record" : "continuous"}`}
+                />
+                <Row
+                  k="Settlement eligible from"
+                  v={
+                    p.deposit.flaggedNow
+                      ? utc(p.deposit.settleAfter)
+                      : "No record"
+                  }
+                />
+                <Row
+                  k="Full-refund expiry"
+                  v={
+                    p.deposit.flaggedNow
+                      ? utc(p.deposit.expiresAt)
+                      : "No record"
+                  }
+                />
+                <Row
+                  k="Licence exemption"
+                  v={p.deposit.exempt ? "Active for this account" : "None"}
+                />
+                {f.guard && (
+                  <Row
+                    k="Maximum deposit accepted"
+                    v={fmt(f.guard.maxDeposit, depositToken)}
+                  />
+                )}
+                <Row k="Quote block" v={p.blockNumber.toString()} />
+                <Row
+                  k="Quote source"
+                  v={p.exact ? "Account simulation" : "Uniswap V4Quoter"}
+                />
+              </div>
+            ) : (
+              <p className="swap-meta">
+                {f.loading
+                  ? "Reading quote…"
+                  : f.specified === null
+                    ? "Enter an amount to read a quote."
+                    : "Quote unavailable. Check the message above."}
+              </p>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </Card>
   );
 }

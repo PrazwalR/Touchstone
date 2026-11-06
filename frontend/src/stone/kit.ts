@@ -9,7 +9,6 @@ export const KEYF: V3 = [0.1, -0.97, 0.22];
 export const CYAN = "#5EF2E1";
 export const HOT = "#FFD27A";
 export const FROST = "#A9BACD";
-const MONO = '"JetBrains Mono", ui-monospace, monospace';
 
 export function clamp(x: number, a: number, b: number): number {
   return x < a ? a : x > b ? b : x;
@@ -97,62 +96,7 @@ function polyline(ctx: CanvasRenderingContext2D, pts: V2[], close = false): void
   ctx.stroke();
 }
 
-export interface TagOptions {
-  alpha?: number;
-  dot?: string | null;
-  color?: string | null;
-}
-
-/** A leader line and a small mono label, kept inside the canvas. */
-export function tag(ctx: CanvasRenderingContext2D, pt: V2 | null, dx0: number, dy: number, text: string, opts: TagOptions = {}): void {
-  if (!pt) return;
-  const a = opts.alpha ?? 1;
-  if (a <= 0.01) return;
-  const sc = ctx.getTransform().a;
-  const W = ctx.canvas.width / sc;
-  const Hh = ctx.canvas.height / sc;
-  ctx.save();
-  ctx.font = `500 ${W < 520 ? 9.5 : 10.5}px ${MONO}`;
-  ctx.letterSpacing = W < 520 ? "0.5px" : "1px";
-  const need = ctx.measureText(text).width + (opts.dot ? 14 : 0) + 34;
-  let dx = dx0;
-  if (dx >= 0 && pt[0] + dx + need > W) dx = -Math.abs(dx);
-  else if (dx < 0 && pt[0] + dx - need < 0) dx = Math.abs(dx);
-  const [x, y] = pt;
-  const tx = x + dx;
-  const ty = clamp(y + dy, 14, Hh - 14);
-  const right = dx >= 0;
-  const boxW = need - 24;
-  const bx = right ? tx + 11 : tx - 11 - boxW;
-  const shiftX = bx < 6 ? 6 - bx : bx + boxW > W - 6 ? W - 6 - (bx + boxW) : 0;
-  ctx.globalAlpha = a;
-  ctx.strokeStyle = "rgba(243,239,231,0.38)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(tx, ty);
-  ctx.lineTo(tx + (right ? 12 : -12), ty);
-  ctx.stroke();
-  ctx.fillStyle = "rgba(243,239,231,0.95)";
-  ctx.beginPath();
-  ctx.arc(x, y, 2, 0, 6.2832);
-  ctx.fill();
-  ctx.textBaseline = "middle";
-  ctx.textAlign = right ? "left" : "right";
-  const w = ctx.measureText(text).width + (opts.dot ? 14 : 0);
-  const lx = tx + (right ? 16 : -16) + shiftX;
-  ctx.fillStyle = "rgba(10,10,11,0.62)";
-  ctx.fillRect(right ? lx - 5 : lx - w - 5, ty - 9, w + 10, 18);
-  let textX = lx;
-  if (opts.dot) {
-    ctx.fillStyle = opts.dot;
-    ctx.fillRect(right ? lx : lx - w, ty - 3.5, 7, 7);
-    textX = right ? lx + 14 : lx;
-  }
-  ctx.fillStyle = opts.color ?? "rgba(243,239,231,0.82)";
-  ctx.fillText(text, textX, ty);
-  ctx.restore();
-}
+export { tag } from "./annotations.ts";
 
 /** The swap arriving: a small glass prism that lands on the stone. */
 export function drawPrism(ctx: CanvasRenderingContext2D, proj: Project, at: Pt, h: number, a: number, spin: number): void {

@@ -187,9 +187,7 @@ export function Hero({
           at(DIAL[0], DIAL[1] - 0.5),
           34,
           -46,
-          refOn
-            ? "P* · SIGNED PRICE (ILLUSTRATED)"
-            : "P* · AWAITING A SIGNED PRICE",
+          refOn ? "Signed price · P*" : "Awaiting signed price",
           { dot: refOn ? CYAN : null, color: refOn ? CYAN : null },
         );
         if (!st.narrow) {
@@ -198,16 +196,16 @@ export function Hero({
             at(DEMO[60][0], DEMO[60][1]),
             -26,
             -40,
-            "RECORD 0x01 · ILLUSTRATIVE",
+            "Swap record · example",
             { alpha: sm(0.9, 1.4, st.cyc) },
           );
-          tag(ctx, at(VAULT[0], VAULT[1] + 0.33), 24, 34, "LPs · VESTED");
+          tag(ctx, at(VAULT[0], VAULT[1] + 0.33), 24, 34, "LP share · vested");
           tag(
             ctx,
             at(DEP[0] + 0.17, DEP[1] + 0.05),
             26,
             44,
-            "D · REFUNDABLE DEPOSIT",
+            "Refundable deposit",
           );
         }
       },
