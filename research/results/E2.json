@@ -1,0 +1,80 @@
+{
+  "code_sha256": "40041d0c9d7e078aacce4a1aeee36135bc6fe385304b6db08d36b08135de64c6",
+  "default_trigger_held_out": {
+    "phi_count": 0.22234108990197943,
+    "phi_volume": 0.8769635554606577,
+    "recall": 0.9716261145885418
+  },
+  "experiment": "E2",
+  "gate": "G1",
+  "held_out": {
+    "net_lp_markout_usd": -62654.11533026994,
+    "phi_count": 0.23394607510385837,
+    "phi_volume": 0.8962691356455802,
+    "r_star": -0.3118807034660406,
+    "r_star_ci95": [
+      -0.4995239454462409,
+      -0.1815611806860863
+    ],
+    "r_star_lp_net_15s": -0.2556655272339688,
+    "recall": 0.9893875018556911,
+    "recall_ci95": [
+      0.9863488006791796,
+      0.9915007449104039
+    ],
+    "report_average_r_star": 0.451,
+    "swaps": 184145,
+    "toxic_markout_usd": 251114.10642744397
+  },
+  "inputs_sha256": {
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/binance_ETHUSDT_1s_1788048000_1792972800.npz": "67a4ae20f4a6aa91e91c2c24d8fbcc80c29b60184d1474703e7990ab1a36c907",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/binance_USDCUSDT_1s_1788048000_1792972800.npz": "aa550ba6e463039915d024dd35bbd78d43c807596c16995718af342b9032dc1b",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/chainlink_eth_usd_25864029_26265958.jsonl.gz": "81acbc4dd340dee2dfbb067826ee33efcb159e6995b36148eed837c06e9d6e61",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/swaps_ethereum_25864359_26265958.jsonl.gz": "4837d877eddb05ccd6e441ac9d454ba011592739e0b402a6489bea641b8f6653"
+  },
+  "label": "historical backtest",
+  "prereg_sha256": "148795c21609f8d526429b8de49ed1ba588dd852d7b5e1036ff6f130d3bdaf1a",
+  "trigger": [
+    5000,
+    50000,
+    6,
+    2
+  ],
+  "uv": "uv 0.11.15 (3cffe97c2 2026-05-18 aarch64-apple-darwin)",
+  "verdict": "pass",
+  "weekly": [
+    {
+      "phi_count": 0.22507714462044848,
+      "phi_volume": 0.9049112911443853,
+      "r_star": -0.5560541936075921,
+      "recall": 0.985363855725556,
+      "swaps": 48610,
+      "week": 1
+    },
+    {
+      "phi_count": 0.16225552538411303,
+      "phi_volume": 0.8882742943368221,
+      "r_star": -0.520217612333047,
+      "recall": 0.9929902060995052,
+      "swaps": 58186,
+      "week": 2
+    },
+    {
+      "phi_count": 0.2711240572641467,
+      "phi_volume": 0.901043041365503,
+      "r_star": -0.09451250960832785,
+      "recall": 0.9908627470240365,
+      "swaps": 44286,
+      "week": 3
+    },
+    {
+      "phi_count": 0.32335238786558995,
+      "phi_volume": 0.8881557776511206,
+      "r_star": -0.21548942107198962,
+      "recall": 0.986664441642323,
+      "swaps": 33063,
+      "week": 4
+    }
+  ],
+  "window": "held-out"
+}

@@ -1,0 +1,791 @@
+{
+  "caveats": [
+    "No concentrated ticks, competing agents, flow triggers or fee compounding.",
+    "All arbitrage faces configured retention; entry assumes observed fair persists.",
+    "Mean freshness is sampled at tape timestamps; use a regular 1-second price tape.",
+    "Simulation does not establish contract bytecode correctness or LP returns."
+  ],
+  "code_sha256": "1a461bdcc036e0e9892ce5c65b9bbc902590a523ceb04155285a6cde8cd7c6a2",
+  "configuration": {
+    "alpha_bps": 8000,
+    "bootstrap_reps": 2000,
+    "cost_bps": [
+      1,
+      2,
+      5
+    ],
+    "deposit_bps": 30,
+    "development_start": 1789862400,
+    "end": 1791072000,
+    "eps_bps": [
+      2,
+      5
+    ],
+    "fee_bps": 5,
+    "gas_quote": 1,
+    "heldout_start": 1790467200,
+    "latency_seconds": [
+      0,
+      1,
+      3
+    ],
+    "quote_reserve": 2000000,
+    "risky_reserve": 1000,
+    "seed": 20261028,
+    "trade_sizes": [
+      100,
+      1000,
+      5000
+    ]
+  },
+  "experiment": "E6",
+  "input_sha256": {
+    "config/E6.json": "6bc82a2f0ab1b45dbe11ceae2ccafd4ff16755f6b8acb85ab34151ec353a9e4e",
+    "data/E6.jsonl.gz": "571c8a0bb2e726160651b728984f41008c7d9498076d16229cbdb0d9bde3720f"
+  },
+  "label": "simulation",
+  "model": "discrete-grid constant-product sensitivity simulation",
+  "normalization_manifest_sha256": "e97cef3a113079709cbd804ae1cf700fef8d67e97bc8fade4713ca8a17ec03b6",
+  "prereg_sha256": "36cd1a109596b725a229ef435a38597d1d54f0eef8d61f859743c0dcfd380a1c",
+  "scenarios": [
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 1.0,
+      "latency_seconds": 0.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4865998755104537,
+          "kill": true,
+          "mean_abs_static": 2.314850184852239,
+          "mean_abs_touchstone": 3.4412559966266896,
+          "ratio_ci95": [
+            1.410477935829426,
+            1.5505048960992212
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 332,
+          "touchstone_volume": 1660000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.6097729347953191,
+          "kill": true,
+          "mean_abs_static": 2.1672371780535022,
+          "mean_abs_touchstone": 3.488759752512712,
+          "ratio_ci95": [
+            1.5213127343570902,
+            1.6925113038571598
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 168,
+          "touchstone_volume": 840000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 0.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4529634647897656,
+          "kill": true,
+          "mean_abs_static": 2.314850184852239,
+          "mean_abs_touchstone": 3.363392745052139,
+          "ratio_ci95": [
+            1.3793103192409777,
+            1.5125686778343534
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 354,
+          "touchstone_volume": 1770000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.574415700309063,
+          "kill": true,
+          "mean_abs_static": 2.1672371780535022,
+          "mean_abs_touchstone": 3.4121322394209423,
+          "ratio_ci95": [
+            1.4854960194327278,
+            1.663564610434667
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 190,
+          "touchstone_volume": 950000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 0.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.3558827737542163,
+          "kill": true,
+          "mean_abs_static": 2.314850184852239,
+          "mean_abs_touchstone": 3.1386654894629147,
+          "ratio_ci95": [
+            1.2904620272598781,
+            1.405201673267076
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 448,
+          "touchstone_volume": 2240000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.528425650504706,
+          "kill": true,
+          "mean_abs_static": 2.1672371780535022,
+          "mean_abs_touchstone": 3.312460893664407,
+          "ratio_ci95": [
+            1.4224811781496807,
+            1.6585823917172577
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 272,
+          "touchstone_volume": 1360000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 1.0,
+      "latency_seconds": 1.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4844721887419712,
+          "kill": true,
+          "mean_abs_static": 2.32205917986087,
+          "mean_abs_touchstone": 3.447032273116452,
+          "ratio_ci95": [
+            1.409566263764846,
+            1.5481023283642352
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 332,
+          "touchstone_volume": 1660000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.6081830592949133,
+          "kill": true,
+          "mean_abs_static": 2.1711900093670065,
+          "mean_abs_touchstone": 3.4916709915743835,
+          "ratio_ci95": [
+            1.5194665487506591,
+            1.6910506732507344
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 168,
+          "touchstone_volume": 840000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 1.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4509096075388996,
+          "kill": true,
+          "mean_abs_static": 2.32205917986087,
+          "mean_abs_touchstone": 3.3690979733340347,
+          "ratio_ci95": [
+            1.3776953241813192,
+            1.5104101975293873
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 354,
+          "touchstone_volume": 1770000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.5729373836138218,
+          "kill": true,
+          "mean_abs_static": 2.1711900093670065,
+          "mean_abs_touchstone": 3.4151459326622082,
+          "ratio_ci95": [
+            1.4840603735315285,
+            1.6625728520222813
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 190,
+          "touchstone_volume": 950000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 1.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.3541512354180847,
+          "kill": true,
+          "mean_abs_static": 2.32205917986087,
+          "mean_abs_touchstone": 3.144419307122502,
+          "ratio_ci95": [
+            1.289323567943243,
+            1.4031903290701104
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 448,
+          "touchstone_volume": 2240000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.5271473993990161,
+          "kill": true,
+          "mean_abs_static": 2.1711900093670065,
+          "mean_abs_touchstone": 3.3157271764059493,
+          "ratio_ci95": [
+            1.4211589282667358,
+            1.6575067300113646
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 272,
+          "touchstone_volume": 1360000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 1.0,
+      "latency_seconds": 3.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.480266226684187,
+          "kill": true,
+          "mean_abs_static": 2.3364101695790582,
+          "mean_abs_touchstone": 3.458509065709354,
+          "ratio_ci95": [
+            1.4061126608315178,
+            1.5432424552494544
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 332,
+          "touchstone_volume": 1660000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.6050398990048562,
+          "kill": true,
+          "mean_abs_static": 2.179093993402254,
+          "mean_abs_touchstone": 3.497532803092443,
+          "ratio_ci95": [
+            1.515842604891158,
+            1.6884246311994506
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 168,
+          "touchstone_volume": 840000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 3.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4468742920121709,
+          "kill": true,
+          "mean_abs_static": 2.3364101695790582,
+          "mean_abs_touchstone": 3.380491809959736,
+          "ratio_ci95": [
+            1.3738404870626262,
+            1.5061435737815292
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 354,
+          "touchstone_volume": 1770000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.5700243164252763,
+          "kill": true,
+          "mean_abs_static": 2.179093993402254,
+          "mean_abs_touchstone": 3.4212305574177995,
+          "ratio_ci95": [
+            1.4812325875172705,
+            1.660404802055034
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 190,
+          "touchstone_volume": 950000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 1.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 3.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.350790005109475,
+          "kill": true,
+          "mean_abs_static": 2.3364101695790582,
+          "mean_abs_touchstone": 3.155999504903525,
+          "ratio_ci95": [
+            1.2870392985217791,
+            1.3996425492117603
+          ],
+          "static_entries": 1647,
+          "static_volume": 1923000.0,
+          "touchstone_entries": 448,
+          "touchstone_volume": 2240000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.5246709819179238,
+          "kill": true,
+          "mean_abs_static": 2.179093993402254,
+          "mean_abs_touchstone": 3.3224013786120645,
+          "ratio_ci95": [
+            1.4185057383171502,
+            1.6554251821389259
+          ],
+          "static_entries": 1015,
+          "static_volume": 1039000.0,
+          "touchstone_entries": 272,
+          "touchstone_volume": 1360000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 2.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 0.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4248788555373855,
+          "kill": true,
+          "mean_abs_static": 2.4335055534393377,
+          "mean_abs_touchstone": 3.4674506079285154,
+          "ratio_ci95": [
+            1.3341851878237494,
+            1.4951577376676086
+          ],
+          "static_entries": 1553,
+          "static_volume": 1821000.0,
+          "touchstone_entries": 322,
+          "touchstone_volume": 1610000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.5358035671714176,
+          "kill": true,
+          "mean_abs_static": 2.2925738418757806,
+          "mean_abs_touchstone": 3.520943084356705,
+          "ratio_ci95": [
+            1.4591328550242677,
+            1.6108994389210212
+          ],
+          "static_entries": 929,
+          "static_volume": 949000.0,
+          "touchstone_entries": 158,
+          "touchstone_volume": 790000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 2.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 0.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.3270418165456908,
+          "kill": true,
+          "mean_abs_static": 2.4335055534393377,
+          "mean_abs_touchstone": 3.229363630210165,
+          "ratio_ci95": [
+            1.2441651618799683,
+            1.3863532984211546
+          ],
+          "static_entries": 1553,
+          "static_volume": 1821000.0,
+          "touchstone_entries": 398,
+          "touchstone_volume": 1990000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.458868039293518,
+          "kill": true,
+          "mean_abs_static": 2.2925738418757806,
+          "mean_abs_touchstone": 3.3445627056329275,
+          "ratio_ci95": [
+            1.363268874204113,
+            1.5640734744632792
+          ],
+          "static_entries": 929,
+          "static_volume": 949000.0,
+          "touchstone_entries": 226,
+          "touchstone_volume": 1130000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 2.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 1.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4232379245766769,
+          "kill": true,
+          "mean_abs_static": 2.4403562670051695,
+          "mean_abs_touchstone": 3.473207588680124,
+          "ratio_ci95": [
+            1.333149563013344,
+            1.4933095655727706
+          ],
+          "static_entries": 1553,
+          "static_volume": 1821000.0,
+          "touchstone_entries": 322,
+          "touchstone_volume": 1610000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.53461849433231,
+          "kill": true,
+          "mean_abs_static": 2.2961804518961952,
+          "mean_abs_touchstone": 3.523760987804222,
+          "ratio_ci95": [
+            1.4578864379560772,
+            1.6097253929908004
+          ],
+          "static_entries": 929,
+          "static_volume": 949000.0,
+          "touchstone_entries": 158,
+          "touchstone_volume": 790000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 2.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 1.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.3256660132957947,
+          "kill": true,
+          "mean_abs_static": 2.4403562670051695,
+          "mean_abs_touchstone": 3.2350973635021507,
+          "ratio_ci95": [
+            1.2432365894546509,
+            1.3846214323542994
+          ],
+          "static_entries": 1553,
+          "static_volume": 1821000.0,
+          "touchstone_entries": 398,
+          "touchstone_volume": 1990000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.4579371708625015,
+          "kill": true,
+          "mean_abs_static": 2.2961804518961952,
+          "mean_abs_touchstone": 3.347686831827319,
+          "ratio_ci95": [
+            1.3622799151376308,
+            1.5633127968334635
+          ],
+          "static_entries": 929,
+          "static_volume": 949000.0,
+          "touchstone_entries": 226,
+          "touchstone_volume": 1130000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 2.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 3.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.4199421808204293,
+          "kill": true,
+          "mean_abs_static": 2.454036446816954,
+          "mean_abs_touchstone": 3.484589864106083,
+          "ratio_ci95": [
+            1.331044479290584,
+            1.4896426474106503
+          ],
+          "static_entries": 1553,
+          "static_volume": 1821000.0,
+          "touchstone_entries": 322,
+          "touchstone_volume": 1610000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.5322406483957183,
+          "kill": true,
+          "mean_abs_static": 2.3034242999517915,
+          "mean_abs_touchstone": 3.5294003428885867,
+          "ratio_ci95": [
+            1.4553979970891264,
+            1.607956822815286
+          ],
+          "static_entries": 929,
+          "static_volume": 949000.0,
+          "touchstone_entries": 158,
+          "touchstone_volume": 790000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 2.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 3.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.3229398817738358,
+          "kill": true,
+          "mean_abs_static": 2.454036446816954,
+          "mean_abs_touchstone": 3.246542686820705,
+          "ratio_ci95": [
+            1.241228377389914,
+            1.3812058468727968
+          ],
+          "static_entries": 1553,
+          "static_volume": 1821000.0,
+          "touchstone_entries": 398,
+          "touchstone_volume": 1990000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.4560936331035224,
+          "kill": true,
+          "mean_abs_static": 2.3034242999517915,
+          "mean_abs_touchstone": 3.354001457495742,
+          "ratio_ci95": [
+            1.3603479539528114,
+            1.561809031729942
+          ],
+          "static_entries": 929,
+          "static_volume": 949000.0,
+          "touchstone_entries": 226,
+          "touchstone_volume": 1130000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 5.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 0.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.6425887730255795,
+          "kill": true,
+          "mean_abs_static": 2.692027156990626,
+          "mean_abs_touchstone": 4.421893584752771,
+          "ratio_ci95": [
+            1.4904840097232455,
+            1.7682799551828405
+          ],
+          "static_entries": 1313,
+          "static_volume": 1585000.0,
+          "touchstone_entries": 214,
+          "touchstone_volume": 1070000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.7330536226223376,
+          "kill": true,
+          "mean_abs_static": 2.6356984662878467,
+          "mean_abs_touchstone": 4.5678067751402915,
+          "ratio_ci95": [
+            1.6024233589413295,
+            1.8578840485433759
+          ],
+          "static_entries": 809,
+          "static_volume": 821000.0,
+          "touchstone_entries": 99,
+          "touchstone_volume": 495000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 5.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 0.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.3416046342280539,
+          "kill": true,
+          "mean_abs_static": 2.692027156990626,
+          "mean_abs_touchstone": 3.6116361092863962,
+          "ratio_ci95": [
+            1.268532065314098,
+            1.4137897839159133
+          ],
+          "static_entries": 1313,
+          "static_volume": 1585000.0,
+          "touchstone_entries": 286,
+          "touchstone_volume": 1430000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.3940736961156357,
+          "kill": true,
+          "mean_abs_static": 2.6356984662878467,
+          "mean_abs_touchstone": 3.6743579027442106,
+          "ratio_ci95": [
+            1.307347872376243,
+            1.4841986290475682
+          ],
+          "static_entries": 809,
+          "static_volume": 821000.0,
+          "touchstone_entries": 150,
+          "touchstone_volume": 750000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 5.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 1.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.6404496215443576,
+          "kill": true,
+          "mean_abs_static": 2.6979899117802506,
+          "mean_abs_touchstone": 4.425916529710407,
+          "ratio_ci95": [
+            1.4887947284429328,
+            1.7659231530540844
+          ],
+          "static_entries": 1313,
+          "static_volume": 1585000.0,
+          "touchstone_entries": 214,
+          "touchstone_volume": 1070000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.731707181848135,
+          "kill": true,
+          "mean_abs_static": 2.6388453024202154,
+          "mean_abs_touchstone": 4.569707361987302,
+          "ratio_ci95": [
+            1.601063135308946,
+            1.8563804852539556
+          ],
+          "static_entries": 809,
+          "static_volume": 821000.0,
+          "touchstone_entries": 99,
+          "touchstone_volume": 495000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 5.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 1.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.340624333554929,
+          "kill": true,
+          "mean_abs_static": 2.6979899117802506,
+          "mean_abs_touchstone": 3.6169909274183207,
+          "ratio_ci95": [
+            1.2674586355913116,
+            1.4127523311250714
+          ],
+          "static_entries": 1313,
+          "static_volume": 1585000.0,
+          "touchstone_entries": 286,
+          "touchstone_volume": 1430000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.393491723636386,
+          "kill": true,
+          "mean_abs_static": 2.6388453024202154,
+          "mean_abs_touchstone": 3.6772090888793265,
+          "ratio_ci95": [
+            1.3067438740574147,
+            1.483636159601396
+          ],
+          "static_entries": 809,
+          "static_volume": 821000.0,
+          "touchstone_entries": 150,
+          "touchstone_volume": 750000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 5.0,
+      "eps_bps": 2.0,
+      "latency_seconds": 3.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.6362160359312625,
+          "kill": true,
+          "mean_abs_static": 2.7098881335080307,
+          "mean_abs_touchstone": 4.433962419625678,
+          "ratio_ci95": [
+            1.4866456785730287,
+            1.7607290397526458
+          ],
+          "static_entries": 1313,
+          "static_volume": 1585000.0,
+          "touchstone_entries": 214,
+          "touchstone_volume": 1070000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.729018263819802,
+          "kill": true,
+          "mean_abs_static": 2.6451386763365825,
+          "mean_abs_touchstone": 4.573493081722087,
+          "ratio_ci95": [
+            1.5984470112573204,
+            1.853457928934997
+          ],
+          "static_entries": 809,
+          "static_volume": 821000.0,
+          "touchstone_entries": 99,
+          "touchstone_volume": 495000.0
+        }
+      }
+    },
+    {
+      "cost_bps": 5.0,
+      "eps_bps": 5.0,
+      "latency_seconds": 3.0,
+      "windows": {
+        "development": {
+          "freshness_ratio": 1.3386273146158767,
+          "kill": true,
+          "mean_abs_static": 2.7098881335080307,
+          "mean_abs_touchstone": 3.6275302750672855,
+          "ratio_ci95": [
+            1.2653953152283592,
+            1.4105988868109003
+          ],
+          "static_entries": 1313,
+          "static_volume": 1585000.0,
+          "touchstone_entries": 286,
+          "touchstone_volume": 1430000.0
+        },
+        "heldout": {
+          "freshness_ratio": 1.3923125970479913,
+          "kill": true,
+          "mean_abs_static": 2.6451386763365825,
+          "mean_abs_touchstone": 3.6828599000022733,
+          "ratio_ci95": [
+            1.305517648131822,
+            1.482504268793754
+          ],
+          "static_entries": 809,
+          "static_volume": 821000.0,
+          "touchstone_entries": 150,
+          "touchstone_volume": 750000.0
+        }
+      }
+    }
+  ],
+  "source_sha256": {
+    "/home/kunal/touchstone/research/data/binance_ETHUSDT_1s_1788048000_1792972800.npz": "67a4ae20f4a6aa91e91c2c24d8fbcc80c29b60184d1474703e7990ab1a36c907",
+    "/home/kunal/touchstone/research/data/binance_USDCUSDT_1s_1788048000_1792972800.npz": "aa550ba6e463039915d024dd35bbd78d43c807596c16995718af342b9032dc1b"
+  }
+}

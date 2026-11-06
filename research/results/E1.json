@@ -1,0 +1,271 @@
+{
+  "census": {
+    "by_block_position": {
+      "first_in_block": {
+        "swaps": 111434,
+        "toxic_share": 0.4336146657750879
+      },
+      "later_in_block": {
+        "swaps": 97972,
+        "toxic_share": 0.566385334224912
+      }
+    },
+    "by_signed_drift_bps": [
+      {
+        "from": -1000000000,
+        "markout": -148485.1825750987,
+        "swaps": 98193,
+        "to": 0,
+        "toxic": 162508340368.85886,
+        "toxic_share": 0.2713426403981648,
+        "volume": 984611756.860148
+      },
+      {
+        "from": 0,
+        "markout": -12386.184871140485,
+        "swaps": 17908,
+        "to": 2,
+        "toxic": 14368793101.732758,
+        "toxic_share": 0.023991791748715897,
+        "volume": 125870706.00510001
+      },
+      {
+        "from": 2,
+        "markout": -5128.367489801554,
+        "swaps": 15452,
+        "to": 5,
+        "toxic": 14803274587.056759,
+        "toxic_share": 0.02471725207379422,
+        "volume": 117044632.78184101
+      },
+      {
+        "from": 5,
+        "markout": -35470.99135957029,
+        "swaps": 19100,
+        "to": 10,
+        "toxic": 18749120267.452724,
+        "toxic_share": 0.03130569044620102,
+        "volume": 154194545.719732
+      },
+      {
+        "from": 10,
+        "markout": 146.7777312063572,
+        "swaps": 26650,
+        "to": 20,
+        "toxic": 59516865265.43985,
+        "toxic_share": 0.09937621252355709,
+        "volume": 238755429.229059
+      },
+      {
+        "from": 20,
+        "markout": 264060.57245287916,
+        "swaps": 32103,
+        "to": null,
+        "toxic": 328958150606.4055,
+        "toxic_share": 0.5492664128095669,
+        "volume": 357490677.131184
+      }
+    ],
+    "by_size_usd": [
+      {
+        "from": 0,
+        "markout": -6773.834848797141,
+        "swaps": 127428,
+        "to": 1000,
+        "toxic": 182050977.49018085,
+        "toxic_share": 0.0003039732779691756,
+        "volume": 16000044.440179
+      },
+      {
+        "from": 1000,
+        "markout": -15020.827983334813,
+        "swaps": 24286,
+        "to": 5000,
+        "toxic": 1384301603.5619903,
+        "toxic_share": 0.0023113893807871497,
+        "volume": 63858975.083711
+      },
+      {
+        "from": 5000,
+        "markout": -29644.48649179385,
+        "swaps": 35717,
+        "to": 25000,
+        "toxic": 17333552883.96157,
+        "toxic_share": 0.028942096118511878,
+        "volume": 443541835.096877
+      },
+      {
+        "from": 25000,
+        "markout": 56319.040047548246,
+        "swaps": 18959,
+        "to": 100000,
+        "toxic": 79426326883.06345,
+        "toxic_share": 0.13261934251903842,
+        "volume": 890196133.1460121
+      },
+      {
+        "from": 100000,
+        "markout": -12009.828914412461,
+        "swaps": 2946,
+        "to": 500000,
+        "toxic": 222898629593.30658,
+        "toxic_share": 0.37217722215179516,
+        "volume": 506289772.07980096
+      },
+      {
+        "from": 500000,
+        "markout": 69866.56207926446,
+        "swaps": 70,
+        "to": null,
+        "toxic": 277679682255.5627,
+        "toxic_share": 0.4636459765518981,
+        "volume": 58080987.88048401
+      }
+    ],
+    "net_lp_markout_usd": 62736.62388847444,
+    "swaps": 209406,
+    "toxic_markout_usd": 598904.5441969465,
+    "volume_usd": 1977967747.7270641
+  },
+  "code_sha256": "40041d0c9d7e078aacce4a1aeee36135bc6fe385304b6db08d36b08135de64c6",
+  "default_trigger_dev_score": {
+    "phi_count": 0.26898465182468506,
+    "phi_volume": 0.9249229130823435,
+    "recall": 0.9895282231484194
+  },
+  "experiment": "E1",
+  "grid_size": 384,
+  "inputs_sha256": {
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/binance_ETHUSDT_1s_1788048000_1792972800.npz": "67a4ae20f4a6aa91e91c2c24d8fbcc80c29b60184d1474703e7990ab1a36c907",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/binance_USDCUSDT_1s_1788048000_1792972800.npz": "aa550ba6e463039915d024dd35bbd78d43c807596c16995718af342b9032dc1b",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/chainlink_eth_usd_25864029_26265958.jsonl.gz": "81acbc4dd340dee2dfbb067826ee33efcb159e6995b36148eed837c06e9d6e61",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/swaps_ethereum_25864359_26265958.jsonl.gz": "4837d877eddb05ccd6e441ac9d454ba011592739e0b402a6489bea641b8f6653"
+  },
+  "label": "historical backtest",
+  "prereg_sha256": "2c68d43d252da12790e5d1efc8524be325d5c6a48e51c9b263f2ede30e86e81a",
+  "selected_dev_score": {
+    "phi_count": 0.2928426119595427,
+    "phi_volume": 0.9445108447168143,
+    "recall": 0.9959782013560641
+  },
+  "selected_trigger": {
+    "h": 6,
+    "n0": 5000,
+    "n_min": 50000,
+    "tau_bps": 2
+  },
+  "top10_by_recall": [
+    {
+      "phi_count": 0.6204884291758593,
+      "phi_volume": 0.986253704445363,
+      "recall": 0.9992442004058015,
+      "trigger": [
+        1000,
+        50000,
+        60,
+        2
+      ]
+    },
+    {
+      "phi_count": 0.618396798563556,
+      "phi_volume": 0.9847667024528639,
+      "recall": 0.999109277095885,
+      "trigger": [
+        1000,
+        50000,
+        60,
+        5
+      ]
+    },
+    {
+      "phi_count": 0.5944624318309886,
+      "phi_volume": 0.9824016283647441,
+      "recall": 0.9990483698701085,
+      "trigger": [
+        2500,
+        50000,
+        60,
+        2
+      ]
+    },
+    {
+      "phi_count": 0.5932733541541312,
+      "phi_volume": 0.9811825526882525,
+      "recall": 0.9989159133640588,
+      "trigger": [
+        2500,
+        50000,
+        60,
+        5
+      ]
+    },
+    {
+      "phi_count": 0.5697257958224693,
+      "phi_volume": 0.9734093940451973,
+      "recall": 0.9988319561753184,
+      "trigger": [
+        5000,
+        50000,
+        60,
+        2
+      ]
+    },
+    {
+      "phi_count": 0.5690142593812976,
+      "phi_volume": 0.9724557156118823,
+      "recall": 0.998721896880659,
+      "trigger": [
+        5000,
+        50000,
+        60,
+        5
+      ]
+    },
+    {
+      "phi_count": 0.61582285130321,
+      "phi_volume": 0.9827470478147382,
+      "recall": 0.9987160816435321,
+      "trigger": [
+        1000,
+        50000,
+        60,
+        10
+      ]
+    },
+    {
+      "phi_count": 0.5916592647775135,
+      "phi_volume": 0.9794448662502032,
+      "recall": 0.9985288836131261,
+      "trigger": [
+        2500,
+        50000,
+        60,
+        10
+      ]
+    },
+    {
+      "phi_count": 0.5680782785593536,
+      "phi_volume": 0.9710939815284311,
+      "recall": 0.9983564863684323,
+      "trigger": [
+        5000,
+        50000,
+        60,
+        10
+      ]
+    },
+    {
+      "phi_count": 0.6121792116749282,
+      "phi_volume": 0.9797097556037936,
+      "recall": 0.9982081015387828,
+      "trigger": [
+        1000,
+        50000,
+        60,
+        20
+      ]
+    }
+  ],
+  "uv": "uv 0.11.15 (3cffe97c2 2026-05-18 aarch64-apple-darwin)",
+  "window": "development"
+}

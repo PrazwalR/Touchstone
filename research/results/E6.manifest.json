@@ -1,0 +1,18 @@
+{
+  "caveats": [
+    "E5 inherits the original E1/E2 block-level Chainlink timing and floating-point markout.",
+    "E5 toxic weights are floored to quote base units; execution type is unobserved, assumed input.",
+    "E6 uses Binance close-price proxies, not canonical Pyth settlement observations."
+  ],
+  "code_sha256": "1a461bdcc036e0e9892ce5c65b9bbc902590a523ceb04155285a6cde8cd7c6a2",
+  "config_sha256": "6bc82a2f0ab1b45dbe11ceae2ccafd4ff16755f6b8acb85ab34151ec353a9e4e",
+  "experiment": "E6",
+  "operation": "input normalization, no experiment verdict",
+  "prereg_sha256": "36cd1a109596b725a229ef435a38597d1d54f0eef8d61f859743c0dcfd380a1c",
+  "rows": 1209601,
+  "source_sha256": {
+    "/home/kunal/touchstone/research/data/binance_ETHUSDT_1s_1788048000_1792972800.npz": "67a4ae20f4a6aa91e91c2c24d8fbcc80c29b60184d1474703e7990ab1a36c907",
+    "/home/kunal/touchstone/research/data/binance_USDCUSDT_1s_1788048000_1792972800.npz": "aa550ba6e463039915d024dd35bbd78d43c807596c16995718af342b9032dc1b"
+  },
+  "tape_sha256": "571c8a0bb2e726160651b728984f41008c7d9498076d16229cbdb0d9bde3720f"
+}

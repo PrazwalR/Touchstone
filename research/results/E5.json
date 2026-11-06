@@ -1,0 +1,335 @@
+{
+  "caveats": [
+    "Padding holds toxic weight fixed; settlement-margin profit is not identified from this tape.",
+    "Exact-output changes currency accounting, which this detection-only model does not evaluate.",
+    "Delayed pieces outside the registered window are excluded and counted."
+  ],
+  "code_sha256": "6557132480a90ccc7fd7c6c4c92f7c28dd119ee5afe6d7d7f98f9625987c82d8",
+  "configuration": {
+    "block_seconds": 12,
+    "bootstrap_reps": 2000,
+    "delay_seconds": [
+      0,
+      12,
+      24
+    ],
+    "development_start": 1788048000,
+    "end": 1792886400,
+    "heldout_start": 1790467200,
+    "horizon": 6,
+    "n0": 5000000000,
+    "n_min": 50000000000,
+    "padding_multipliers": [
+      1,
+      1.25,
+      2
+    ],
+    "r_star": -0.3118807034660406,
+    "seed": 20261028,
+    "tau_bps": 2
+  },
+  "experiment": "E5",
+  "heldout_kills": [],
+  "input_sha256": {
+    "config/E5.json": "7f6c5a53fa69d0d629775a11c042d1de84136d7e6771b1edd3529a81c9c880fe",
+    "data/behaviour/E5.jsonl.gz": "b63910c7ce3e17c73284c625790f9e45ca76d77e3cb33312d756c9773bd5183a"
+  },
+  "label": "simulation",
+  "normalization_manifest_sha256": "7a837a0c46e0c4508390a37f7825752ed4ede66aae443183f0ad33624e286a42",
+  "prereg_sha256": "7fb7db7aae565b11f8f5858009f65b77f044937cc417abc83f2857ec9d02c9c1",
+  "scenarios": {
+    "exact_output": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9959782034025044,
+          "recall_ci95": [
+            0.9933584144851234,
+            0.9973336683043335
+          ],
+          "records": 209405
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9893875061842689,
+          "recall_ci95": [
+            0.9863488059438381,
+            0.9915007493383206
+          ],
+          "records": 184140
+        }
+      }
+    },
+    "padding_notional_1.0": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9959782034025044,
+          "recall_ci95": [
+            0.9933584144851234,
+            0.9973336683043335
+          ],
+          "records": 209405
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9893875061842689,
+          "recall_ci95": [
+            0.9863488059438381,
+            0.9915007493383206
+          ],
+          "records": 184140
+        }
+      }
+    },
+    "padding_notional_1.25": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9970059490827445,
+          "recall_ci95": [
+            0.9948776265469388,
+            0.998142208207992
+          ],
+          "records": 209405
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9929393183196895,
+          "recall_ci95": [
+            0.990926621401584,
+            0.9944080596638925
+          ],
+          "records": 184140
+        }
+      }
+    },
+    "padding_notional_2.0": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9986026223713543,
+          "recall_ci95": [
+            0.9977276305880204,
+            0.999014350731779
+          ],
+          "records": 209405
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.996594982401036,
+          "recall_ci95": [
+            0.9956476318191347,
+            0.9973000517468122
+          ],
+          "records": 184140
+        }
+      }
+    },
+    "split_49999999999_delay_0": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9918431210177355,
+          "recall_ci95": [
+            0.9877635821725678,
+            0.9940976905249851
+          ],
+          "records": 219099
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9802731869196806,
+          "recall_ci95": [
+            0.9725557864662393,
+            0.9852871952486688
+          ],
+          "records": 187312
+        }
+      }
+    },
+    "split_49999999999_delay_12": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9894279989154324,
+          "recall_ci95": [
+            0.9835940962201538,
+            0.992642139483193
+          ],
+          "records": 219099
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9779573444300059,
+          "recall_ci95": [
+            0.9700217147460249,
+            0.9833503313849454
+          ],
+          "records": 187312
+        }
+      }
+    },
+    "split_49999999999_delay_24": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9870871669182049,
+          "recall_ci95": [
+            0.9803832606996747,
+            0.9912414940827262
+          ],
+          "records": 219099
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9762078403882404,
+          "recall_ci95": [
+            0.9680904171870823,
+            0.9820636625435236
+          ],
+          "records": 187312
+        }
+      }
+    },
+    "split_4999999999_delay_0": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.8400054700346323,
+          "recall_ci95": [
+            0.7481086337569011,
+            0.8875901366664506
+          ],
+          "records": 351215
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.6613807142450678,
+          "recall_ci95": [
+            0.5823792256103391,
+            0.7216241847844156
+          ],
+          "records": 254561
+        }
+      }
+    },
+    "split_4999999999_delay_12": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.09882420544203353,
+          "recall_ci95": [
+            0.020888207344965253,
+            0.2337797238279666
+          ],
+          "records": 351215
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.11147037069025884,
+          "recall_ci95": [
+            0.008240583617606462,
+            0.27030655149327354
+          ],
+          "records": 254561
+        }
+      }
+    },
+    "split_4999999999_delay_24": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.06650295161753861,
+          "recall_ci95": [
+            0.011488532380504315,
+            0.1634376756745838
+          ],
+          "records": 351215
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.09735737910165194,
+          "recall_ci95": [
+            0.004898247769959127,
+            0.24316027830093828
+          ],
+          "records": 254561
+        }
+      }
+    },
+    "unchanged": {
+      "outside_window_records": 0,
+      "outside_window_toxic": 0,
+      "windows": {
+        "development": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9959782034025044,
+          "recall_ci95": [
+            0.9933584144851234,
+            0.9973336683043335
+          ],
+          "records": 209405
+        },
+        "heldout": {
+          "below_break_even": false,
+          "r_star": -0.3118807034660406,
+          "recall": 0.9893875061842689,
+          "recall_ci95": [
+            0.9863488059438381,
+            0.9915007493383206
+          ],
+          "records": 184140
+        }
+      }
+    }
+  },
+  "source_sha256": {
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/binance_ETHUSDT_1s_1788048000_1792972800.npz": "67a4ae20f4a6aa91e91c2c24d8fbcc80c29b60184d1474703e7990ab1a36c907",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/binance_USDCUSDT_1s_1788048000_1792972800.npz": "aa550ba6e463039915d024dd35bbd78d43c807596c16995718af342b9032dc1b",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/chainlink_eth_usd_25864029_26265958.jsonl.gz": "81acbc4dd340dee2dfbb067826ee33efcb159e6995b36148eed837c06e9d6e61",
+    "/Users/prazw/Desktop/Web3/touchstone/research/data/swaps_ethereum_25864359_26265958.jsonl.gz": "4837d877eddb05ccd6e441ac9d454ba011592739e0b402a6489bea641b8f6653"
+  },
+  "verdict": "partial trigger-evasion evidence; no full E5 pass claim"
+}
