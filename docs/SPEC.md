@@ -2,7 +2,6 @@
 
 | Reference | Use |
 | --- | --- |
-| [Project specification](../spec.md) | Original mechanism and product design |
 | [Developer specification](developer-spec-2026-10-25.md) | Detailed component contracts and implementation plan |
 | [Design decisions](decisions/) | Accepted changes and implementation constraints |
 | [Formula implementation notes](formulas-research-and-current-code.md) | Current arithmetic, units and research provenance |

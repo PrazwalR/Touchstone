@@ -35,4 +35,4 @@ Historical backtests, model simulations, local tests and testnet transactions an
 
 ## Detailed specifications
 
-[The project specification](../spec.md) and [developer specification](developer-spec-2026-10-25.md) retain the detailed design. For current executable behavior, consult the source and the [formula implementation notes](formulas-research-and-current-code.md). Specification text can describe planned or experimentally gated functionality.
+The [developer specification](developer-spec-2026-10-25.md) retains the detailed design. For current executable behavior, consult the source and the [formula implementation notes](formulas-research-and-current-code.md). Specification text can describe planned or experimentally gated functionality.
