@@ -1,11 +1,35 @@
 // The hook's swap-time arithmetic, reproduced for display next to its own previewDeposit answer. Every function
 // mirrors one contract routine so a presenter can point at each number; when the two disagree, the hook governs.
 
-import type { Side } from "./swap.ts";
+import { iALFHookAbi } from "../../abi/index.ts";
+import { zeroForOne, type Side, type SwapContext } from "./swap.ts";
 
 const BPS = 10_000n;
 const PIPS = 1_000_000n;
 const Q96 = 1n << 96n;
+
+/** Read the deployed tick-walking lens. Active liquidity alone cannot size a trade across band edges. */
+export async function inputToTarget(
+  ctx: SwapContext,
+  sqrtNow: bigint,
+  sqrtTarget: bigint,
+  blockNumber: bigint,
+): Promise<{ side: Side; amountIn: bigint; netOut: bigint } | null> {
+  if (sqrtNow === sqrtTarget) return null;
+  const rising = sqrtTarget > sqrtNow;
+  const quoteIs0 = ctx.key.currency0.toLowerCase() === ctx.quote.address.toLowerCase();
+  const side: Side = rising !== quoteIs0 ? "buy" : "sell";
+  const [amountIn, netOut] = await ctx.client.readContract({
+    address: ctx.hook,
+    abi: iALFHookAbi,
+    functionName: "swapToPrice",
+    args: [ctx.key, zeroForOne(ctx, side), -((1n << 127n) - 1n), sqrtTarget, "0x"],
+    blockNumber,
+  });
+  if (amountIn <= 0n || netOut <= 0n)
+    throw new Error("The deployed lens cannot quote this target within its tick budget. No approximate preset will be used.");
+  return { side, amountIn, netOut };
+}
 
 /** A separate, explicitly signed testnet setup trade can open a gap before the arbitrage demonstration.
  * Keep it above tau with room for rounding/feed movement; never lower the deployed threshold.

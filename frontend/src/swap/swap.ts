@@ -119,6 +119,34 @@ export interface DepositPreview {
   expiresAt: bigint;
 }
 
+/** Recover the AMM's quote leg from a quote that already includes the hook's hold.
+ * Spot-valuing the risky input is wrong when a swap moves through shallow liquidity.
+ * Check the rounded candidate against previewDeposit instead of assuming the trade is flagged.
+ */
+export async function notionalFromQuote(
+  quoted: bigint,
+  side: Side,
+  specified: bigint,
+  exactOutput: boolean,
+  readDeposit: (n: bigint) => Promise<DepositPreview>,
+): Promise<bigint> {
+  if (side === "buy" && !exactOutput) return specified;
+  if (side === "sell" && exactOutput) return specified;
+  const first = await readDeposit(quoted);
+  const rate = BigInt(first.rateBps);
+  if (rate < 0n || rate >= BPS) throw new Error("invalid deposit rate");
+  const withHold = exactOutput
+    ? (quoted * BPS + BPS + rate - 1n) / (BPS + rate)
+    : (quoted * BPS) / (BPS - rate);
+  // A floor at the deposit step can leave two adjacent valid base-unit candidates.
+  for (const n of new Set([withHold, exactOutput ? withHold + 1n : withHold - 1n, quoted])) {
+    if (n <= 0n) continue;
+    const d = n === quoted ? first : await readDeposit(n);
+    if ((exactOutput ? n + d.depositNow : n - d.depositNow) === quoted) return n;
+  }
+  throw new Error("Quote and deposit preview disagree; refresh before trading.");
+}
+
 export interface Preview {
   side: Side;
   exactOutput: boolean;
@@ -171,9 +199,12 @@ export async function previewSwap(ctx: SwapContext, side: Side, specified: bigin
   ]);
   const amountIn = exactOutput ? quote : specified;
   const netOut = exactOutput ? specified : quote;
-  const notionalQuote = exactOutput
-    ? (side === "sell" ? specified : amountIn)
-    : (side === "buy" ? amountIn : quoteValueOfRisky(amountIn, sqrtPriceX96, quoteIs0(ctx)));
+  const readDeposit = (n: bigint, swapper: Address) => ctx.client.readContract({
+    ...at, address: ctx.hook, abi: touchstoneHookAbi, functionName: "previewDeposit",
+    args: [ctx.key, zfo, n, swapper],
+  });
+  // V4Quoter calls the hook as the quoter, so recover its quote leg using that identity.
+  let notionalQuote = await notionalFromQuote(quote, side, specified, exactOutput, (n) => readDeposit(n, ctx.quoter));
   const deposit = await ctx.client.readContract({
     ...at, address: ctx.hook, abi: touchstoneHookAbi, functionName: "previewDeposit",
     args: [ctx.key, zfo, notionalQuote, account ?? zeroAddress],
@@ -203,6 +234,9 @@ export async function previewSwap(ctx: SwapContext, side: Side, specified: bigin
       const inputLeg = BigInt.asIntN(128, zfo ? delta >> 128n : delta);
       exact = { netOut: outOf(delta, zfo), netIn: -inputLeg, deposit: dep };
       if (exactOutput && exact.netOut !== specified) throw new Error("insufficient liquidity for the requested output");
+      notionalQuote = side === "buy"
+        ? exact.netIn - (exactOutput ? dep : 0n)
+        : exact.netOut + (exactOutput ? 0n : dep);
     } catch (err) {
       exact = null;
       exactError = shortError(err);

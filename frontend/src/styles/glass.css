@@ -415,6 +415,13 @@ body {
   font-size: 12px;
   color: var(--text-3);
 }
+.sim-preset-help {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-2);
+}
+.sim-preset-help p { margin: 8px 0; }
+.chip-btn:disabled { opacity: 0.5; cursor: wait; }
 .sim-grid {
   display: grid;
   grid-template-columns: minmax(0, 460px) minmax(0, 1fr);

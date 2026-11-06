@@ -51,22 +51,29 @@ export function SwapPanel({
   ctx,
   initialSide = "buy",
   initialAmount = "",
+  initialExactOutput = false,
   onSwapped,
   onPreview,
+  onEdited,
+  onBusyChange,
   title = "Swap",
 }: {
   ctx: SwapContext;
   initialSide?: Side;
   initialAmount?: string;
+  initialExactOutput?: boolean;
   onSwapped?: (r: SwapResult) => void;
   /** Every fresh quote, or null when there is none, for a page that explains it alongside. */
   onPreview?: (p: Preview | null) => void;
+  onEdited?: () => void;
+  onBusyChange?: (busy: boolean) => void;
   title?: string;
 }) {
   const [side, setSide] = useState<Side>(initialSide);
   const [amount, setAmount] = useState(initialAmount);
   const [slippage, setSlippage] = useState<bigint>(50n);
-  const [exactOutput, setExactOutput] = useState(false);
+  const [exactOutput, setExactOutput] = useState(initialExactOutput);
+  const [acceptedImpact, setAcceptedImpact] = useState<string | null>(null);
   const f = useSwapFlow(ctx, side, amount, slippage, exactOutput);
   const tIn = tokenIn(ctx, side);
   const tOut = tokenOut(ctx, side);
@@ -93,6 +100,7 @@ export function SwapPanel({
     f.phase === "approving" ||
     f.phase === "signing" ||
     f.phase === "confirming";
+  useEffect(() => { onBusyChange?.(busy); }, [busy, onBusyChange]);
 
   let action: { label: string; onClick?: () => void; disabled: boolean } = {
     label: "Enter an amount",
@@ -132,6 +140,10 @@ export function SwapPanel({
 
   const impact = p ? priceImpactBps(ctx, p) : null;
   const impactText = impact === null ? "—" : `${(impact / 100).toFixed(2)}%`;
+  const impactKey = p ? `${side}/${exactOutput}/${p.specified}/${p.sqrtPriceX96}/${p.netOut}/${p.exact?.netOut ?? ""}` : "";
+  const highImpact = impact !== null && impact > 500;
+  if (highImpact && acceptedImpact !== impactKey && f.phase !== "done")
+    action = { label: "Review large price impact", disabled: true };
   if (busy)
     action = {
       label:
@@ -159,6 +171,8 @@ export function SwapPanel({
         onValueChange={(v) => {
           if (v[0] && v[0] !== side) {
             setSide(v[0] as Side);
+            setAmount("");
+            onEdited?.();
             f.reset();
           }
         }}
@@ -183,7 +197,10 @@ export function SwapPanel({
               autoComplete="off"
               placeholder="0.0"
               value={amount}
-              onChange={(e) => setAmount(e.target.value.replace(",", "."))}
+              onChange={(e) => {
+                setAmount(e.target.value.replace(",", "."));
+                onEdited?.();
+              }}
               aria-invalid={amount !== "" && f.specified === null}
               disabled={busy}
             />
@@ -207,6 +224,7 @@ export function SwapPanel({
                     setAmount(
                       units(max, tIn.decimals, tIn.decimals).replace(/,/g, ""),
                     );
+                    onEdited?.();
                   }}
                 >
                   Max
@@ -277,6 +295,25 @@ export function SwapPanel({
           Output may be partially filled if liquidity changes.
         </p>
       )}
+      {highImpact && (
+        <div className="demo-error" role="alert">
+          <strong>Large price impact: {impactText}</strong>
+          <p>
+            This quote executes far from the pool’s current spot price. Liquidity is limited,
+            especially outside the concentrated band. Chainlink does not guarantee your swap price.
+            Check the token amounts before signing.
+          </p>
+          <label>
+            <input
+              type="checkbox"
+              checked={acceptedImpact === impactKey}
+              onChange={(e) => setAcceptedImpact(e.target.checked ? impactKey : null)}
+              disabled={busy}
+            />{" "}
+            I have reviewed what I pay and receive at this price.
+          </label>
+        </div>
+      )}
       {!f.wallet.account ? (
         <WalletButton prominent />
       ) : (
@@ -344,6 +381,7 @@ export function SwapPanel({
                   if (v[0] && (v[0] === "output") !== exactOutput) {
                     setExactOutput(v[0] === "output");
                     setAmount("");
+                    onEdited?.();
                     f.reset();
                   }
                 }}

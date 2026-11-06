@@ -1,9 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import type { SwapContext } from "../src/swap/swap.ts";
 import {
   demoGapTarget,
   continuousRateBps,
   firedTriggers,
   inputToReach,
+  inputToTarget,
   quoteDeposit,
   signedGapBps,
   sqrtPriceX96At,
@@ -15,6 +17,28 @@ const BAND_L = 103879127119190n;
 const TERMS = { deltaBps: 30, deltaMaxBps: 300, betaX100: 125 };
 
 const priceE6 = (s: bigint) => (s * s * 10n ** 18n) >> 192n;
+
+describe("inputToTarget", () => {
+  it("uses the deployed tick-aware quote instead of extrapolating shallow backstop liquidity", async () => {
+    const readContract = vi.fn().mockResolvedValue([79_157_495n, 101_850_448_614_517_467n]);
+    const ctx = {
+      client: { readContract }, hook: "0x0000000000000000000000000000000000000001",
+      key: { currency0: "0x0000000000000000000000000000000000000000" },
+      quote: { address: "0x0000000000000000000000000000000000000002" },
+    } as unknown as SwapContext;
+    const from = sqrtPriceX96At(15_015_669n, false, 18, 6);
+    const target = sqrtPriceX96At(2_236_810_586n, false, 18, 6);
+    expect(await inputToTarget(ctx, from, target, 326_744_342n)).toEqual({
+      side: "buy", amountIn: 79_157_495n, netOut: 101_850_448_614_517_467n,
+    });
+    expect(readContract.mock.calls[0][0]).toMatchObject({
+      functionName: "swapToPrice", blockNumber: 326_744_342n,
+      args: [ctx.key, false, -((1n << 127n) - 1n), target, "0x"],
+    });
+    readContract.mockResolvedValue([0n, 0n]);
+    await expect(inputToTarget(ctx, from, target, 326_744_342n)).rejects.toThrow("cannot quote");
+  });
+});
 
 describe("demoGapTarget", () => {
   it("opens a 40 bps gap without changing tau, then prepares a sell toward the reference", () => {

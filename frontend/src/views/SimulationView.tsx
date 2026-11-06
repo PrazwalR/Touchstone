@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { formatUnits } from "viem";
 import { deployment } from "../chain/deployment.ts";
 import { priceQuotePerRiskyE6, readEvents } from "../chain/reads.ts";
 import type { Live } from "../chain/useLive.ts";
@@ -13,14 +14,13 @@ import { SwapPanel } from "../components/SwapPanel.tsx";
 import { ago, units } from "../format.ts";
 import {
   demoGapTarget,
-  inputToReach,
+  inputToTarget,
   signedGapBps,
   sqrtPriceX96At,
 } from "../swap/arbitrage.ts";
 import { swapContext } from "../swap/context.ts";
 import {
   quoteIs0,
-  quoteValueOfRisky,
   shortError,
   type Preview,
   type Side,
@@ -113,6 +113,8 @@ interface Preset {
   key: string;
   side: Side;
   amount: string;
+  displayAmount: string;
+  exactOutput: boolean;
   /** What the trade is worth in quote base units, to tell whether it clears the large-swap threshold. */
   notionalQuote: bigint;
 }
@@ -125,6 +127,18 @@ export function SimulationView({ live }: { live: Live }) {
   const [result, setResult] = useState<SwapResult | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [preset, setPreset] = useState<Preset | null>(null);
+  const [selection, setSelection] = useState(0);
+  const [edited, setEdited] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [targets, setTargets] = useState<{ key: string; close: Preset | null; setup: Preset | null; error: string | null } | null>(null);
+  const choosePreset = (p: Preset) => {
+    if (busy) return;
+    setPreview(null);
+    setPreset(p);
+    setSelection((n) => n + 1);
+    setEdited(false);
+  };
+  const onEdited = useCallback(() => setEdited(true), []);
   const s = live.snapshot;
   const Q = deployment.tokens.quote;
   const R = deployment.tokens.risky;
@@ -135,82 +149,58 @@ export function SimulationView({ live }: { live: Live }) {
   const toward: Side = buyGap !== null && buyGap < 0n ? "sell" : "buy";
   const absGap = buyGap === null ? null : buyGap < 0n ? -buyGap : buyGap;
 
-  const fmtAmount = (side: Side, v: bigint) =>
-    side === "buy"
-      ? units(v, Q.decimals, 2).replace(/,/g, "")
-      : units(v, R.decimals, 6).replace(/,/g, "");
-
+  const asPreset = (key: string, side: Side, amountIn: bigint, notionalQuote: bigint, exactOutput = false): Preset => {
+    const token = exactOutput ? (side === "sell" ? Q : R) : (side === "buy" ? Q : R);
+    return {
+      key, side, exactOutput,
+      amount: formatUnits(amountIn, token.decimals),
+      displayAmount: units(amountIn, token.decimals, token.decimals > 6 ? 8 : 2),
+      notionalQuote,
+    };
+  };
   const overN0: Preset | null =
     s && poolE6 !== null && poolE6 > 0n
       ? (() => {
           const quote = (s.config.n0 * OVER_N0_BPS) / 10_000n;
-          const amount =
-            toward === "buy"
-              ? quote
-              : (quote * 10n ** BigInt(R.decimals)) / poolE6;
-          return { key: `n0-${toward}`, side: toward, amount: fmtAmount(toward, amount), notionalQuote: quote };
+          // Specify the quote leg in either direction: pay Q to buy, request Q to sell.
+          return asPreset(`n0-${toward}`, toward, quote, quote, toward === "sell");
         })()
       : null;
-  const closeGap: Preset | null =
-    s && ref && absGap !== null && absGap >= MIN_GAP_BPS
-      ? (() => {
-          const target = sqrtPriceX96At(
-            ref.priceE6,
-            quoteIs0(swapContext),
-            R.decimals,
-            Q.decimals,
-          );
-          const r = inputToReach(
-            s.sqrtPriceX96,
-            target,
-            s.liquidity,
-            s.lpFee,
-            quoteIs0(swapContext),
-          );
-          if (!r) return null;
-          const notionalQuote =
-            r.side === "buy"
-              ? r.amountIn
-              : quoteValueOfRisky(r.amountIn, s.sqrtPriceX96, quoteIs0(swapContext));
-          return {
-            key: `gap-${r.side}-${r.amountIn}`,
-            side: r.side,
-            amount: fmtAmount(r.side, r.amountIn),
-            notionalQuote,
-          };
-        })()
-      : null;
-  // This only prepares a normal wallet swap. It neither edits the oracle nor sends in the background.
-  const setupGap: Preset | null =
-    s && ref && absGap !== null && s.config.tauBps <= 1_000
-      && (absGap < BigInt(s.config.tauBps) || !closeGap || closeGap.notionalQuote < s.config.n0)
-      ? (() => {
-          const target = sqrtPriceX96At(demoGapTarget(ref.priceE6, s.config.tauBps), quoteIs0(swapContext), R.decimals, Q.decimals);
-          const r = inputToReach(s.sqrtPriceX96, target, s.liquidity, s.lpFee, quoteIs0(swapContext));
-          if (!r) return null;
-          return {
-            key: `setup-${r.side}-${r.amountIn}`,
-            side: r.side,
-            amount: fmtAmount(r.side, r.amountIn),
-            notionalQuote: r.side === "buy" ? r.amountIn : quoteValueOfRisky(r.amountIn, s.sqrtPriceX96, quoteIs0(swapContext)),
-          };
-        })()
-      : null;
-  // The first prepared trade is chosen once; the live amounts keep moving, so a later one only replaces it when
-  // the presenter clicks, and an edited amount is never reset underneath them.
-  // It waits for the reference: the direction comes from the gap, and defaulting to a buy before the price
-  // arrives would open the card on the wrong side.
-  // Closing a gap of a few basis points is a trade far below N₀, which flags nothing, so it is only the default when
-  // it is large enough to be the kind of swap the hook watches.
-  const initial =
-    buyGap === null || !s
-      ? null
-      : closeGap && closeGap.notionalQuote >= s.config.n0
-        ? closeGap
-        : overN0;
+  const targetKey = s && ref ? `${s.blockNumber}-${ref.priceE6}` : "";
   useEffect(() => {
-    if (preset === null && initial !== null) setPreset(initial);
-  }, [preset, initial]);
+    if (!s || !ref || !targetKey) return;
+    let cancelled = false;
+    const make = async (kind: string, price: bigint) => {
+      const target = sqrtPriceX96At(price, quoteIs0(swapContext), R.decimals, Q.decimals);
+      const trade = await inputToTarget(swapContext, s.sqrtPriceX96, target, s.blockNumber);
+      if (!trade) return null;
+      // For a sell the returned quote leg is net of a possible hold, a conservative N0 test.
+      return asPreset(`${kind}-${trade.side}-${trade.amountIn}`, trade.side, trade.amountIn,
+        trade.side === "buy" ? trade.amountIn : trade.netOut);
+    };
+    void (async () => {
+      try {
+        const [close, setup] = await Promise.all([
+          absGap !== null && absGap >= MIN_GAP_BPS ? make("gap", ref.priceE6) : null,
+          absGap !== null && absGap < BigInt(Math.max(40, s.config.tauBps * 2)) && s.config.tauBps <= 1_000
+            ? make("setup", demoGapTarget(ref.priceE6, s.config.tauBps)) : null,
+        ]);
+        if (!cancelled) setTargets({ key: targetKey, close, setup, error: null });
+      } catch (err) {
+        if (!cancelled) setTargets({ key: targetKey, close: null, setup: null, error: shortError(err) });
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [targetKey]);
+  const closeGap = targets?.key === targetKey ? targets.close : null;
+  const setupGap = targets?.key === targetKey && s && absGap !== null
+    && (absGap < BigInt(s.config.tauBps) || !closeGap || closeGap.notionalQuote < s.config.n0)
+    ? targets.setup : null;
+  // A live refresh never rewrites a typed amount. A preset click explicitly resets the complete form,
+  // even if the same preset was previously selected and then edited.
+  useEffect(() => {
+    if (preset === null && overN0 !== null && buyGap !== null) setPreset(overN0);
+  }, [preset, overN0, buyGap]);
   const active = preset;
 
   const onSwapped = useCallback((r: SwapResult) => {
@@ -316,43 +306,55 @@ export function SimulationView({ live }: { live: Live }) {
         {setupGap && (
           <button
             type="button"
-            className={`chip-btn ${active?.key.startsWith("setup-") ? "on" : ""}`}
-            onClick={() => setPreset(setupGap)}
+            className={`chip-btn ${!edited && active?.key === setupGap.key ? "on" : ""}`}
+            disabled={busy}
+            onClick={() => choosePreset(setupGap)}
           >
-            1. Create demo gap · {setupGap.amount} {setupGap.side === "buy" ? Q.symbol : R.symbol}
+            1. Create demo gap · {setupGap.displayAmount} {setupGap.side === "buy" ? Q.symbol : R.symbol}
           </button>
         )}
         {closeGap && (
           <button
             type="button"
-            className={`chip-btn ${active?.key.startsWith("gap-") ? "on" : ""}`}
-            onClick={() => setPreset(closeGap)}
+            className={`chip-btn ${!edited && active?.key === closeGap.key ? "on" : ""}`}
+            disabled={busy}
+            onClick={() => choosePreset(closeGap)}
           >
-            Close the gap · {closeGap.amount}{" "}
+            Close the gap · {closeGap.side === "buy" ? "pay" : "sell"} {closeGap.displayAmount}{" "}
             {closeGap.side === "buy" ? Q.symbol : R.symbol}
           </button>
         )}
         {overN0 && (
           <button
             type="button"
-            className={`chip-btn ${active?.key.startsWith("n0-") ? "on" : ""}`}
-            onClick={() => setPreset(overN0)}
+            className={`chip-btn ${!edited && active?.key === overN0.key ? "on" : ""}`}
+            disabled={busy}
+            onClick={() => choosePreset(overN0)}
           >
-            Just over N₀ · {overN0.amount}{" "}
-            {overN0.side === "buy" ? Q.symbol : R.symbol}
+            Small threshold trade · {overN0.exactOutput ? "receive" : "pay"} {overN0.displayAmount}{" "}{Q.symbol}
           </button>
         )}
-        <span className="sim-preset-note">
-          {setupGap
-            ? `The gap is below τ or closing it would trade less than N₀. First prepare and sign the setup swap to move the testnet pool about ${Math.max(40, s!.config.tauBps * 2)} bps above Chainlink, then wait for fresh prices and choose Close the gap. Both are real swaps with fees and possible deposits.`
-            : "Close the gap estimates the input from active liquidity. The exact quote and execution can differ across ticks or as prices change."}
-        </span>
       </div>
-      {active?.key.startsWith("setup-") && (
-        <p className="sim-preset-note" role="status">
-          Setup swap selected: this moves the pool away from the reference.
-          After confirmation, choose Close the gap for the return trade.
-          Drift also requires notional N ≥ N₀ and a usable reference; execution decides the result.
+      <div className="sim-preset-help">
+        <p><strong>Close the gap — price target.</strong> {toward === "buy" ? `Pay ${Q.symbol} to buy ${R.symbol}` : `Sell ${R.symbol} for ${Q.symbol}`} and move the pool toward Chainlink.
+          The deployed lens sizes this across liquidity ticks; the swap card shows the quoted output separately.
+          This is a real testnet swap, not a guaranteed profit or an automatic price reset.</p>
+        <p><strong>Small threshold trade (just over N₀) — size target.</strong> N₀ is {s ? units(s.config.n0, Q.decimals, 2) : "—"} {Q.symbol};
+          this prepares about 1.2 × N₀ ({overN0 ? units(overN0.notionalQuote, Q.decimals, 2) : "—"} {Q.symbol}).
+          It does not aim to close the gap. Buying specifies the USDC payment; selling requests that USDC output and quotes the ETH payment. Both target the quote-side threshold without converting it at the spot price.</p>
+        {setupGap && <p><strong>Create demo gap — optional setup.</strong> Prepare a separate swap to move the pool about {s ? Math.max(40, s.config.tauBps * 2) : 40} bps above Chainlink,
+          then refresh and choose Close the gap. Both swaps incur costs and may collect deposits.</p>}
+        <p role="status">{edited
+          ? "Custom trade: you changed the form. Click a preset again to restore its direction, input token and amount."
+          : active ? `Prepared: ${active.side === "buy" ? `buy ${R.symbol}` : `sell ${R.symbol}`}, ${active.exactOutput ? "requesting" : "paying"} ${active.amount} ${active.side === "buy" || active.exactOutput ? Q.symbol : R.symbol}. This amount stays fixed while live presets refresh; click a preset again to update it. Execution determines the result.`
+          : "Reading the pool to prepare a trade."}</p>
+        {targetKey && targets?.key !== targetKey && <p>Refreshing price-target presets…</p>}
+        {targets?.key === targetKey && targets.error && <p className="demo-error" role="alert">Price-target preset unavailable: {targets.error}</p>}
+      </div>
+      {absGap !== null && absGap > 500n && (
+        <p className="demo-error" role="alert">
+          The live pool is far from Chainlink. Trades may have crossed its concentrated liquidity band.
+          These are real pool prices; changing the interface does not restore the pool. Review every quote before signing.
         </p>
       )}
       <div className="sim-grid">
@@ -367,12 +369,15 @@ export function SimulationView({ live }: { live: Live }) {
           </div>
         ) : (
           <SwapPanel
-            key={active.key}
+            key={selection}
             ctx={swapContext}
             initialSide={active.side}
             initialAmount={active.amount}
+            initialExactOutput={active.exactOutput}
             onSwapped={onSwapped}
             onPreview={setPreview}
+            onEdited={onEdited}
+            onBusyChange={setBusy}
             title="Arbitrage swap"
           />
         )}
