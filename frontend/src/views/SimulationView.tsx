@@ -8,7 +8,7 @@ import {
   DemoDisclosure,
 } from "../components/DemoLayout.tsx";
 import { BacktestScore } from "../components/BacktestScore.tsx";
-import { SimulationActivity, readActivity, rememberActivity, type ActivityEntry } from "../components/SimulationActivity.tsx";
+import { SimulationActivity, forgetStoredActivity, type ActivityEntry } from "../components/SimulationActivity.tsx";
 import { SwapPanel } from "../components/SwapPanel.tsx";
 import { ago, units } from "../format.ts";
 import {
@@ -18,6 +18,7 @@ import {
   sqrtPriceX96At,
 } from "../swap/arbitrage.ts";
 import { swapContext } from "../swap/context.ts";
+import { impactBlock } from "../swap/impactGuard.ts";
 import { readReference } from "../swap/reference.ts";
 import {
   quoteIs0,
@@ -64,9 +65,10 @@ interface Preset {
 
 export function SimulationView({ live }: { live: Live }) {
   const { ref, error: refError } = useReference(live.error ? null : live.snapshot);
-  const [activity, setActivity] = useState(readActivity);
-  const [selected, setSelected] = useState<ActivityEntry | null>(() => activity[0] ?? null);
-  useEffect(() => { rememberActivity(activity); }, [activity]);
+  // A refresh starts with no past swaps. Only a swap still waiting for confirmation is recovered, by the swap card.
+  const [activity, setActivity] = useState<ActivityEntry[]>([]);
+  const [selected, setSelected] = useState<ActivityEntry | null>(null);
+  useEffect(() => { forgetStoredActivity(); }, []);
   const [latestError, setLatestError] = useState<string | null>(null);
   const [following, setFollowing] = useState(false);
   const followEpoch = useRef(0);
@@ -101,6 +103,8 @@ export function SimulationView({ live }: { live: Live }) {
     ref && poolE6 !== null ? signedGapBps(ref.priceE6, poolE6, "buy") : null;
   const toward: Side = buyGap !== null && buyGap < 0n ? "sell" : "buy";
   const absGap = buyGap === null ? null : buyGap < 0n ? -buyGap : buyGap;
+  const outOfRange = absGap !== null && absGap > 500n;
+  const blockReason = (trade: { side: Side; impactBps: number }) => impactBlock(trade, { outOfRange, toward });
 
   const asPreset = (key: string, side: Side, amountIn: bigint, notionalQuote: bigint, exactOutput = false): Preset => {
     const token = exactOutput ? (side === "sell" ? Q : R) : (side === "buy" ? Q : R);
@@ -207,6 +211,12 @@ export function SimulationView({ live }: { live: Live }) {
         live={live}
         next="swap"
       />
+      <p className={`sim-live${outOfRange ? " warn" : ""}`} role="status" aria-label="Live price comparison">
+        <span>Pool <b>{poolE6 === null ? "—" : units(poolE6, 6, 2)}</b> {Q.symbol}</span>
+        <span>Chainlink <b className="cyan">{ref ? units(ref.priceE6, 6, 2) : "—"}</b> USD</span>
+        <span>Gap <b className="gold">{absGap === null ? "—" : `${absGap.toString()} bps`}</b></span>
+        {outOfRange && <span className="sim-live-warn">Pool out of range. Use Close the gap to restore it before trading.</span>}
+      </p>
       <DemoDisclosure title="Market prices and demo presets">
       <div className="sim-market glass" aria-label="Live price comparison">
         <div>
@@ -308,6 +318,7 @@ export function SimulationView({ live }: { live: Live }) {
         </p>
       )}
       </DemoDisclosure>
+      <div className="sim-stage">
       <div className="simulation-swap-form">
           <SwapPanel
             key={selection}
@@ -319,23 +330,11 @@ export function SimulationView({ live }: { live: Live }) {
             progressiveReceipt
             onEdited={onEdited}
             onBusyChange={setBusy}
+            blockReason={blockReason}
             title="Swap"
           />
       </div>
-      {notice && result?.record && <aside className="simulation-notice" aria-label="Swap notification">
-        <span role="status">Swap flagged for review · record #{result.record.id.toString()}</span>
-        <button type="button" onClick={() => {
-          followEpoch.current++;
-          setFollowing(false);
-          setLatestError(null);
-          const row = activity.find((item) => item.hash === result.hash);
-          if (row) setSelected(row);
-          setNotice(false);
-          activityRef.current?.scrollIntoView({ block: "start" });
-        }}>View review</button>
-        <button type="button" aria-label="Dismiss notification" onClick={() => setNotice(false)}>Dismiss</button>
-      </aside>}
-      <section ref={activityRef} aria-label="Trade activity">
+      <section ref={activityRef} aria-label="Trade activity" className="sim-activity">
         <h2>Trade activity</h2>
         {activity.length > 0 && <div className="sim-presets" aria-label="Recent swaps">
           {activity.map((row) => <button type="button" className={selected?.hash === row.hash ? "chip-btn on" : "chip-btn"}
@@ -350,6 +349,20 @@ export function SimulationView({ live }: { live: Live }) {
         </button>
         {latestError && <p role="alert" className="demo-error">{latestError}</p>}
       </section>
+      </div>
+      {notice && result?.record && <aside className="simulation-notice" aria-label="Swap notification">
+        <span role="status">Swap flagged for review · record #{result.record.id.toString()}</span>
+        <button type="button" onClick={() => {
+          followEpoch.current++;
+          setFollowing(false);
+          setLatestError(null);
+          const row = activity.find((item) => item.hash === result.hash);
+          if (row) setSelected(row);
+          setNotice(false);
+          activityRef.current?.scrollIntoView({ block: "start" });
+        }}>View review</button>
+        <button type="button" aria-label="Dismiss notification" onClick={() => setNotice(false)}>Dismiss</button>
+      </aside>}
       <DemoDisclosure title="Historical backtest results"><BacktestScore /></DemoDisclosure>
       <div className="demo-extras">
         <DemoDisclosure title="Why compare with Chainlink here and settle with Pyth">

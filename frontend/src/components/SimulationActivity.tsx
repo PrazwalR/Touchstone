@@ -10,17 +10,10 @@ import type { TrackedRecord } from "../swap/useSwapFlow.ts";
 import { RecordTracker } from "./RecordTracker.tsx";
 
 export interface ActivityEntry { hash: Hex; side: Side }
-const storageKey = `touchstone.activity:${deployment.chainId}:${swapContext.poolId}`;
-
-export function readActivity(): ActivityEntry[] {
-  try {
-    const rows: unknown = JSON.parse(sessionStorage.getItem(storageKey) ?? "[]");
-    return Array.isArray(rows) ? rows.filter((r) => r && /^0x[0-9a-f]{64}$/i.test(r.hash) && ["buy", "sell"].includes(r.side)).slice(0, 20) : [];
-  } catch { return []; }
-}
-
-export function rememberActivity(rows: ActivityEntry[]) {
-  try { sessionStorage.setItem(storageKey, JSON.stringify(rows)); } catch { /* In-memory activity still works. */ }
+/** Earlier versions kept the activity list in sessionStorage. A refresh now starts empty, so clear what they left. */
+const legacyKey = `touchstone.activity:${deployment.chainId}:${swapContext.poolId}`;
+export function forgetStoredActivity(): void {
+  try { sessionStorage.removeItem(legacyKey); } catch { /* nothing was stored */ }
 }
 
 export function SimulationActivity({ entry, confirmed }: { entry: ActivityEntry; confirmed: SwapResult | null }) {

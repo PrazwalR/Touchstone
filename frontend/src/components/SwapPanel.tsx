@@ -4,7 +4,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { ArrowDown, LoaderCircle } from "lucide-react";
+import { ArrowLeftRight, LoaderCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,7 @@ export function SwapPanel({
   progressiveReceipt = false,
   onEdited,
   onBusyChange,
+  blockReason,
   title = "Swap",
 }: {
   ctx: SwapContext;
@@ -65,6 +66,8 @@ export function SwapPanel({
   progressiveReceipt?: boolean;
   onEdited?: () => void;
   onBusyChange?: (busy: boolean) => void;
+  /** A page that knows more than the quote can refuse a trade outright; the message is shown and the swap disabled. */
+  blockReason?: (trade: { side: Side; impactBps: number }) => string | null;
   title?: string;
 }) {
   const [side, setSide] = useState<Side>(initialSide);
@@ -144,7 +147,10 @@ export function SwapPanel({
   const impactText = impact === null ? "—" : `${(impact / 100).toFixed(2)}%`;
   const impactKey = p ? `${side}/${exactOutput}/${p.account}/${p.specified}/${p.sqrtPriceX96}/${p.amountIn}/${p.netOut}/${p.depositBound}/${p.exact?.netIn ?? ""}/${p.exact?.netOut ?? ""}/${p.exact?.deposit ?? ""}` : "";
   const highImpact = impact !== null && impact > 500;
-  if (highImpact && acceptedImpact !== impactKey && action.onClick && f.phase !== "done" && f.wallet.account && f.wallet.onRightChain)
+  const blocked = impact !== null ? (blockReason?.({ side, impactBps: impact }) ?? null) : null;
+  if (blocked && action.onClick && f.phase !== "done" && f.wallet.account && f.wallet.onRightChain)
+    action = { label: "Price impact too high for this pool", disabled: true };
+  else if (highImpact && acceptedImpact !== impactKey && action.onClick && f.phase !== "done" && f.wallet.account && f.wallet.onRightChain)
     action = { label: "Review large price impact", disabled: true };
   if (f.confirmationPending && f.phase === "failed")
     action = { label: "Check submitted transaction", onClick: () => void f.resumeConfirmation(), disabled: false };
@@ -167,28 +173,6 @@ export function SwapPanel({
         <h2>{title}</h2>
         {f.wallet.account && <WalletButton />}
       </div>
-      <ToggleGroup
-        className="seg swap-direction"
-        aria-label="Direction"
-        value={[side]}
-        disabled={locked}
-        onValueChange={(v) => {
-          if (v[0] && v[0] !== side) {
-            setSide(v[0] as Side);
-            setAmount("");
-            onEdited?.();
-            f.reset();
-          }
-        }}
-      >
-        {(["buy", "sell"] as const).map((value) => (
-          <ToggleGroupItem key={value} value={value} className="opt">
-            {value === "buy"
-              ? `Buy ${ctx.risky.symbol}`
-              : `Sell ${ctx.risky.symbol}`}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
       <div className="trade-amounts">
         <div className="swap-box">
           <label htmlFor="swap-in">
@@ -237,9 +221,21 @@ export function SwapPanel({
             </div>
           )}
         </div>
-        <span className="trade-arrow" aria-hidden="true">
-          <ArrowDown size={15} />
-        </span>
+        <button
+          type="button"
+          className="trade-arrow trade-flip"
+          aria-label={`Reverse the swap: now paying ${tIn.symbol}, receiving ${tOut.symbol}`}
+          title="Reverse direction"
+          disabled={locked}
+          onClick={() => {
+            setSide(side === "buy" ? "sell" : "buy");
+            setAmount("");
+            onEdited?.();
+            f.reset();
+          }}
+        >
+          <ArrowLeftRight size={15} aria-hidden="true" />
+        </button>
         <div className="swap-box out">
           <span className="amount-label">
             {exactOutput ? "You pay" : "You receive"}
@@ -299,7 +295,13 @@ export function SwapPanel({
           Output may be partially filled if liquidity changes.
         </p>
       )}
-      {highImpact && (
+      {blocked && (
+        <div className="demo-error" role="alert">
+          <strong>Trade blocked: {impactText} price impact</strong>
+          <p>{blocked}</p>
+        </div>
+      )}
+      {highImpact && !blocked && (
         <div className="demo-error" role="alert">
           <strong>Large price impact: {impactText}</strong>
           <p>

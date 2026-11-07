@@ -36,6 +36,8 @@ export const keeperEnvSchema = z.object({
   // Optional: where the keeper publishes its metrics for the alert monitor, and the Hermes error-rate window.
   KEEPER_METRICS_PATH: z.preprocess((v) => v === "" ? undefined : v, z.string().min(1).optional()),
   KEEPER_HERMES_WINDOW_S: z.preprocess((v) => v === "" ? undefined : v, positiveInt.optional()),
+  // Optional: seconds before a declined (unprofitable) record is re-checked; unset uses the keeper's built-in spacing.
+  KEEPER_DECLINED_RETRY_S: z.preprocess((v) => v === "" ? undefined : v, positiveInt.optional()),
 }).superRefine((cfg, ctx) => {
   if (cfg.KEEPER_METRICS_PATH !== undefined && cfg.KEEPER_HERMES_WINDOW_S === undefined) {
     ctx.addIssue({ code: "custom", path: ["KEEPER_HERMES_WINDOW_S"], message: "required when KEEPER_METRICS_PATH is configured" });

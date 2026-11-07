@@ -35,6 +35,7 @@ export async function createRuntime(env: Env, store: JournalStore, saved?: Keepe
     dripsPerPeriod: e.KEEPER_DRIPS_PER_PERIOD, nativePriceId: e.KEEPER_NATIVE_PRICE_ID as Hex,
     pushRecipients: e.KEEPER_PUSH_RECIPIENTS as Hex[],
     ...(e.KEEPER_ACCRUE_INTERVAL_S ? { accrueIntervalS: e.KEEPER_ACCRUE_INTERVAL_S } : {}),
+    ...(e.KEEPER_DECLINED_RETRY_S ? { declinedRetryS: e.KEEPER_DECLINED_RETRY_S } : {}),
   }, saved ?? { nextBlock: e.KEEPER_START_BLOCK, open: [] }, (level, msg, fields) => {
     // Keep numeric/event outcomes, omit arbitrary errors (may embed RPC URLs).
     const { error: _error, reason: _reason, ...safe } = fields ?? {};

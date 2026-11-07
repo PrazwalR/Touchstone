@@ -80,6 +80,22 @@ describe("keeper recovery and settlement", () => {
     expect((await keeper.tick()).settled).toBe(0);
     expect(wallet.writeContract).not.toHaveBeenCalled();
   });
+  it("does not re-query Hermes for a declined record until its retry interval has passed", async () => {
+    const { keeper, client, wallet } = setup(2n * 10n ** 18n);
+    const now = vi.spyOn(Date, "now");
+    try {
+      now.mockReturnValue(1_000_000);
+      client.getBlock.mockResolvedValue({ timestamp: 105n, hash });
+      await keeper.tick();
+      await keeper.tick();
+      const hermes = (keeper as unknown as { hermes: { firstAtOrAfter: ReturnType<typeof vi.fn> } }).hermes;
+      expect(hermes.firstAtOrAfter).toHaveBeenCalledTimes(2); // one base and one quote update, the first tick only
+      now.mockReturnValue(1_000_000 + 61_000);
+      await keeper.tick();
+      expect(hermes.firstAtOrAfter).toHaveBeenCalledTimes(4);
+      expect(wallet.writeContract).not.toHaveBeenCalled();
+    } finally { now.mockRestore(); }
+  });
   it("continues after a record read failure", async () => {
     const { keeper, client, readContract } = setup(0n, [record, { ...record, id: 2n }]);
     client.getBlock.mockResolvedValue({ timestamp: 105n, hash });

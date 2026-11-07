@@ -38,6 +38,7 @@ const keeper = new Keeper(
     ...(env.KEEPER_ACCRUE_INTERVAL_S === undefined ? {} : { accrueIntervalS: env.KEEPER_ACCRUE_INTERVAL_S }),
     minMarginBps: env.KEEPER_MIN_MARGIN_BPS,
     settleAtLoss: env.KEEPER_SETTLE_AT_LOSS,
+    ...(env.KEEPER_DECLINED_RETRY_S === undefined ? {} : { declinedRetryS: env.KEEPER_DECLINED_RETRY_S }),
     logBlockRange: BigInt(env.KEEPER_LOG_BLOCK_RANGE),
     dripsPerPeriod: env.KEEPER_DRIPS_PER_PERIOD,
     nativePriceId: env.KEEPER_NATIVE_PRICE_ID as `0x${string}`,

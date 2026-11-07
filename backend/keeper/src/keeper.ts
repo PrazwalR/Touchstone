@@ -31,6 +31,12 @@ export interface KeeperPolicy {
   accrueIntervalS?: number;
   minMarginBps: number;
   settleAtLoss: boolean;
+  /**
+   * Seconds before a record whose settlement the keeper declined is looked at again. Without it every tick
+   * fetched two Hermes updates for every declined record, which rate-limits the keeper out of settling new ones.
+   * Unset means DEFAULT_DECLINED_RETRY_S.
+   */
+  declinedRetryS?: number;
   logBlockRange: bigint;
   dripsPerPeriod: number;
   nativePriceId: Hex;
@@ -78,12 +84,17 @@ export interface TickReport {
  * Settlements are sent one per transaction. Batching through Multicall3, as §15.1 step 6 suggests, would make
  * Multicall3 the Settler's msg.sender and so the tip recipient (decision 0036).
  */
+/** Retry spacing for declined records when the operator sets none; a retry changes nothing but gas and fees. */
+export const DEFAULT_DECLINED_RETRY_S = 60;
+
 export class Keeper {
   readonly #windows = new Map<string, SettleWindow>();
   readonly #pools = new Map<Hex, PoolInfo>();
   readonly #lastAccrue = new Map<Hex, number>();
   readonly #lastDrip = new Map<Hex, number>();
   readonly #open = new Map<string, TouchstoneRecord>();
+  /** Record key to the wall-clock millisecond before which a declined record is not re-evaluated. */
+  readonly #declinedUntil = new Map<string, number>();
   readonly #poolIds = new Set<Hex>();
   #pyth: Address | undefined;
   #nextBlock: bigint;
@@ -245,7 +256,10 @@ export class Keeper {
       }
       const w = await this.#window(r);
       const action = nextAction(w, BigInt(now));
-      if (action.kind === "settle") return (await this.#settle(r, w)) ? "settled" : "waiting";
+      if (action.kind === "settle") {
+        if ((this.#declinedUntil.get(recordKey(r)) ?? 0) > Date.now()) return "waiting";
+        return (await this.#settle(r, w)) ? "settled" : "waiting";
+      }
       if (action.kind === "expire") return (await this.#expire(r)) ? "expired" : "waiting";
     } catch (err) {
       if (err instanceof HermesError && err.retriable) {
@@ -316,7 +330,9 @@ export class Keeper {
     const worthIt = await this.#profitable(r, pool, payout.tip, base, quote, estimate, fee);
     const atLoss = this.policy.settleAtLoss && (retains || (payout.benign && payout.rebate === 0n));
     if (!worthIt && !atLoss) {
-      this.log("info", "settlement not worth sending; leaving it to others or to expiry", { recordId: r.id.toString() });
+      const retryS = this.policy.declinedRetryS ?? DEFAULT_DECLINED_RETRY_S;
+      this.#declinedUntil.set(recordKey(r), Date.now() + retryS * 1000);
+      this.log("info", "settlement not worth sending; leaving it to others or to expiry", { recordId: r.id.toString(), retryInS: retryS });
       return false;
     }
     const tx = await this.wallet.writeContract(sim.request);
@@ -482,6 +498,7 @@ export class Keeper {
   #close(r: TouchstoneRecord, why: string): void {
     this.#open.delete(recordKey(r));
     this.#windows.delete(recordKey(r));
+    this.#declinedUntil.delete(recordKey(r));
     this.log("info", "record closed", { recordId: r.id.toString(), why });
   }
 }
