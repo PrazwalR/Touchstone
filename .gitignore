@@ -40,3 +40,9 @@ var/
 /frontend/design/
 /frontend/demo/
 /amm-money-leaks*
+
+# Local assistant instruction files stay on a developer machine, never in the repository.
+/AGENTS.md
+/CLAUDE.md
+/AI_USAGE.md
+/docs/ai/
