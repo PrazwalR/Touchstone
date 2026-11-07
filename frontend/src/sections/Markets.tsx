@@ -675,7 +675,7 @@ export function Markets({ motion }: { motion: Motion }) {
                   <span className="body">
                     A rented lease that exempts one holder’s first swap per
                     block, while the pool price is inside a band around the
-                    reference. Built and tested; not yet deployed.
+                    reference. Deployed on testnet; its economics are not yet validated.
                   </span>
                 </div>
               </li>

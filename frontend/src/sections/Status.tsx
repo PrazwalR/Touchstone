@@ -25,12 +25,13 @@ export function Status() {
                 refunds, rebates and LP vesting.
               </li>
               <li>
-                <b>254 Forge tests · 37 suites</b>Plus 3 fork tests. Measured 3
+                <b>254 Forge tests · 37 suites</b>Plus 3 fork tests. Measured 7
                 November 2026.
               </li>
               <li>
-                <b>Six verified contracts</b>
-                {deployment.name}, with an ETH/USDC pool.{" "}
+                <b>Seven verified contracts</b>
+                {deployment.name}, with an ETH/USDC pool, the licence auction
+                and the quote lens. Deployed 7 November 2026.{" "}
                 <a
                   href={explorerAddress(deployment.contracts.hook)}
                   target="_blank"
@@ -45,8 +46,9 @@ export function Status() {
             <h3 className="h3">The next deployment.</h3>
             <ul>
               <li>
-                <b>Licence and quote lens</b>Built and fork-tested; awaiting an
-                owner-signed testnet redeploy.
+                <b>Licence in a live pool</b>The auction is deployed and the
+                demo pool carries lease terms. Its economics are not yet
+                validated.
               </li>
               <li>
                 <b>Licence economics</b>Further simulation is required before
