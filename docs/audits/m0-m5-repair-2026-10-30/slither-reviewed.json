@@ -1606,5 +1606,215 @@
     "impact": "Informational",
     "location": "Low level call in TouchstoneHook._licence(PoolState,PoolConfig,TouchstoneHook.SwapView,address) (src/TouchstoneHook.sol#388-405):",
     "triage": "../m10-2026-11-03/slither-triage.md"
+  },
+  {
+    "id": "41dd5e6618c257d3a692606ffdecd89967fca0dafbc9748fdf53e33bd8c9d0a7",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._afterSwap(address,PoolKey,SwapParams,BalanceDelta,bytes) (src/TouchstoneHook.sol#318-330) uses a dangerous strict equality:",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "698c16ffdd7b3516ae228bde0fea1ad58a69e274de1d3db027c96819179ae6bf",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#729-743) uses a dangerous strict equality:",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "6add262f5f6ea29e4631f5fee9138d6777c5903753712176bf744295679cddd5",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#351-388) uses a dangerous strict equality:",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "82d310a62476a4008103e13d5c0186757447f080f1d2621fb57b5cb09ab3fc0d",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#746-753) uses a dangerous strict equality:",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "a7bb6efe7a09def563fb3efd870bb60c8ccc4248650e1b1424a1ac60c1084743",
+    "check": "incorrect-equality",
+    "impact": "Medium",
+    "location": "TouchstoneHook._depositFor(PoolConfig,TouchstoneHook.SwapView) (src/TouchstoneHook.sol#425-432) uses a dangerous strict equality:",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "0d2fd9b6143f32cc84ee7f3e52d6bf431558ed457ae89a75715ebf55eca24f40",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#746-753) ignores return value by poolManager.donate(key,amount0,amount1,) (src/TouchstoneHook.sol#751)",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "197877c632806a8e98b286bbc134b521a31a0d1b6fd54a94f78eb50a8dff57d8",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.finalize(Record,Payout,bool) (src/TouchstoneHook.sol#166-183) ignores return value by poolManager.unlock(abi.encode(ACTION_FINALIZE,abi.encode(record,payout))) (src/TouchstoneHook.sol#181)",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "4fc921d6bb2fbec730315b2d436f35bce0e3cbef364e046b0d49ee31c933094a",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook.creditRent(PoolKey,uint256) (src/TouchstoneHook.sol#194-199) ignores return value by poolManager.unlock(abi.encode(ACTION_RENT,abi.encode(id,amount))) (src/TouchstoneHook.sol#198)",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "5cd07e87d14b044b505fc87d57755fd8d54c0e9ee27bfcf117d0d3ac2002eebd",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._toLedger(Currency,address,uint256,IRebateLedger.Kind) (src/TouchstoneHook.sol#696-699) ignores return value by poolManager.transfer(address(LEDGER),c.toId(),amount) (src/TouchstoneHook.sol#697)",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "9574feaf126bfeb74b8915b7b2f51e2ad5422fe146e16f45751384b00d2d0432",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._push(Currency,address) (src/TouchstoneHook.sol#688-694) ignores return value by LEDGER.push(recipient,c) (src/TouchstoneHook.sol#689-693)",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "99bc3e9fae002518a0684e38acf77b9e98d67018e3635e6b0d58f8a5019bd4ee",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._sqrtPriceNow(PoolId) (src/TouchstoneHook.sol#594-596) ignores return value by (sqrtPriceX96,None,None,None) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#595)",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "9f77e687ac59daf513aeff3cc601109246750bf24e1c7c274917a3501e4a5a6e",
+    "check": "unused-return",
+    "impact": "Medium",
+    "location": "TouchstoneHook._beforeSwap(address,PoolKey,SwapParams,bytes) (src/TouchstoneHook.sol#291-313) ignores return value by (sqrtPriceX96,None,packedProtocolFee,lpFee) = poolManager.getSlot0(id) (src/TouchstoneHook.sol#302)",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "02de78373be5e08bc2950abf661f69bd152a377f650580d374ee8631f90fcb3f",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._payOut(Record,Payout) (src/TouchstoneHook.sol#629-649):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "487eebc08a0e55f28cc94fffc9aee980fa36e3a28b6170ce7753f07c6a844930",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._takeDeposit(address,PoolKey,SwapParams,BalanceDelta,bytes,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#541-592):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "4d6394c01206324dd4dac580ea1cc9957cf912e50e76bbb356c3f7486a5d0021",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._creditRent(PoolId,uint256) (src/TouchstoneHook.sol#704-724):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "739f51c361a870cf6ba66bb25d05527b277651b01df32adc768f2545a6d70eea",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#746-753):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "87709930aa46314a2fb91647107acc7e641b67f1b71c9f5fbeaa4e800f977e95",
+    "check": "reentrancy-events",
+    "impact": "Low",
+    "location": "Reentrancy in TouchstoneHook.unlockCallback(bytes) (src/TouchstoneHook.sol#204-225):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "09ec2522b93c4cfde4abba93735dbc3c4a982de4d793ffca52585584772c0b17",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._outstandingOverflows(PoolState,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#513-519) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "22aa86ce7eb9c1aba917368d2e313f8ec9abd0705f5bc806570855f6c2c9a926",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._evaluate(TouchstoneHook.SwapView,address,BalanceDelta) (src/TouchstoneHook.sol#351-388) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "242a3d45df136f9b929ee7ac44db5045221903766a7e0b5b9945ec184e3307e5",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._withinBudget(PoolState,PoolConfig,TouchstoneHook.SwapView,uint256) (src/TouchstoneHook.sol#525-538) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "55643b711b04addd1bf64405616151dc2364f896adaec6806e25d2b4fdbc4106",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._dripEffects(PoolId) (src/TouchstoneHook.sol#729-743) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "6df8e29de63b5e82e297d8e2199a141b8666a960dd8ce3b7b44b602695afe3f2",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._afterSwap(address,PoolKey,SwapParams,BalanceDelta,bytes) (src/TouchstoneHook.sol#318-330) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "70848dfb5aa03297e997aa054f301ae5f61ca88ccd95e393f75487853fb8403d",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#494-498) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "7ddb63ec23f10aac894d498526ec18bc2dcfef4163d46878be8ff24606721f4d",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#486-490) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "8d441f03bf4bec336691d27bd142fba78b619f76b6247f55afdf5c34405fb345",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._depositFor(PoolConfig,TouchstoneHook.SwapView) (src/TouchstoneHook.sol#425-432) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "ab8a1917c0744623f03a386bddad5e449797ea339115395a1e9788d89cccce23",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._closedNow(PoolConfig) (src/TouchstoneHook.sol#474-484) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "b0ceb00c203fd58113723646922050ef479299d78e0805dbe23822c8af4e6452",
+    "check": "timestamp",
+    "impact": "Low",
+    "location": "TouchstoneHook._donate(PoolId,uint256,uint256) (src/TouchstoneHook.sol#746-753) uses timestamp for comparisons",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "41dabce7621196890bea443ce7cfcb8b66ff77b389ae17a6a243e3a5d10da5de",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._licence(PoolState,PoolConfig,TouchstoneHook.SwapView,address) (src/TouchstoneHook.sol#393-410):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "69ebeac93008aeabb69d8998f957704f367db15d2f49ff1e0e27d5c74cd70c9a",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarAnswersNextOpen(address) (src/TouchstoneHook.sol#486-490):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
+  },
+  {
+    "id": "c38b23894c74b5e8494e5d02025053ba431d2697b21f490091b8807b4735ffce",
+    "check": "low-level-calls",
+    "impact": "Informational",
+    "location": "Low level call in TouchstoneHook._calendarOpen(address,uint256) (src/TouchstoneHook.sol#494-498):",
+    "triage": "../../decisions/0069-slither-review-after-deposit-reasons.md"
   }
 ]
