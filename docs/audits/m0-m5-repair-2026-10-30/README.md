@@ -51,9 +51,9 @@ No owner, pause, upgrade path, gate relaxation or rewritten historical result wa
 
 ## Validation and audit trail
 
-[validation.md](validation.md) records final commands, counts, measured costs and failed gates. The twelve
-numbered files record baseline findings and post-repair dispositions; [slither-triage.md](slither-triage.md)
-and slither-reviewed.json record exact static-analysis findings. Fingerprint review is not a zero-finding run.
+[validation.md](validation.md) records final commands, counts, measured costs and failed gates. The numbered
+notes cover individual findings and fixes. [slither-triage.md](slither-triage.md) and `slither-reviewed.json`
+record exact static-analysis findings. Fingerprint review is not a zero-finding run.
 
 The CI workflow is prepared but has not been executed on GitHub. It keeps size, coverage and pre-repair gas
 thresholds, validates ABI drift and runs unit/invariant/Anvil tests, static review and dependency audits.

@@ -140,15 +140,15 @@ Off chain: a keeper that settles and expires records, an indexer with a read-onl
 
 Arbitrum Sepolia (chain id 421614), deployed 7 November 2026. All seven contracts are verified on Arbiscan. The full manifest, with block numbers and transaction hashes, is in [DEPLOYMENTS.md](DEPLOYMENTS.md).
 
-| Contract | Address |
-| --- | --- |
-| TouchstoneHook | [`0xeD486b0a1d875bBac3DE259AFc583984389420c4`](https://sepolia.arbiscan.io/address/0xeD486b0a1d875bBac3DE259AFc583984389420c4#code) |
-| Settler | [`0xBC3ff14B7e4cC5549f52436a45F74EF5d4caf287`](https://sepolia.arbiscan.io/address/0xBC3ff14B7e4cC5549f52436a45F74EF5d4caf287#code) |
-| RebateLedger | [`0x693a7eF9cF0eA06b634f3673C2805627Eb7e78f8`](https://sepolia.arbiscan.io/address/0x693a7eF9cF0eA06b634f3673C2805627Eb7e78f8#code) |
-| TouchstoneFactory | [`0xfbbBC7b89682BeCC22ddFCe4B8941cd2867466Fb`](https://sepolia.arbiscan.io/address/0xfbbBC7b89682BeCC22ddFCe4B8941cd2867466Fb#code) |
-| GuardedRouter | [`0xdb8C7995200759C6FD5c5f5c803d94184A577Ddb`](https://sepolia.arbiscan.io/address/0xdb8C7995200759C6FD5c5f5c803d94184A577Ddb#code) |
-| LicenceAuction | [`0xA050C01CeeCA0F8c5158223C5C2bDF8B69Ac0b89`](https://sepolia.arbiscan.io/address/0xA050C01CeeCA0F8c5158223C5C2bDF8B69Ac0b89#code) |
-| TouchstoneLens | [`0x4085E5BD0D5a60128487705D017F2B312AFAefd2`](https://sepolia.arbiscan.io/address/0x4085E5BD0D5a60128487705D017F2B312AFAefd2#code) |
+| Contract | Address | Deployment block (L2) |
+| --- | --- | ---: |
+| TouchstoneHook | [`0xeD486b0a1d875bBac3DE259AFc583984389420c4`](https://sepolia.arbiscan.io/address/0xeD486b0a1d875bBac3DE259AFc583984389420c4#code) | 326729262 |
+| TouchstoneLens | [`0x4085E5BD0D5a60128487705D017F2B312AFAefd2`](https://sepolia.arbiscan.io/address/0x4085E5BD0D5a60128487705D017F2B312AFAefd2#code) | 326729255 |
+| Settler | [`0xBC3ff14B7e4cC5549f52436a45F74EF5d4caf287`](https://sepolia.arbiscan.io/address/0xBC3ff14B7e4cC5549f52436a45F74EF5d4caf287#code) | 326729239 |
+| RebateLedger | [`0x693a7eF9cF0eA06b634f3673C2805627Eb7e78f8`](https://sepolia.arbiscan.io/address/0x693a7eF9cF0eA06b634f3673C2805627Eb7e78f8#code) | 326729230 |
+| TouchstoneFactory | [`0xfbbBC7b89682BeCC22ddFCe4B8941cd2867466Fb`](https://sepolia.arbiscan.io/address/0xfbbBC7b89682BeCC22ddFCe4B8941cd2867466Fb#code) | 326729235 |
+| GuardedRouter | [`0xdb8C7995200759C6FD5c5f5c803d94184A577Ddb`](https://sepolia.arbiscan.io/address/0xdb8C7995200759C6FD5c5f5c803d94184A577Ddb#code) | 326729245 |
+| LicenceAuction | [`0xA050C01CeeCA0F8c5158223C5C2bDF8B69Ac0b89`](https://sepolia.arbiscan.io/address/0xA050C01CeeCA0F8c5158223C5C2bDF8B69Ac0b89#code) | 326729250 |
 
 Demo pool: native ETH / Circle USDC, 0.05% fee, tick spacing 60, pool id `0x09741a6de859ce342be323e80855894ab0a44691d286784447041d056b448051`. It is seeded with a 15 USDC full-range backstop and a 60 USDC band within about 3% of the Chainlink price ([decision 0067](docs/decisions/0067-demo-pool-band-liquidity.md)).
 

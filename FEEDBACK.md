@@ -1,0 +1,7 @@
+# Developer feedback for the Uniswap team
+
+We built Touchstone on Uniswap v4. The `afterSwap` return delta gave us a way to hold a refundable deposit as part of the swap. We wanted routers to quote the resulting trade through the same hook address, so their quotes could account for the deposit.
+
+The hardest part was fitting both features into the 24,576-byte deployed bytecode limit. Our hook already occupied 24,437 bytes before we added the quote interface. Once we moved the quote calculations into a separate lens, the version with explicit forwarders fit at 24,504 bytes, but the extra dispatcher checks pushed our swap path over our gas budget. We ended up serving the quote selectors through the hook’s fallback, which makes a read-only call to `TouchstoneLens`. That brought the hook down to 23,993 bytes and kept the swap path within budget. Integrators still call the hook address, using the quote interface ABI.
+
+We’d find a worked example of this split useful in the v4 developer docs. We would have benefited from seeing where to draw the line between swap callbacks and read-only quote logic, how to pass hook state to a lens safely, and how routers discover and call the quote interface when it’s served through a fallback. Showing runtime bytecode size, swap gas and quote-to-execution tests for each version would help us evaluate that design before we’re already up against the limit.

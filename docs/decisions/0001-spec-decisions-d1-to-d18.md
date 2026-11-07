@@ -13,7 +13,7 @@ how each is reflected in the code at the end of M3.
 | D-6 default to refund | `Settler.expire`; tested by `test_Expire_RefundsInFull` |
 | D-7 records by hash | `TouchstoneHook._recordHash`; T11 by `test_Settle_OnceAndForgedRecordsRejected` |
 | D-8 licence timing | factory rejects the `LICENCE` flag; record fields always false |
-| D-9 closed-market scope | 0029 |
+| D-9 closed-market scope | [0048](0048-closed-market-mode.md) |
 | D-10 no AGPL code | nothing from BidDog is in the tree |
 | D-16 library errors | `ITouchstoneErrors`, extended by 0021 |
 | D-18 Settler emits Settled | 0018 |
