@@ -1,6 +1,8 @@
 # Touchstone
 
-**Live testnet dashboard** · [touchstone.prazwal.xyz](https://touchstone.prazwal.xyz)
+> **[Live testnet dashboard → touchstone.prazwal.xyz](https://touchstone.prazwal.xyz)**
+>
+> [Developer feedback for the Uniswap team](FEEDBACK.md)
 
 Touchstone is a Uniswap v4 hook and settlement system. When a swap looks informed, the hook holds a small refundable deposit out of the swap's own output, inside the same transaction. A few seconds later anyone can settle that deposit against a signed Pyth price. If the trade beat the outside price by more than a margin, part of the excess goes to the liquidity providers; everything else returns to the trader. Benign flow is refunded in full and can earn a rebate.
 
