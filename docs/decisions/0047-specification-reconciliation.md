@@ -2,10 +2,10 @@
 
 Date: 30 October 2026. Status: implementation/documentation clarification; no new economic parameters.
 
-The owner selected root spec.md during the repair. It is dated 18 October and contains older interface,
+The owner selected an earlier specification export during the repair. It is dated 18 October and contains older interface,
 layout and 18-decimal price examples, while the repository's existing decisions explicitly select named
 folders, the 1e36 price scale, referenceFeed naming and staged interfaces. Those decisions remain in force.
-The original export is preserved; docs/SPEC.md links to it instead of maintaining a divergent copy.
+docs/SPEC.md links to the current specification instead of maintaining a divergent copy.
 
 ## Publish time versus submission time
 

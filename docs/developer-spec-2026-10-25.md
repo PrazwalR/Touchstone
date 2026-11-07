@@ -1,15 +1,11 @@
-# Touchstone v2: Developer Specification for Claude Code
+# Touchstone v2: Design Specification
 
-> Edited 31 October 2026 (decision 0050): the owners are not entering ETHGlobal Mumbai. The hackathon sections (the Mumbai plan, the hackathon compliance checklist and the demo script) were removed; the licence is no longer date-gated, and the schedule below is superseded by the plan in decision 0050.
 
 
 **Project:** Touchstone v2. A Uniswap v4 hook and settlement system that settles each flagged swap against a canonical outside price seconds after it trades. On that one primitive it runs four markets: the clawback, an arbitrage licence, benign-flow rebates and quote integrity.
-**Owners:** Prazwal Ratti and a second developer. D1 owns the contracts; D2 owns research, off-chain services and the write-up.
-**Window:** Monday 19 October to Friday 27 November 2026. ETHGlobal Mumbai falls in the middle: 5 to 7 November, and submissions close **Saturday 7 November 2026 at 09:00 IST**.
-**Consumer:** this document is the project brief and system prompt for Claude Code. Copy §0 into `CLAUDE.md` at the repository root, commit this file as `docs/SPEC.md`, and work through §20.5 milestone by milestone.
-**Status at handoff (25 October 2026):** this is a design specification. The mechanism, the interfaces and the research plan are fixed here. The only code that exists and has been compiled and tested is the reference pack in Appendix A: seven pure Solidity libraries with 22 passing Foundry tests and an exact Python reference. Every gas or performance number marked *target* is a goal, not a measurement.
+**Use:** this is the design specification: mechanism, formulas, parameters, interfaces, research plan and build plan. Section 0 holds the engineering standards the code follows.
 
-**Source documents.** This spec merges and supersedes, for implementation purposes, two Claude Docs written on 17–18 October 2026: the *Uniswap breakthrough project research report* (rev 167) and the *Touchstone developer docs* (rev 38). Where this file and those docs disagree, this file wins, and §21 lists every place where it changed something.
+**Source documents.** This spec merges and supersedes, for implementation purposes, two earlier design documents written on 17–18 October 2026: the *Uniswap breakthrough project research report* (rev 167) and the *Touchstone developer docs* (rev 38). Where this file and those docs disagree, this file wins, and §21 lists every place where it changed something.
 
 ---
 
@@ -28,7 +24,7 @@
 
 ---
 
-# §0 STANDING INSTRUCTIONS (copy into CLAUDE.md)
+# §0 ENGINEERING STANDARDS
 
 ## 0.1 Operating mode
 
@@ -1076,10 +1072,8 @@ The repository is one monorepo. Contracts sit at the root, and each off-chain se
 
 ```text
 touchstone/
-  CLAUDE.md                         §0 of this spec, verbatim
   README.md                         problem, mechanism, prior work vs event work, partner integrations with file:line links
   FEEDBACK.md                       Uniswap developer feedback (required by the Foundation's tracks)
-  AI_USAGE.md                       tools, what they produced, what people changed (§22)
   DEPLOYMENTS.md                    every address, with the explorer check that confirmed it
   .env.example                      every variable, commented, no values
   foundry.toml  remappings.txt  slither.config.json  .gitignore  .gitmodules
@@ -2576,7 +2570,7 @@ Monday 2 November is also the first reopen after US daylight saving time ends on
 
 Cut in this order: the intents path; the URC-4 lens (keeping `previewDeposit`, `GuardedRouter` and `HookSwap`); the Base Sepolia deployment; rebates (keeping the ledger for deferred refunds). Never cut: the core hook, settlement, the licence, the invariants, or closed-market mode unless E9 kills it.
 
-## 20.5 Milestones for Claude Code
+## 20.5 Milestones
 
 Work through these in order. Contracts (D1) and research and services (D2) run in parallel; the dependencies column says what must exist first. Each milestone ends with the §0.5 validation, the §0.6 audit passes and the §0.10 lesson.
 
@@ -2600,9 +2594,9 @@ Work through these in order. Contracts (D1) and research and services (D2) run i
 
 The plan started on Monday 19 October and this spec was written on Sunday 25 October, so some week-1 work may already exist.
 
-1. Inventory the repository against §6 and the milestones below. Write `docs/decisions/0000-state-at-handoff.md`: what exists, what compiles, what passes, what is missing.
+1. Inventory the repository against §6 and the milestones below. Record in `docs/decisions/` what exists, what compiles, what passes and what is missing.
 2. **Establish gate G1.** It was due Wednesday 21 October. If E2 has run, record its pre-registration file, windows and result. If it has not, M4's E1 and E2 come before anything else in D2's queue, because if held-out recall misses break-even at φ ≤ 0.30 the plan stops (§20.1).
-3. Bootstrap whatever is missing: submodules at the pins in §6.2, `foundry.toml`, `remappings.txt`, CI running §0.5, `.gitignore`, `.env.example`, `CLAUDE.md` (§0), `docs/SPEC.md` (this file).
+3. Bootstrap whatever is missing: submodules at the pins in §6.2, `foundry.toml`, `remappings.txt`, CI running §0.5, `.gitignore`, `.env.example`, `docs/SPEC.md` (this file).
 4. Import the reference pack (Appendix A) into `src/`, `test/` and `research/reference/`, run its 22 tests and the Python check, and commit them as one change with the test output in the body.
 
 Acceptance: CI green on an empty-but-real scaffold; `forge test` passes the reference suite; the state document exists.
@@ -2714,7 +2708,6 @@ AI helped with research, with this specification and with code under review. The
 
 - Every line in `src/` is read and owned by a developer who can explain it. After each milestone that developer writes `docs/lessons/NN-<topic>.md` under the teaching protocol (§0.10): the concept, the design decisions, a code walkthrough, failure modes, audit questions and exercises.
 - No generated code merges without tests that would fail without it.
-- Prompts are saved under `docs/ai/prompts/` with dates. `AI_USAGE.md` lists the tools, what they produced and what people changed.
 - No number appears anywhere without its source and its label: measured, backtest, simulation, testnet or target.
 
 ## 22.2 Contributions

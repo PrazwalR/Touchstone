@@ -6,7 +6,7 @@ Date: 30 October 2026. Baseline: 07f4bbe.
 
 Severity: Medium. Location: `contracts/src/TouchstoneFactory.sol:113; backend/indexer/src/indexer.ts:#range`.
 
-Permissionless first registration chooses economic config for a key. Do not add owner access contrary to CLAUDE. Indexer writes grouped-by-contract events without a transaction; crash/reorg may leave raw and derived state inconsistent. Canonical-pool trust changes require owner choice; atomic local indexing preserves existing intent.
+Permissionless first registration chooses economic config for a key. Do not add owner access: the design has no owner. Indexer writes grouped-by-contract events without a transaction; crash/reorg may leave raw and derived state inconsistent. Canonical-pool trust changes require owner choice; atomic local indexing preserves existing intent.
 
 Scope: first-party contracts, backend, research, tests and docs; dependency code inspected where integration semantics matter. Recorded research results are historical backtests, not independently reproduced outcomes.
 

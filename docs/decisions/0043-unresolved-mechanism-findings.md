@@ -2,7 +2,7 @@
 
 Date: 30 October 2026. Status: open except for the executed-fee omission approved and fixed in 0044. Remaining items are not accepted trade-offs.
 
-CLAUDE.md sections 0.1 and 0.11 prohibit changing formulas, regimes, parameters, money flow or trust assumptions
+Specification sections 0.1 and 0.11 prohibit changing formulas, regimes, parameters, money flow or trust assumptions
 without an owner decision. The approval of 0042 applies only to refund/tip delivery; 0044 separately authorizes executed-fee capture. Full spec sections 4, 14,
 16 and 21 are absent from this checkout; this document does not reconstruct or amend them.
 

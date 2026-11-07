@@ -1,6 +1,6 @@
 # Touchstone: formulas, research basis, and current implementation
 
-Reviewed 6 November 2026. Repository base: `3a62063`; includes the E10 follow-up on `codex/m11-followup`. This describes the inspected working tree, not an assertion that this exact code is deployed. Existing deployments require their own manifest and bytecode comparison.
+Reviewed 6 November 2026. Repository base: `3a62063`, with the E10 licence-path model. This describes the inspected working tree, not an assertion that this exact code is deployed. Existing deployments require their own manifest and bytecode comparison.
 
 This document separates **contract arithmetic**, **research calculations**, and **design assumptions**. There are no invented transaction results or demonstration numbers here. Synthetic tests establish software behavior for their inputs; they do not establish economic profitability. “Proof of work” below means inspectable code, recorded results and reproducible checks, not blockchain proof-of-work consensus or a formal verification certificate.
 

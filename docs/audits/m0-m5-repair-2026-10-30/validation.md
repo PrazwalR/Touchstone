@@ -1,7 +1,6 @@
 # Final validation, 30 October 2026
 
-The owner selected root spec.md during the repair. Findings, decisions and hackathon scope are in the audit
-README, decisions0042-0047 and docs/hackathon-checklist.md. Raw machine counts are in validation.json.
+Findings and decisions are in the audit README and decisions 0042 to 0047. Raw machine counts are in validation.json.
 No commit, push, deployment or historical experiment was performed. The GitHub workflow is prepared but has
 not run on GitHub; local commands below are not evidence of a remote green build.
 

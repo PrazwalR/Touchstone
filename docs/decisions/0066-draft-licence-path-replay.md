@@ -2,7 +2,7 @@
 
 Date: 6 November 2026. Status: implementation preparation; E10 remains draft.
 
-The M11 handoff left E10 with one-race and auction-clearing primitives. Add a pure sequential replay in
+The M11 work left E10 with one-race and auction-clearing primitives. Add a pure sequential replay in
 `research/simulations/licence_path.py`, using the existing constant-product execution and retention functions.
 Reserves carry forward, while fees, retained amounts and rent are tracked outside the reserves. All scenario
 inputs come from the caller. No historical tape is opened, threshold changed, or experiment frozen.

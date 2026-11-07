@@ -326,11 +326,11 @@ function Spec() {
     <div className="md">
       <h2>The specification</h2>
       <p>
-        The full developer specification (about 2,900 lines: mechanism,
-        formulas, parameters, research plan, threat model and build plan) lives
-        in the repository as <code>docs/SPEC.md</code>. It is private for now
-        and deliberately not bundled into this page, because a hosted build
-        publishes everything it contains.
+        The full design specification (about 4,000 lines: mechanism, formulas,
+        parameters, research plan, threat model and build plan) is in the
+        repository as <code>docs/developer-spec-2026-10-25.md</code>, indexed
+        from <code>docs/SPEC.md</code>. It is not bundled into this page
+        because of its length.
       </p>
       <p>
         The lessons and decisions in this reader explain each part of it as

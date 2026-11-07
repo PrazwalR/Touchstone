@@ -4,7 +4,7 @@ Status: accepted (implementation detail under §0.11.2; no mechanism change). Da
 
 ## Context
 
-M9 put the licence on chain. The handoff (`docs/m9-handoff-progress.md`) left four off-chain items: an Anvil
+M9 put the licence on chain. The M9 work left four off-chain items: an Anvil
 witness that the hook credits what the auction charges, indexed auction history, a read-only dashboard view,
 and bounded holder and bidder bots for the testnet demonstration.
 

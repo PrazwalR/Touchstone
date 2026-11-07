@@ -50,7 +50,7 @@ Line references identify the entry points; related helpers are directly below th
 2. Are all displayed credits rebates? No. Kind distinguishes rebates, deferred refunds, protocol amounts and tips; raw ledger events retain their Kind. A ledger event does not identify a pool, so the UI does not invent one.
 3. Does a current hash prove blind research? No. Git chronology, prior disclosures and the separate freeze commit matter. E3's previously seen-window disclosure remains unchanged.
 4. Are E5/E6 complete release experiments? No. Inputs/configurations are not frozen or run. E5 does not establish padding-margin profit resistance; E6 is a stylized sensitivity model. Exact v4/revm confirmation remains required.
-5. Can live deployments demonstrate every outcome today? Not from this task. No local signer was available; the owner chose a handoff. Closed-market economics is untested while E9 is skipped, and licence outcomes require M9.
+5. Can live deployments demonstrate every outcome today? Not from this task. No local signer was available in that environment. Closed-market economics is untested while E9 is skipped, and licence outcomes require M9.
 
 ## Exercises
 

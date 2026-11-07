@@ -18,7 +18,7 @@ Two causes account for all 54:
 | --- | ---: | --- |
 | timestamp | 14 | Calendar, settlement-time and flow-bucket comparisons, intentional as in the hook. No randomness |
 | unused-return | 12 | Hook: as reviewed on 30 October. Lens: `getSlot0` partial reads; `TriggerLib.firstTouch`'s second value (whether to store the block, irrelevant to a view); `FlowBucketLib.update`'s new buckets (a quote writes nothing); `getTickLiquidity`'s gross liquidity, which `Pool.swap` also ignores |
-| naming-convention | 9 | SCREAMING_SNAKE_CASE immutables and their interface getters, required by CLAUDE.md |
+| naming-convention | 9 | SCREAMING_SNAKE_CASE immutables and their interface getters, required by the specification's style rules (§0.4) |
 | incorrect-equality | 6 | Zero checks on computed deposits and notionals, not on attacker-controlled balances |
 | low-level-calls | 6 | Calendar and auction staticcalls that check success and returndata length and never revert the quote, as in the hook |
 | reentrancy-events | 5 | Hook functions as reviewed on 30 October and 2 November; line shift only |

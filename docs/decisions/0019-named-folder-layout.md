@@ -8,5 +8,5 @@ Choice: `contracts/` (Foundry), `backend/` (pnpm workspace: `shared`, `keeper`, 
 `frontend/` (dashboard, later), `research/`, `sim/`, `docs/`. Every path in the spec that names `src/`, `test/`,
 `script/`, `lib/` or `foundry.toml` means the same path under `contracts/`.
 
-Consequence: commands run from `contracts/`; CLAUDE.md lists them. `fs_permissions` reaches the Python vectors with
+Consequence: commands run from `contracts/`; the README lists them. `fs_permissions` reaches the Python vectors with
 `../research/reference/vectors`.

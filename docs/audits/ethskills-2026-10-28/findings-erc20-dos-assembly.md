@@ -2,12 +2,9 @@
 
 Note: the forge `--rerun` failures file at `/Users/prazw/Desktop/Web3/touchstone/contracts/cache/test-failures` was overwritten while I ran the PoCs. Forge writes it there even when `--cache-path` points elsewhere. It now holds the name of one PoC test (`test_PoC_GasBurnerRaisesSettlementCost`), and that test passes now. I left the file alone because touching it would be another repository write. It is safe to delete. Nothing else in the repository was changed.
 
-**Proofs of concept.** They are in `/private/tmp/claude-501/-Users-prazw-Desktop-Web3-touchstone/fb6f214e-9eef-4eba-b9df-79c5d2a7b8e0/scratchpad/audit/poc-dos/DosPoC.t.sol`. They reuse `test/unit/Settlement.t.sol::SettlementBase` and deploy the hook and the Settler from their compiled artifacts. To run them from `contracts/`:
+**Proofs of concept.** They are in `docs/audits/ethskills-2026-10-28/poc/DosPoC.t.sol`. They reuse `test/unit/Settlement.t.sol::SettlementBase` and deploy the hook and the Settler from their compiled artifacts. To run them from `contracts/`:
 
-```bash
-S=/private/tmp/claude-501/-Users-prazw-Desktop-Web3-touchstone/fb6f214e-9eef-4eba-b9df-79c5d2a7b8e0/scratchpad/audit
-FOUNDRY_TEST=$S/poc-dos forge test --out $S/out --cache-path $S/cache --match-contract PoC -vv
-```
+The proofs of concept are Foundry tests in `docs/audits/ethskills-2026-10-28/poc/`, run against the current code.
 
 All four pass against the current code; each pass confirms the problem it tests. I read decision records 0001 to 0041 first, and none of these findings re-reports a recorded trade-off.
 

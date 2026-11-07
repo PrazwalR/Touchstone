@@ -2,7 +2,7 @@
 
 Status: implemented for E3/E4 validation and local settlement arithmetic. No historical experiment run.
 
-The supplied root `spec.md`, settlement section (line 577 at review), states that when the swap does not
+The design specification's settlement section states that when the swap does not
 overshoot the fair price, m+ = m and N+ = N. The constant-liquidity reconstruction is used only for an
 overshot leg, with its tick-crossing approximation explicitly acknowledged. `tsr/settle.py` therefore keeps
 actual receipts in the non-overshot branch and preserves the reconstructed leg unchanged in the overshot

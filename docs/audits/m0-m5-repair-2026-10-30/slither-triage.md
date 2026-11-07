@@ -16,7 +16,7 @@ CI rejects any unreviewed or changed fingerprint and any analyzer execution fail
 | timestamp | 7 | Settlement, expiry, freshness and vesting intentionally use timestamps. No source of randomness |
 | assembly | 4 | Existing transient TLOAD/TSTORE helpers; no new assembly introduced |
 | low-level-calls | 3 | Settler fee refund remains checked; oracle staticcalls now validate success, length and canonical narrow fields. Unbounded returndata/gas remains a residual risk |
-| naming-convention | 17 | SCREAMING_SNAKE_CASE immutables required by CLAUDE.md |
+| naming-convention | 17 | SCREAMING_SNAKE_CASE immutables required by the specification's style rules (§0.4) |
 
 No blanket detector suppression or severity lowering was added. CI verifies the exact reviewed fingerprints
 after checking analyzer success; changed/new findings require review. This is not a zero-finding run.

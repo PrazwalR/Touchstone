@@ -2,7 +2,7 @@
 
 Scope: `contracts/src` as of 28 October 2026, walked against `checklist-oracles.md` and `checklist-chain-specific.md`. Pyth semantics were checked against the vendored SDK (`contracts/lib/pyth-sdk-solidity/IPyth.sol`, `PythErrors.sol`) and the project's `MockPythUnique`. The mock encodes the rule `minPublishTime <= publishTime <= maxPublishTime && prevPublishTime < minPublishTime`.
 
-Proofs of concept: `/private/tmp/claude-501/-Users-prazw-Desktop-Web3-touchstone/fb6f214e-9eef-4eba-b9df-79c5d2a7b8e0/scratchpad/audit/poc-oracles/test/OraclePoC.t.sol`. There are 7 tests and all pass against the current code. The hook and Settler are deployed from artifacts through `TouchstoneFixture`.
+Proofs of concept: `docs/audits/ethskills-2026-10-28/poc/OraclePoC.t.sol`. There are 7 tests and all pass against the current code. The hook and Settler are deployed from artifacts through `TouchstoneFixture`.
 
 Answers to the specific questions:
 

@@ -27,7 +27,7 @@ API tests cover exact integer preservation, record/recipient filtering, duplicat
 | Medium, fixed | `backend/shared/src/log.ts` | Top-level-only redaction missed provider credentials in URLs and nested error text. | Recursive known-secret/URL redaction, cyclic/depth handling and regression tests. |
 | Medium, fixed | `backend/indexer/src/api.ts:40` | A public history endpoint would otherwise expose an unbounded/queryable local database. | Read-only connection, strict bounded parameterized routes, CORS, bounded per-socket rate limiter, generic errors and query indexes. TLS/reverse-proxy deployment still required. |
 | Medium, fixed in preparation | `research/experiments/rekey_pyth.py:20` | Legacy rows omit feed IDs, so filename-based reuse can assign wrong provenance. | Require source manifest, hashes and exact coverage; no guessed migration or copied historical data. |
-| Medium, pending deployment | `docs/keeper-handoff.md` | Current Linux environment uses incomplete/legacy variable names and missing wallet files. | Preflight reports field names and metadata only; owner chose signer-machine runbook. No local live keeper/indexer claimed. |
+| Medium, pending deployment | `docs/runbook.md` | Current Linux environment uses incomplete/legacy variable names and missing wallet files. | Preflight reports field names and metadata only; owner chose signer-machine runbook. No local live keeper/indexer claimed. |
 | Informational | `research/experiments/behaviour.py` | A simplified simulation can be mistaken for release evidence. | Draft/frozen/commit/config guards, full provenance and explicit incomplete-model verdicts. No result JSON produced. |
 
 ## Limits

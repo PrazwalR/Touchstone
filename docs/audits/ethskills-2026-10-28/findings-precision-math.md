@@ -2,7 +2,7 @@
 
 Scope: `contracts/src` (TouchstoneHook, Settler, RebateLedger, TouchstoneFactory, all libraries and types). Compared against `research/reference/touchstone_ref.py` and `research/reference/vectors/vectors.json`. The spec fixes the formulas, so this report covers only precision, rounding direction, casts and overflow in the implementation. Trade-offs already decided in decisions 0022, 0025, 0026 and 0031 are not reported again.
 
-The proofs of concept are in `/private/tmp/claude-501/-Users-prazw-Desktop-Web3-touchstone/fb6f214e-9eef-4eba-b9df-79c5d2a7b8e0/scratchpad/audit/poc-math/test/MathPoC.t.sol`, a standalone Foundry project that imports the libraries from `contracts/src/libraries`. All six tests pass with 5,000 fuzz runs.
+The proofs of concept are in `docs/audits/ethskills-2026-10-28/poc/MathPoC.t.sol`, a standalone Foundry project that imports the libraries from `contracts/src/libraries`. All six tests pass with 5,000 fuzz runs.
 
 ## [MATH-1] Drip rounds to zero and still restarts the vesting clock, so small buffers never vest under frequent drips
 **Severity**: Low

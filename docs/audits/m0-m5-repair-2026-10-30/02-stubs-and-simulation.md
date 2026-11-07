@@ -12,6 +12,6 @@ Scope: first-party contracts, backend, research, tests and docs; dependency code
 
 ## After changes
 
-No mock or placeholder was added to production source. New malicious receivers live under test/mocks. The owner subsequently supplied root spec.md, now linked from docs/SPEC.md; historical raw data remain unavailable. Frontend, replay and later milestone features remain staged; none is reported complete.
+No mock or placeholder was added to production source. New malicious receivers live under test/mocks. The design specification is linked from docs/SPEC.md; historical raw data remain unavailable. Frontend, replay and later milestone features remain staged; none is reported complete.
 
 Final command evidence and limitations: [validation.md](validation.md). Findings still open are not accepted trade-offs merely because they are documented.

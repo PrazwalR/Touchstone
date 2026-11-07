@@ -4,9 +4,8 @@ Date: 30 October 2026. Starting revision: 07f4bbe. Changes are local and uncommi
 Scope: first-party contracts, keeper, indexer, research, tests, documentation and CI. Dependency source was
 inspected where its execution semantics matter; this is not an exhaustive audit of vendored upstream projects.
 
-The owner supplied root `spec.md` during the audit and selected it as the reference. `docs/SPEC.md` now points
-there rather than keeping the old placeholder. Read it with CLAUDE.md, existing decisions and the explicit
-owner approvals below. The source export is historical; external claims/addresses/event rules were not
+The design specification is `docs/developer-spec-2026-10-25.md`, indexed from `docs/SPEC.md`. Read it with the
+existing decisions and the explicit owner approvals below. The source export is historical; external claims/addresses/event rules were not
 independently verified. No deployment, commit, push, submission or public issue publication was performed.
 
 ## Fixed
@@ -39,7 +38,7 @@ The fixes preserve the original retention/split formulas and the supplied spec's
 ## Still pending for the hackathon
 
 The M0-M5 repairs do not implement M6 calendar/closure support, M7 previewDeposit/GuardedRouter, M8 real testnet
-scripts/verification/bots, the dashboard, or the date-gated licence. See `../../hackathon-checklist.md`.
+scripts/verification/bots, the dashboard, or the date-gated licence.
 G1's saved pass is historical and limited to one v3 pool/window; G2/E3/E4 remain draft and unrun. Original E1/E2
 code/preregistration hashes and results are preserved. Raw inputs are absent, and corrected oracle ordering
 requires separately versioned research. E3 still has stateful/currency/execution-type limitations.
@@ -71,4 +70,4 @@ Mainnet use remains gated by the specification's external audit requirement.
 
 Review method: ETHSkills EVM audit guidance and its pinned general, oracle, token, DoS, AMM and precision-math
 checklists; pinned Uniswap dependency source and the official v4 overview. A human source review and the
-lesson walkthrough remain required before merge. See `../../lessons/06-audit-repair.md` and root AI_USAGE.md.
+lesson walkthrough remain required before merge. See `../../lessons/06-audit-repair.md`.

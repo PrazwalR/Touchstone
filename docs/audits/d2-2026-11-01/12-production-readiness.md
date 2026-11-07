@@ -8,6 +8,6 @@ Validation and resolution are recorded in `validation.md` at the end of this cha
 
 ## Post-change resolution
 
-Owner selected signer-machine handoff and E9 skipped. No local live daemon or experiment result was claimed. Full status is in docs/d2-track-status.md.
+Owner selected a signer-machine runbook and E9 skipped. No local live daemon or experiment result was claimed.
 
 Severity, affected files, root causes and measured verification are in [validation.md](validation.md). This is a scoped D2 pass, not an external audit or closure of the entire milestone sequence.
