@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatUnits } from "viem";
 import { deployment } from "../chain/deployment.ts";
-import { priceQuotePerRiskyE6, readEvents, type Snapshot } from "../chain/reads.ts";
+import { priceQuotePerRiskyE6, readEvents } from "../chain/reads.ts";
 import type { Live } from "../chain/useLive.ts";
 import {
   DemoHeader,
@@ -19,7 +19,7 @@ import {
 } from "../swap/arbitrage.ts";
 import { swapContext } from "../swap/context.ts";
 import { impactBlock } from "../swap/impactGuard.ts";
-import { readReference } from "../swap/reference.ts";
+import { useReference } from "../swap/poolGuard.ts";
 import {
   quoteIs0,
   shortError,
@@ -35,24 +35,6 @@ import { HISTORY_URL } from "../config.ts";
 /** Sized just over the quote-side threshold. */
 const OVER_N0_BPS = 12_000n;
 const MIN_GAP_BPS = 1n;
-type Reference = Awaited<ReturnType<typeof readReference>>;
-
-function useReference(snapshot: Snapshot | null): { ref: Reference | null; error: string | null } {
-  const [state, setState] = useState<{ block: bigint; ref: Reference | null; error: string | null } | null>(null);
-  useEffect(() => {
-    if (!snapshot) return;
-    let cancelled = false;
-    void readReference(swapContext, snapshot).then(
-      (ref) => { if (!cancelled) setState({ block: snapshot.blockNumber, ref, error: null }); },
-      (err) => { if (!cancelled) setState({ block: snapshot.blockNumber, ref: null, error: shortError(err) }); },
-    );
-    return () => { cancelled = true; };
-  }, [snapshot]);
-  return state?.block === snapshot?.blockNumber
-    ? { ref: state?.ref ?? null, error: state?.error ?? null }
-    : { ref: null, error: null };
-}
-
 interface Preset {
   key: string;
   side: Side;

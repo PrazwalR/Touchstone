@@ -7,11 +7,13 @@ import {
   SettlementPanel,
 } from "../components/DemoLayout.tsx";
 import { swapContext } from "../swap/context.ts";
+import { usePoolGuard } from "../swap/poolGuard.ts";
 import type { SwapResult } from "../swap/swap.ts";
 import type { TrackedRecord } from "../swap/useSwapFlow.ts";
 import { PoolDetails } from "../sections/Testnet.tsx";
 
 export function SwapView({ live, now }: { live: Live; now: number }) {
+  const guard = usePoolGuard(live);
   const [tracked, setTracked] = useState<TrackedRecord | null>(null);
   const [result, setResult] = useState<SwapResult | null>(null);
   const onSwapped = useCallback((r: SwapResult) => {
@@ -38,6 +40,7 @@ export function SwapView({ live, now }: { live: Live; now: number }) {
           ctx={swapContext}
           initialAmount="1"
           onSwapped={onSwapped}
+          blockReason={guard.blockReason}
           title="ETH / USDC"
         />
         {result && (
