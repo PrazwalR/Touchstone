@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {TouchstoneHook} from "../../src/TouchstoneHook.sol";
 import {IHooks} from "v4-core/interfaces/IHooks.sol";
 import {Hooks} from "v4-core/libraries/Hooks.sol";
 import {CustomRevert} from "v4-core/libraries/CustomRevert.sol";
@@ -16,6 +15,10 @@ import {Record} from "../../src/types/Record.sol";
 import {RecordLib} from "../../src/libraries/RecordLib.sol";
 
 contract TouchstoneHookTest is TouchstoneFixture {
+    /// @dev Declared here, not imported from the hook: a test that imports TouchstoneHook drags its whole import graph
+    /// into the hook's IR compile profile, which duplicates every shared artifact and halves the coverage report.
+    event DepositReasons(uint8 triggers);
+
     function setUp() public {
         _setUp(18, 6);
         vm.recordLogs();
@@ -117,7 +120,7 @@ contract TouchstoneHookTest is TouchstoneFixture {
     function test_DepositReasons_ReportsCombinedExecutionRules() public {
         feed.set(int256(3_100 * 1e8), block.timestamp);
         vm.expectEmit(false, false, false, true, address(hook));
-        emit TouchstoneHook.DepositReasons(5); // first touch + drift
+        emit DepositReasons(5); // first touch + drift
         _buy(trader, 20_000);
     }
 
