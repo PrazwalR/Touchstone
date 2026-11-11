@@ -197,7 +197,7 @@ export function SimulationView({ live }: { live: Live }) {
         <span>Pool <b>{poolE6 === null ? "—" : units(poolE6, 6, 2)}</b> {Q.symbol}</span>
         <span>Chainlink <b className="cyan">{ref ? units(ref.priceE6, 6, 2) : "—"}</b> USD</span>
         <span>Gap <b className="gold">{absGap === null ? "—" : `${absGap.toString()} bps`}</b></span>
-        {outOfRange && <span className="sim-live-warn">Pool out of range. Use Close the gap to restore it before trading.</span>}
+        {outOfRange && <span className="sim-live-warn">Pool out of range. Close the gap moves its price back to Chainlink; if trades then still show a large price impact, its liquidity band needs recentring (scripts/recenter-pool.sh).</span>}
       </p>
       <DemoDisclosure title="Market prices and demo presets">
       <div className="sim-market glass" aria-label="Live price comparison">
