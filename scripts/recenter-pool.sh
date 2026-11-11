@@ -138,7 +138,9 @@ run)
   cd "$root"
   echo; echo "== After"
   check "$rpc" "$contracts/deployments/$chain.json" || fail "the pool is still not ready; read the verdict above"
-  echo; echo "Commit contracts/deployments/$chain.json: it now names the vault and the new band."
+  node "$root/frontend/scripts/sync-contracts.mjs"
+  echo; echo "Commit contracts/deployments/$chain.json and frontend/deployments/$chain.json: the first now names the vault"
+  echo "and the new band, and CI fails if the second is not synced with it."
   ;;
 *) fail "unknown mode $mode (check, rehearse, run)" ;;
 esac

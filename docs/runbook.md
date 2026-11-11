@@ -97,6 +97,6 @@ scripts/recenter-pool.sh run arbitrum-sepolia        # live; asks for the deploy
 `run` rehearses first, then withdraws every position, moves the price onto Chainlink, and seeds the backstop and the band
 again inside an owner-only vault, sized to what the deployer holds. If the deployer has less than the configured depth
 (`liquidityQuote` plus `concentratedQuote`, plus the matching ETH) the pool is seeded thinner and the share is printed;
-top up and run again for full depth. Commit the updated `contracts/deployments/<chain>.json`, which names the vault and
-the band. Decision 0070 has the reasoning and the limits: swaps stay permissionless, so check again just before
+top up and run again for full depth. The script syncs the dashboard; commit the updated
+`contracts/deployments/<chain>.json` (it names the vault and the band) and `frontend/deployments/<chain>.json`. Decision 0070 has the reasoning and the limits: swaps stay permissionless, so check again just before
 presenting.
