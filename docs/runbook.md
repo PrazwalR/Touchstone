@@ -74,3 +74,29 @@ webhook works.
 `BOT_MODE=retail|outsider|holder|bidder` with `BOT_SUBMIT=false` simulates only and loads no key. Approvals are never
 made by the bots: approve the bounded amount yourself first (`cast send <token> 'approve(address,uint256)' ...`).
 Each run records a transaction for the release checklist (spec 19.3, step 4).
+
+## 6. Demo pool upkeep
+
+The demo pool is small and open to anyone, and ETH moves. Before any demonstration or recording, run the read-only
+check from the repository root with the environment loaded:
+
+```sh
+set -a; . ./.env; set +a
+scripts/recenter-pool.sh check arbitrum-sepolia
+```
+
+It prints the pool price, the Chainlink price, the gap, the liquidity band, who owns the liquidity, and a verdict. A
+verdict of `NEEDS RECENTER` means the pool is more than 200 bps from Chainlink, Chainlink is outside or at the edge of
+the band, or the liquidity sits with Uniswap's open test router (anyone can withdraw it). To fix it:
+
+```sh
+scripts/recenter-pool.sh rehearse arbitrum-sepolia   # optional: dumps a fork of the pool and recentres it
+scripts/recenter-pool.sh run arbitrum-sepolia        # live; asks for the deployer keystore password
+```
+
+`run` rehearses first, then withdraws every position, moves the price onto Chainlink, and seeds the backstop and the band
+again inside an owner-only vault, sized to what the deployer holds. If the deployer has less than the configured depth
+(`liquidityQuote` plus `concentratedQuote`, plus the matching ETH) the pool is seeded thinner and the share is printed;
+top up and run again for full depth. Commit the updated `contracts/deployments/<chain>.json`, which names the vault and
+the band. Decision 0070 has the reasoning and the limits: swaps stay permissionless, so check again just before
+presenting.

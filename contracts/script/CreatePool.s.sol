@@ -1,174 +1,50 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {Script} from "forge-std/Script.sol";
-import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
-import {IERC20Minimal} from "v4-core/interfaces/external/IERC20Minimal.sol";
-import {IHooks} from "v4-core/interfaces/IHooks.sol";
-import {TickMath} from "v4-core/libraries/TickMath.sol";
-import {SqrtPriceMath} from "v4-core/libraries/SqrtPriceMath.sol";
-import {LiquidityAmounts} from "v4-periphery/libraries/LiquidityAmounts.sol";
-import {PoolKey} from "v4-core/types/PoolKey.sol";
+import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
 import {PoolId} from "v4-core/types/PoolId.sol";
 import {Currency} from "v4-core/types/Currency.sol";
-import {ModifyLiquidityParams} from "v4-core/types/PoolOperation.sol";
-import {PoolModifyLiquidityTest} from "v4-core/test/PoolModifyLiquidityTest.sol";
 import {TouchstoneFactory} from "../src/TouchstoneFactory.sol";
 import {ILicenceAuction} from "../src/interfaces/ILicenceAuction.sol";
-import {AggregatorV3Interface} from "../src/interfaces/external/AggregatorV3Interface.sol";
-import {PriceLib} from "../src/libraries/PriceLib.sol";
 import {PoolConfig, PoolFlags} from "../src/types/PoolConfig.sol";
+import {PoolLiquidityVault} from "./support/PoolLiquidityVault.sol";
+import {PoolSeeding} from "./support/PoolSeeding.sol";
 
 /// @notice Creates the chain's demo pool from script/config/<CHAIN>.json on the core in deployments/<CHAIN>.json,
-/// initialised at the Chainlink reference price, and seeds it through Uniswap's deployed PoolModifyLiquidityTest
-/// router with two positions: a full-range backstop and a band centred on the reference price. Spec §19.2 and §19.3
-/// step 3. The deployer must hold both configured quote amounts and the matching risky amounts.
+/// initialised at the Chainlink reference price, and seeds it with two positions held by a new PoolLiquidityVault: a
+/// full-range backstop and a band centred on the reference price. Spec §19.2 and §19.3 step 3. The deployer must
+/// hold both configured quote amounts and the matching risky amounts.
 /// @dev The band is what makes testnet-sized swaps move the price by a realistic amount (decision 0067): a full-range
-/// position of a faucet-sized budget lets one demonstration swap move the price by tens of percent.
-contract CreatePool is Script {
-    error CreatePool__WrongChain(uint256 expected, uint256 actual);
-    error CreatePool__BadReference(int256 answer);
-    error CreatePool__NoDecimals(address token);
-    error CreatePool__BadBand(uint256 halfWidthBps);
-
-    uint256 internal constant BPS = 10_000;
-
-    /// @dev Amounts for the initial price and the full-range seed.
-    struct Seed {
-        uint256 priceX36;
-        uint160 sqrtPriceX96;
-        uint256 quoteAmount;
-        uint256 riskyBudget;
-        uint128 liquidity;
-    }
-
-    /// @dev The concentrated position around the initial price.
-    struct Band {
-        int24 tickLower;
-        int24 tickUpper;
-        uint256 quoteAmount;
-        uint256 riskyBudget;
-        uint128 liquidity;
-    }
-
-    string internal cfg;
-    string internal deploymentPath;
-    TouchstoneFactory internal factory;
-    PoolKey internal key;
-    address internal risky;
-    address internal quote;
-    bool internal quoteIs0;
-
+/// position of a faucet-sized budget lets one demonstration swap move the price by tens of percent. The vault is what
+/// keeps anyone else from withdrawing it (decision 0070). To re-centre a pool after the market has moved, run
+/// RecenterPool.
+contract CreatePool is PoolSeeding {
     function run() external returns (PoolId id) {
-        _load();
-        Seed memory seed = _seed();
-        Band memory band = _band(seed.sqrtPriceX96);
+        _loadPool();
+        TouchstoneFactory factory = TouchstoneFactory(vm.parseJsonAddress(deployed, ".factory"));
+        uint256 priceX36 = _referencePriceX36();
+        uint160 sqrtP = _sqrtPrice(priceX36);
+        Seed memory seed = _seed(priceX36, _u("liquidityQuote"));
+        Band memory band = _band(sqrtP, _u("concentratedQuote"));
         vm.startBroadcast();
-        id = factory.createPool(key, _config(quoteIs0), _lease(), seed.sqrtPriceX96);
-        _addLiquidity(seed, band);
+        (, address deployer,) = vm.readCallers();
+        id = factory.createPool(key, _config(quoteIs0), _lease(), sqrtP);
+        PoolLiquidityVault vault =
+            new PoolLiquidityVault(IPoolManager(vm.parseJsonAddress(cfg, ".poolManager")), deployer);
+        _addToVault(vault, seed, band);
         vm.stopBroadcast();
-        _write(id, seed, band);
+        _write(id, sqrtP, seed, band, address(vault));
     }
 
-    function _load() internal {
-        string memory chain = vm.envString("CHAIN");
-        // forge-lint: disable-next-line(unsafe-cheatcode)
-        cfg = vm.readFile(string.concat("script/config/", chain, ".json"));
-        deploymentPath = vm.envOr("DEPLOYMENT_OUT", string.concat("deployments/", chain, ".json"));
-        uint256 chainId = vm.parseJsonUint(cfg, ".chainId");
-        if (block.chainid != chainId) revert CreatePool__WrongChain(chainId, block.chainid);
-        // forge-lint: disable-next-line(unsafe-cheatcode)
-        string memory deployed = vm.readFile(deploymentPath);
-        factory = TouchstoneFactory(vm.parseJsonAddress(deployed, ".factory"));
-        risky = vm.parseJsonAddress(cfg, ".pool.risky");
-        quote = vm.parseJsonAddress(cfg, ".pool.quote");
-        quoteIs0 = quote < risky;
-        key = PoolKey({
-            currency0: Currency.wrap(quoteIs0 ? quote : risky),
-            currency1: Currency.wrap(quoteIs0 ? risky : quote),
-            fee: uint24(_u("fee")),
-            tickSpacing: int24(int256(_u("tickSpacing"))),
-            hooks: IHooks(vm.parseJsonAddress(deployed, ".hook"))
-        });
-    }
-
-    function _seed() internal view returns (Seed memory seed) {
-        seed.priceX36 = _referencePriceX36(_decimals(risky), _decimals(quote));
-        seed.sqrtPriceX96 = PriceLib.sqrtPriceX96At(seed.priceX36, !quoteIs0);
-        seed.quoteAmount = _u("liquidityQuote");
-        uint256 riskyAmount = seed.quoteAmount * 1e36 / seed.priceX36;
-        // Full range: L = sqrt(x * y) in base units at the initial price.
-        seed.liquidity = uint128(Math.sqrt(seed.quoteAmount * riskyAmount));
-        seed.riskyBudget = riskyAmount * (BPS + _u("liquidityRiskyMarginBps")) / BPS;
-    }
-
-    /// @dev A position from about `concentratedHalfWidthBps` below the initial price to as far above, widened
-    /// outward to the tick spacing. One tick is 1.0001x, so a tick is about one basis point at these widths. The
-    /// liquidity is set by the quote amount on the quote side of the current price; the risky side follows from it.
-    function _band(uint160 sqrtP) internal view returns (Band memory band) {
-        uint256 halfWidth = _u("concentratedHalfWidthBps");
-        int24 spacing = key.tickSpacing;
-        if (halfWidth < uint24(spacing) || halfWidth > 5000) revert CreatePool__BadBand(halfWidth);
-        int24 centre = TickMath.getTickAtSqrtPrice(sqrtP);
-        band.tickLower = _floorTo(centre - int24(int256(halfWidth)), spacing);
-        band.tickUpper = -_floorTo(-(centre + int24(int256(halfWidth))), spacing);
-        uint160 sqrtA = TickMath.getSqrtPriceAtTick(band.tickLower);
-        uint160 sqrtB = TickMath.getSqrtPriceAtTick(band.tickUpper);
-        band.quoteAmount = _u("concentratedQuote");
-        uint256 riskyAmount;
-        if (quoteIs0) {
-            band.liquidity = LiquidityAmounts.getLiquidityForAmount0(sqrtP, sqrtB, band.quoteAmount);
-            riskyAmount = SqrtPriceMath.getAmount1Delta(sqrtA, sqrtP, band.liquidity, true);
-        } else {
-            band.liquidity = LiquidityAmounts.getLiquidityForAmount1(sqrtA, sqrtP, band.quoteAmount);
-            riskyAmount = SqrtPriceMath.getAmount0Delta(sqrtP, sqrtB, band.liquidity, true);
-        }
-        band.riskyBudget = riskyAmount * (BPS + _u("liquidityRiskyMarginBps")) / BPS;
-    }
-
-    function _addLiquidity(Seed memory seed, Band memory band) internal {
-        PoolModifyLiquidityTest lp =
-            PoolModifyLiquidityTest(vm.parseJsonAddress(cfg, ".routers.poolModifyLiquidityTest"));
-        // Twice the quote amounts: the router pulls exact deltas, and rounding must never make a seed fail.
-        IERC20Minimal(quote).approve(address(lp), (seed.quoteAmount + band.quoteAmount) * 2);
-        if (risky != address(0)) IERC20Minimal(risky).approve(address(lp), seed.riskyBudget + band.riskyBudget);
-        _modify(
-            lp,
-            seed.riskyBudget,
-            TickMath.minUsableTick(key.tickSpacing),
-            TickMath.maxUsableTick(key.tickSpacing),
-            seed.liquidity
-        );
-        _modify(lp, band.riskyBudget, band.tickLower, band.tickUpper, band.liquidity);
-    }
-
-    function _modify(PoolModifyLiquidityTest lp, uint256 riskyBudget, int24 lower, int24 upper, uint128 liquidity)
-        internal
-    {
-        lp.modifyLiquidity{value: risky == address(0) ? riskyBudget : 0}(
-            key,
-            ModifyLiquidityParams({
-                tickLower: lower, tickUpper: upper, liquidityDelta: int256(uint256(liquidity)), salt: 0
-            }),
-            ""
-        );
-    }
-
-    /// @dev The largest multiple of `spacing` at or below `tick`; Solidity's division truncates toward zero.
-    function _floorTo(int24 tick, int24 spacing) internal pure returns (int24) {
-        int24 q = tick / spacing;
-        if (tick < 0 && tick % spacing != 0) q -= 1;
-        return q * spacing;
-    }
-
-    function _write(PoolId id, Seed memory seed, Band memory band) internal {
+    function _write(PoolId id, uint160 sqrtP, Seed memory seed, Band memory band, address vault) internal {
         string memory o = "pool";
         vm.serializeBytes32(o, "poolId", PoolId.unwrap(id));
         vm.serializeAddress(o, "currency0", Currency.unwrap(key.currency0));
         vm.serializeAddress(o, "currency1", Currency.unwrap(key.currency1));
         vm.serializeUint(o, "fee", key.fee);
         vm.serializeInt(o, "tickSpacing", key.tickSpacing);
-        vm.serializeUint(o, "sqrtPriceX96", seed.sqrtPriceX96);
+        vm.serializeUint(o, "sqrtPriceX96", sqrtP);
+        vm.serializeAddress(o, "vault", vault);
         vm.serializeInt(o, "bandTickLower", band.tickLower);
         vm.serializeInt(o, "bandTickUpper", band.tickUpper);
         vm.serializeUint(o, "bandLiquidity", band.liquidity);
@@ -224,25 +100,5 @@ contract CreatePool is Script {
         c.maxOutstanding = uint128(_u("maxOutstanding"));
         c.protocolShareBps = uint16(_u("protocolShareBps"));
         c.protocolRecipient = vm.parseJsonAddress(cfg, ".pool.protocolRecipient");
-    }
-
-    /// @dev The reference answer in quote base units per risky base unit, times 1e36, as ReferenceLib scales it.
-    function _referencePriceX36(uint8 decRisky, uint8 decQuote) internal view returns (uint256) {
-        AggregatorV3Interface feed = AggregatorV3Interface(vm.parseJsonAddress(cfg, ".referenceFeed"));
-        (, int256 answer,,,) = feed.latestRoundData();
-        if (answer <= 0) revert CreatePool__BadReference(answer);
-        uint256 k = 36 + uint256(decQuote) - uint256(decRisky) - uint256(feed.decimals());
-        return uint256(answer) * 10 ** k;
-    }
-
-    function _decimals(address token) internal view returns (uint8) {
-        if (token == address(0)) return 18;
-        (bool ok, bytes memory ret) = token.staticcall(abi.encodeWithSignature("decimals()"));
-        if (!ok || ret.length < 32) revert CreatePool__NoDecimals(token);
-        return abi.decode(ret, (uint8));
-    }
-
-    function _u(string memory field) internal view returns (uint256) {
-        return vm.parseJsonUint(cfg, string.concat(".pool.", field));
     }
 }

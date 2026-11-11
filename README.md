@@ -231,6 +231,8 @@ scripts/deploy-testnet.sh arbitrum-sepolia
 
 The [runbook](docs/runbook.md) covers keeper keys, funding, alerts and incident response.
 
+The testnet demo pool needs upkeep because ETH moves and the pool is small and open. `scripts/recenter-pool.sh check <chain>` reports whether it is ready to demonstrate on, and `run` recentres it on the Chainlink price and holds its liquidity in an owner-only vault ([decision 0070](docs/decisions/0070-demo-pool-liquidity-vault-and-recentering.md)).
+
 ## Smart contracts
 
 **Hook.** Permissions are `beforeInitialize`, `beforeSwap`, `afterSwap` and `afterSwapReturnDelta`; the address is mined with CREATE2 so its low bits carry them. The deployed runtime is 23,993 bytes against the 24,576-byte limit, which is why quote interfaces are served through a fallback to the lens. Transient storage carries first-touch state through a transaction. There is no owner, upgrade proxy, `delegatecall` or `selfdestruct`.
